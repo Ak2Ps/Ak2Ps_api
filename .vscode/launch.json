@@ -1,0 +1,36 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "nodeapi TAS",
+            "program": "C:/Ak2Ps/Ak2Ps_api/nodeapi/src/server.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["C:/Ak2Ps/Ak2Ps_api/nodeapi/dist/**/*.js"],
+            "args":["TAS"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "nodeapi CONTROLS",
+            "program": "C:/Ak2Ps/Ak2Ps_api/nodeapi/src/server.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["C:/Ak2Ps/Ak2Ps_api/nodeapi/dist/**/*.js"],
+            "args":["CONTROLS"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "nodeapi AK2PS",
+            "program": "C:/Ak2Ps/Ak2Ps_api/nodeapi/src/server.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["C:/Ak2Ps/Ak2Ps_api/nodeapi/dist/**/*.js"],
+            "args":["AK2PS"],
+        },
+    ]
+}
