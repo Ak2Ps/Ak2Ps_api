@@ -20,6 +20,7 @@
     "@types/xml2js": "^0.4.5",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "electron": "^8.2.5",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
     "guid-typescript": "^1.0.9",

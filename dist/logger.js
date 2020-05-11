@@ -17,7 +17,7 @@ var Logger = /** @class */ (function () {
             message = JSON.stringify(message, null, 2);
         }
         try {
-            fs.appendFileSync(config_1.Config.appDir + "/log/nodeapi.log", message + "\n");
+            fs.appendFileSync(config_1.Config.appDir + "/log/api.log", message + "\n");
         }
         catch (error) {
             console.log(error);
@@ -29,7 +29,7 @@ var Logger = /** @class */ (function () {
         }
         catch (error) { }
         try {
-            fs.unlinkSync(config_1.Config.appDir + "/log/nodeapi.log");
+            fs.unlinkSync(config_1.Config.appDir + "/log/api.log");
         }
         catch (error) { }
     };
@@ -43,7 +43,12 @@ var Logger = /** @class */ (function () {
             }
             else {
                 thisMessage = message;
-                thisPath = req.path;
+                try {
+                    thisPath = req.path;
+                }
+                catch (error) {
+                    thisPath = '???';
+                }
             }
             console.log(thisMessage);
             this.add(thisMessage);

@@ -159,31 +159,31 @@ var Crud = /** @class */ (function () {
         return result;
     };
     Crud.prototype.createSelectSql = function (req, res, next, options) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c;
         var sql = "select";
-        sql += this.addSelectFields(req, res, next, (_b = (_a = options) === null || _a === void 0 ? void 0 : _a.select) === null || _b === void 0 ? void 0 : _b.fields);
-        sql += "\nfrom " + ((_c = options) === null || _c === void 0 ? void 0 : _c.table);
-        sql += this.addWhere(req, res, next, (_e = (_d = options) === null || _d === void 0 ? void 0 : _d.select) === null || _e === void 0 ? void 0 : _e.where);
-        sql += this.addOrderby(req, res, next, (_g = (_f = options) === null || _f === void 0 ? void 0 : _f.select) === null || _g === void 0 ? void 0 : _g.orderby);
+        sql += this.addSelectFields(req, res, next, (_a = options === null || options === void 0 ? void 0 : options.select) === null || _a === void 0 ? void 0 : _a.fields);
+        sql += "\nfrom " + (options === null || options === void 0 ? void 0 : options.table);
+        sql += this.addWhere(req, res, next, (_b = options === null || options === void 0 ? void 0 : options.select) === null || _b === void 0 ? void 0 : _b.where);
+        sql += this.addOrderby(req, res, next, (_c = options === null || options === void 0 ? void 0 : options.select) === null || _c === void 0 ? void 0 : _c.orderby);
         return sql;
     };
     Crud.prototype.createQuerySql = function (req, res, next, options) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c;
         var sql = "select";
-        sql += this.addSelectFields(req, res, next, (_b = (_a = options) === null || _a === void 0 ? void 0 : _a.query) === null || _b === void 0 ? void 0 : _b.fields);
-        sql += "\nfrom " + ((_c = options) === null || _c === void 0 ? void 0 : _c.table);
-        sql += this.addWhere(req, res, next, (_e = (_d = options) === null || _d === void 0 ? void 0 : _d.query) === null || _e === void 0 ? void 0 : _e.where);
-        sql += this.addOrderby(req, res, next, (_g = (_f = options) === null || _f === void 0 ? void 0 : _f.query) === null || _g === void 0 ? void 0 : _g.orderby);
+        sql += this.addSelectFields(req, res, next, (_a = options === null || options === void 0 ? void 0 : options.query) === null || _a === void 0 ? void 0 : _a.fields);
+        sql += "\nfrom " + (options === null || options === void 0 ? void 0 : options.table);
+        sql += this.addWhere(req, res, next, (_b = options === null || options === void 0 ? void 0 : options.query) === null || _b === void 0 ? void 0 : _b.where);
+        sql += this.addOrderby(req, res, next, (_c = options === null || options === void 0 ? void 0 : options.query) === null || _c === void 0 ? void 0 : _c.orderby);
         return sql;
     };
     Crud.prototype.doCheckField = function (req, res, next, options) {
-        var _a, _b, _c;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
             var result, value;
-            return __generator(this, function (_d) {
+            return __generator(this, function (_c) {
                 result = true;
                 value = "";
-                (_c = (_b = (_a = options) === null || _a === void 0 ? void 0 : _a.update) === null || _b === void 0 ? void 0 : _b.fields) === null || _c === void 0 ? void 0 : _c.forEach(function (element) {
+                (_b = (_a = options === null || options === void 0 ? void 0 : options.update) === null || _a === void 0 ? void 0 : _a.fields) === null || _b === void 0 ? void 0 : _b.forEach(function (element) {
                     value = req.body[element.body];
                     if (element.default !== undefined) {
                         if (!value || String(value).trim() == "") {
@@ -254,48 +254,48 @@ var Crud = /** @class */ (function () {
         });
     };
     Crud.prototype.doUpdateInsert = function (req, res, next, options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var sql, rows, _q, result;
-            return __generator(this, function (_r) {
-                switch (_r.label) {
+            var sql, rows, _d, result;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         //
-                        _q = res;
+                        _d = res;
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
                         //
-                        _q.crudConnection = _r.sent();
+                        _d.crudConnection = _e.sent();
                         //
                         // Haal de oude gegevens op
                         //
                         sql = "select";
-                        sql += this.addSelectFields(req, res, next, (_b = (_a = options) === null || _a === void 0 ? void 0 : _a.query) === null || _b === void 0 ? void 0 : _b.fields);
-                        sql += "\n  from " + ((_c = options) === null || _c === void 0 ? void 0 : _c.table) + "\n  where ";
-                        sql += this.addInsertKeyWhere(req, res, next, (_d = options) === null || _d === void 0 ? void 0 : _d.key);
+                        sql += this.addSelectFields(req, res, next, (_a = options === null || options === void 0 ? void 0 : options.query) === null || _a === void 0 ? void 0 : _a.fields);
+                        sql += "\n  from " + (options === null || options === void 0 ? void 0 : options.table) + "\n  where ";
+                        sql += this.addInsertKeyWhere(req, res, next, options === null || options === void 0 ? void 0 : options.key);
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 2:
-                        rows = _r.sent();
+                        rows = _e.sent();
                         //
                         // Merge 
                         //
                         if (rows[0]) {
-                            this.mergeRowToBody(req, res, next, (_e = this.dict.select) === null || _e === void 0 ? void 0 : _e.fields, rows[0]);
+                            this.mergeRowToBody(req, res, next, (_b = this.dict.select) === null || _b === void 0 ? void 0 : _b.fields, rows[0]);
                         }
                         result = true;
                         return [4 /*yield*/, this.doCheckField(req, res, next, options)];
                     case 3:
-                        if ((_r.sent()) === false) {
+                        if ((_e.sent()) === false) {
                             result = false;
                         }
                         return [4 /*yield*/, this.doCheckRecord(req, res, next, options)];
                     case 4:
-                        if ((_r.sent()) === false) {
+                        if ((_e.sent()) === false) {
                             result = false;
                         }
                         return [4 /*yield*/, this.doCheckDatabase(req, res, next, options)];
                     case 5:
-                        if ((_r.sent()) === false) {
+                        if ((_e.sent()) === false) {
                             result = false;
                         }
                         if (result == false) {
@@ -305,35 +305,35 @@ var Crud = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         if (!(Number(req.body.ID) < 0)) return [3 /*break*/, 7];
-                        sql = "\nselect ifnull(max(ID),0) + 1 as last_id\nfrom " + ((_f = options) === null || _f === void 0 ? void 0 : _f.table);
+                        sql = "\nselect ifnull(max(ID),0) + 1 as last_id\nfrom " + (options === null || options === void 0 ? void 0 : options.table);
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 6:
-                        rows = _r.sent();
+                        rows = _e.sent();
                         req.body.ID = rows[0].last_id;
-                        _r.label = 7;
+                        _e.label = 7;
                     case 7:
                         //
                         // mogelijk moet deze key ingevoegd worden
                         //
-                        sql = "insert into " + ((_g = options) === null || _g === void 0 ? void 0 : _g.table);
-                        sql += this.addInsertKeyList(req, res, next, (_h = options) === null || _h === void 0 ? void 0 : _h.key);
+                        sql = "insert into " + (options === null || options === void 0 ? void 0 : options.table);
+                        sql += this.addInsertKeyList(req, res, next, options === null || options === void 0 ? void 0 : options.key);
                         sql += "\nselect";
-                        sql += this.addInsertKeyValues(req, res, next, (_j = options) === null || _j === void 0 ? void 0 : _j.key);
-                        sql += "\nfrom dual where not exists \n(select 1 from  " + ((_k = options) === null || _k === void 0 ? void 0 : _k.table) + "\nwhere ";
-                        sql += this.addInsertKeyWhere(req, res, next, (_l = options) === null || _l === void 0 ? void 0 : _l.key);
+                        sql += this.addInsertKeyValues(req, res, next, options === null || options === void 0 ? void 0 : options.key);
+                        sql += "\nfrom dual where not exists \n(select 1 from  " + (options === null || options === void 0 ? void 0 : options.table) + "\nwhere ";
+                        sql += this.addInsertKeyWhere(req, res, next, options === null || options === void 0 ? void 0 : options.key);
                         sql += " )";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 8:
-                        rows = _r.sent();
+                        rows = _e.sent();
                         //
                         // en daarna de update
                         //
-                        sql = "update " + ((_m = options) === null || _m === void 0 ? void 0 : _m.table) + " set";
-                        sql += this.addUpdateFields(req, res, next, (_p = (_o = options) === null || _o === void 0 ? void 0 : _o.update) === null || _p === void 0 ? void 0 : _p.fields);
+                        sql = "update " + (options === null || options === void 0 ? void 0 : options.table) + " set";
+                        sql += this.addUpdateFields(req, res, next, (_c = options === null || options === void 0 ? void 0 : options.update) === null || _c === void 0 ? void 0 : _c.fields);
                         sql += "\nwhere id = " + db_1.default.fix(req.body.ID);
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 9:
-                        rows = _r.sent();
+                        rows = _e.sent();
                         //
                         // en daarna de afterupdate
                         //
@@ -342,7 +342,7 @@ var Crud = /** @class */ (function () {
                         //
                         // en daarna de afterupdate
                         //
-                        _r.sent();
+                        _e.sent();
                         //
                         res.crudConnection.release();
                         res.status(200).send(req.body);
@@ -361,9 +361,8 @@ var Crud = /** @class */ (function () {
         });
     };
     Crud.prototype.createDelete = function (req, res, next, options) {
-        var _a;
         var id = db_1.default.getDataId(req);
-        var sql = "\ndelete from " + ((_a = options) === null || _a === void 0 ? void 0 : _a.table) + " \nwhere id = " + id + ";";
+        var sql = "\ndelete from " + (options === null || options === void 0 ? void 0 : options.table) + " \nwhere id = " + id + ";";
         return sql;
     };
     Crud.prototype.doCheckDelete = function (req, res, next, options) {

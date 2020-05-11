@@ -106,9 +106,8 @@ var Mnl = /** @class */ (function (_super) {
                         scandir = config_1.Config.appDir + "/pdf";
                         try {
                             fs.readdirSync(scandir).forEach(function (file) {
-                                var _a;
                                 var ext = String(file).split('.').pop();
-                                if (((_a = ext) === null || _a === void 0 ? void 0 : _a.toUpperCase()) == "PDF") {
+                                if ((ext === null || ext === void 0 ? void 0 : ext.toUpperCase()) == "PDF") {
                                     if (file.toUpperCase().indexOf("MNL_") == 0) {
                                         sql += "\n    union\n    select '" + db_1.default.fix(file) + "'\n    from dual";
                                     }

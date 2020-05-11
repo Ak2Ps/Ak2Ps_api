@@ -11,7 +11,7 @@ export class Logger {
       message = JSON.stringify(message, null, 2);
     }
     try {
-      fs.appendFileSync(`${Config.appDir}/log/nodeapi.log`, `${message}\n`);
+      fs.appendFileSync(`${Config.appDir}/log/api.log`, `${message}\n`);
     } catch (error) {
       console.log(error);
     }
@@ -22,7 +22,7 @@ export class Logger {
       fs.mkdirSync(`${Config.appDir}/log`);
     } catch (error) { }
     try {
-      fs.unlinkSync(`${Config.appDir}/log/nodeapi.log`);
+      fs.unlinkSync(`${Config.appDir}/log/api.log`);
     } catch (error) { }
   }
 
@@ -37,7 +37,11 @@ export class Logger {
         thisPath = '';
       } else {
         thisMessage = message;
-        thisPath = req.path;
+        try {
+          thisPath = req.path;
+        } catch(error){
+          thisPath = '???';
+        }
       }
       console.log(thisMessage);
       this.add(thisMessage);

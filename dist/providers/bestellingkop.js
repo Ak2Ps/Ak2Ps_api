@@ -188,16 +188,16 @@ var Bestellingkop = /** @class */ (function (_super) {
         return _super.call(this, dict) || this;
     }
     Bestellingkop.prototype.createQuerySql = function (req, res, next, options) {
-        var _a, _b, _c, _d;
+        var _a, _b;
         var sql = "\nselect *,\ndate2screendate(startdatumtijd) as STARTDATUM,\ncase when producten <= 1 then productnummer else '...' end as PRODUCTNUMMER,\ncase when besteldatumtijden <= 1 then date2screendate(besteldatumtijd) else '...' end as BESTELDATUM,\ndate2screendate(geprintdatumtijd) as GEPRINTDATUM,\ncase when geprintdatumtijd is null then NULL else 1 end as GEPRINT,\ndate2screendate(gepickeddatumtijd) as GEPICKEDDATUM,\ncase when gepickeddatumtijd is null then NULL else 1 end as GEPICKED,\ndate2screendate(verzondendatumtijd) as VERZONDENDATUM,\ncase when verzondendatumtijd is null then NULL else 1 end as VERZONDEN,\ndate2screendate(ontvangendatumtijd) as ONTVANGENDATUM,\ncase when ontvangendatumtijd is null then NULL else 1 end as ONTVANGEN,\n(select Zoekcode from LEVERANCIER \nwhere LEVERANCIER.leveranciernummer = BASE.leveranciernummer) as ZOEKKODE,\n(select naam from LEVERANCIER \nwhere LEVERANCIER.leveranciernummer = BASE.leveranciernummer) as LEVERANCIERNAAM\nfrom (\nselect bestelnummer,\nbestelnummer as ID,\nmin(startdatumtijd) as startdatumtijd,\nmin(besteldatumtijd) as besteldatumtijd,\ncount(distinct(besteldatumtijd)) as besteldatumtijden,\nmin(geprintdatumtijd) as geprintdatumtijd,\nmin(gepickeddatumtijd) as gepickeddatumtijd,\nmin(verzondendatumtijd) as verzondendatumtijd,\nmin(ontvangendatumtijd) as ontvangendatumtijd,\nmin(productnummer) as productnummer,\ncount(distinct(productnummer)) as producten,\nsum(bestelling) as bestelling,\nmin(leveranciernummer) as leveranciernummer\nfrom BESTELLING group by bestelnummer) BASE\n";
-        sql += this.addWhere(req, res, next, (_b = (_a = options) === null || _a === void 0 ? void 0 : _a.query) === null || _b === void 0 ? void 0 : _b.where);
+        sql += this.addWhere(req, res, next, (_a = options === null || options === void 0 ? void 0 : options.query) === null || _a === void 0 ? void 0 : _a.where);
         if (req.query.geprint == 'Nee') {
             sql += " having geprint is null";
         }
         else if (req.query.geprint == 'Ja') {
             sql += " having geprint = 1";
         }
-        sql += this.addOrderby(req, res, next, (_d = (_c = options) === null || _c === void 0 ? void 0 : _c.query) === null || _d === void 0 ? void 0 : _d.orderby);
+        sql += this.addOrderby(req, res, next, (_b = options === null || options === void 0 ? void 0 : options.query) === null || _b === void 0 ? void 0 : _b.orderby);
         return sql;
     };
     Bestellingkop.prototype.doUpdate = function (req, res, next, options) {

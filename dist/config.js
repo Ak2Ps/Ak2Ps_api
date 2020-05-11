@@ -16,15 +16,15 @@ var Config = /** @class */ (function () {
         var json = {};
         //
         if (thisApp.toLowerCase() == "controls") {
-            Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/CONTROLS/nodeapi.json';
+            Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/CONTROLS/api.json';
             Config.app = 'C';
         }
         else if (thisApp.toLowerCase() == "ak2ps") {
-            Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/AK2PS/nodeapi.json';
+            Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/AK2PS/api.json';
             Config.app = 'A';
         }
         else {
-            Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/TAS/nodeapi.json';
+            Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/TAS/api.json';
             Config.app = 'T';
         }
         //
@@ -58,7 +58,7 @@ var Config = /** @class */ (function () {
             //
             Config.exactinterfaceapp = "nodeapi2tasseron";
             Config.exactdivision = "1751534";
-            Config.exactdir = "/Ak2Ps/Ak2Ps_server/Exact";
+            Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
             //
             Config.bbsmtp = "192.168.43.7";
             //
@@ -89,7 +89,7 @@ var Config = /** @class */ (function () {
             //
             Config.exactinterfaceapp = "nodeapi2local";
             Config.exactdivision = "1716286";
-            Config.exactdir = "/Ak2Ps/Ak2Ps_server/TAS/Exact";
+            Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
             //
             Config.bbsmtp = "localhost";
             //
@@ -120,7 +120,7 @@ var Config = /** @class */ (function () {
             //
             Config.exactinterfaceapp = "nodeapi2tasseron";
             Config.exactdivision = "1665922";
-            Config.exactdir = "/Ak2Ps/Ak2Ps_server/Exact";
+            Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
             //
             Config.bbsmtp = "192.168.43.7";
             //
@@ -161,10 +161,15 @@ var Config = /** @class */ (function () {
         //
         // exact interface naar localhost 9001
         //
-        Config.exactclientid = '{be855cb4-9f01-4c2a-809f-653750f7c679}';
-        Config.exactclientsecret = 'zFD7wP3aNvZE';
-        Config.urlRedirect = "http://localhost:9001/setcode.php";
-        if (Config.exactinterfaceapp == "nodeapi2tasseron") {
+        if (Config.exactinterfaceapp == "nodeapi2local") {
+            //
+            // exact interface naar localhost
+            //
+            Config.exactclientid = '{be855cb4-9f01-4c2a-809f-653750f7c679}';
+            Config.exactclientsecret = 'zFD7wP3aNvZE';
+            Config.urlRedirect = "http://localhost:9001/setcode.php";
+        }
+        else if (Config.exactinterfaceapp == "nodeapi2tasseron") {
             //
             // exact interface naar 192.168.43.43
             //

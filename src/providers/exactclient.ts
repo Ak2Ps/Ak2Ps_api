@@ -8,6 +8,7 @@ import { Logger } from "../logger";
 import * as fs from 'fs';
 import { Config } from '../config';
 import https from "https";
+import http from "http";
 import { parseString } from "xml2js";
 //
 const dict: Dict = {
@@ -87,16 +88,60 @@ export class Exactclient extends Crud {
         return db.fix(result);
     }
 
+    protected checkRunningInterface(req: Request, res: Response, next: NextFunction): Promise<boolean> {
+        return new Promise(async (resolve, reject) => {
+            if (Config.serverPort == 9001) {
+                //
+                // Ik handel het antwoord van exact zelf wel af
+                //
+                resolve(true);
+            } else {
+                //
+                // 9001 moet het antwoord van exact afhandelen (redirecturl)
+                // dus moet wel lopen
+                //
+                let headers = {};
+                let ak2req = http.request(
+                    {
+                        host: "localhost",
+                        path: "/",
+                        method: 'GET',
+                        port: 9001,
+                        headers: headers,
+                        protocol: 'http:'
+                    },
+                    ak2res => {
+                        let responseString = "";
+                        ak2res.on("data", (data) => {
+                            responseString += data;
+                        });
+                        ak2res.on("end", () => {
+                            resolve(true);
+                        });
+                        ak2res.on("error", (error) => {
+                            Logger.error(req, JSON.stringify(error));
+                            resolve(false);
+                        });
+                    }
+                );
+                ak2req.on("error", (error) => {
+                    Logger.error(req, JSON.stringify(error));
+                    resolve(false);
+                })
+                ak2req.end();
+            }
+        })
+    }
 
     protected getAuth(req: Request, res: Response, next: NextFunction, options: any): Promise<string> {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let body = options.body;
+            //
             let headers = {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Content-Length": body.length,
                 "Accept": '*/*',
             }
-
             let exactreq = https.request(
                 {
                     host: "start.exactonline.nl",
@@ -108,13 +153,13 @@ export class Exactclient extends Crud {
                 },
                 exactres => {
                     let responseString = "";
-                    exactres.on("data", function (data) {
+                    exactres.on("data", (data) => {
                         responseString += data;
                     });
-                    exactres.on("end", function () {
+                    exactres.on("end", () => {
                         resolve(responseString);
                     });
-                    exactres.on("error", function (error) {
+                    exactres.on("error", (error) => {
                         resolve(JSON.stringify(error));
                     });
                 }
@@ -126,9 +171,7 @@ export class Exactclient extends Crud {
 
     protected getData(req: Request, res: Response, next: NextFunction, options: any): Promise<string> {
         return new Promise((resolve, reject) => {
-            let headers = {
-            }
-
+            let headers = {};
             let exactreq = https.request(
                 {
                     host: "start.exactonline.nl",
@@ -172,20 +215,20 @@ export class Exactclient extends Crud {
             exactstart = '01-01-2018';
         }
         try {
-           if (!fs.existsSync(Config.exactdir)){
-               fs.mkdirSync(Config.exactdir);
-           }
-        } catch (error){
-            Logger.error(req,JSON.stringify(error));
+            if (!fs.existsSync(Config.exactdir)) {
+                fs.mkdirSync(Config.exactdir);
+            }
+        } catch (error) {
+            Logger.error(req, JSON.stringify(error));
         }
         try {
-            if (!fs.existsSync(Config.appDir + "/import")){
+            if (!fs.existsSync(Config.appDir + "/import")) {
                 fs.mkdirSync(Config.appDir + "/import");
             }
-         } catch (error){
-             Logger.error(req,JSON.stringify(error));
-         }
-         //
+        } catch (error) {
+            Logger.error(req, JSON.stringify(error));
+        }
+        //
         let outfile: string = Config.appDir + "/import/exactresult.dat";
         if (query.outfile != '') {
             outfile = Config.appDir + "/" + query.outfile;
@@ -194,6 +237,11 @@ export class Exactclient extends Crud {
         //
         //
         if (query.action == 'GETCODE') {
+            if (await this.checkRunningInterface(req, res, next) == false) {
+                res.send("Server 9001 moet lopen om het antwoord van Exact af te kunnen handelen (redirectUrl van de ExactApi)");
+                res.crudConnection.release();
+                return;
+            }
             let thisUrl = "https://start.exactonline.nl/api/oauth2/auth"
                 + '?client_id='
                 + Config.exactclientid
@@ -387,24 +435,24 @@ export class Exactclient extends Crud {
                 } else {
                     json = await this.getJson(result);
                     let thisTs_d = this.getField(json.eExact, 'Topics', 'Topic', '$', 'ts_d');
-                    let thisData:any = '';
+                    let thisData: any = '';
                     if (json.eExact[query.topic]) {
                         if (json.eExact[query.topic][0]) {
                             tlblok++;
                             thisData = json.eExact[query.topic][0];
                             let firstproperty = 1;
                             let thisSingleTopic = '';
-                            for (let property in thisData){
-                                if (firstproperty == 1){
+                            for (let property in thisData) {
+                                if (firstproperty == 1) {
                                     firstproperty = 0;
                                     thisSingleTopic = property;
-                                    if (tlblok == 0){
+                                    if (tlblok == 0) {
                                         fs.appendFileSync(outfile, `{"${thisSingleTopic}":[`);
                                     } else {
                                         fs.appendFileSync(outfile, `,`);
                                     }
                                     thisData = JSON.stringify(thisData[property], null, 2);
-                                    thisData = thisData.substr(1,thisData.length-2);
+                                    thisData = thisData.substr(1, thisData.length - 2);
                                     fs.appendFileSync(outfile, thisData);
                                 }
                             }
@@ -417,7 +465,7 @@ export class Exactclient extends Crud {
                     }
                 }
             }
-            if (tlblok >= 0){
+            if (tlblok >= 0) {
                 fs.appendFileSync(outfile, `]}`);
             }
             result = {

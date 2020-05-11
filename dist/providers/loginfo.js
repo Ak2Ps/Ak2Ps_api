@@ -61,7 +61,7 @@ var Loginfo = /** @class */ (function () {
             return __generator(this, function (_a) {
                 method = req.method;
                 action = db_1.default.fix(req.query.action || '');
-                filename = config_1.Config.appDir + "/log/nodeapi.log";
+                filename = config_1.Config.appDir + "/log/api.log";
                 logger_1.Logger.test("loginfo: " + method + ", " + action);
                 //
                 //

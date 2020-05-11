@@ -1403,10 +1403,14 @@ where bestelnummer = '${bestelnummer}'`;
             error += `DWG ${infile} onbekend ...\n`;
           } else {
             cmd = `${curdir}\\${dwg} "${infile}" "${outfile}"`;
-            shellresult = child.execSync(cmd,
-              {
-                cwd: curdir,
-              });
+            try {
+              shellresult = child.execSync(cmd,
+                {
+                  cwd: curdir,
+                });
+            } catch (error) {
+              //Logger.error(req, JSON.stringify(error));
+            }
             if (fs.existsSync(outfile) === false) {
               error += `PDF ${outfile} is niet aangemaakt ...\n`;
             } else {
@@ -1473,10 +1477,14 @@ where naam = '${bewerkingsoort}'`;
           msg += `DWG ${infile} onbekend ...\n`;
         } else {
           cmd = `${curdir}\\${dwg} "${infile}" "${outfile}"`;
-          shellresult = child.execSync(cmd,
-            {
-              cwd: curdir,
-            });
+          try {
+            shellresult = child.execSync(cmd,
+              {
+                cwd: curdir,
+              });
+          } catch (error) {
+            //Logger.error(req, JSON.stringify(error));
+          }
           if (fs.existsSync(outfile) === false) {
             msg += `PDF ${outfile} is niet aangemaakt ...\n`;
           }
@@ -1499,10 +1507,14 @@ where naam = '${bewerkingsoort}'`;
             msg += `DWG ${infile} onbekend ...\n`;
           } else {
             cmd = `${curdir}\\${dwg} "${infile}" "${outfile}"`;
-            shellresult = child.execSync(cmd,
-              {
-                cwd: curdir,
-              });
+            try {
+              shellresult = child.execSync(cmd,
+                {
+                  cwd: curdir,
+                });
+            } catch (error) {
+              //Logger.error(req, JSON.stringify(error));
+            }
             if (fs.existsSync(outfile) === false) {
               msg += `PDF ${outfile} is niet aangemaakt ...\n`;
             }
@@ -1521,10 +1533,14 @@ where naam = '${bewerkingsoort}'`;
           msg += `DWG ${infile} onbekend ...\n`;
         } else {
           cmd = `${curdir}\\${dwg} "${infile}" "${outfile}"`;
-          shellresult = child.execSync(cmd,
-            {
-              cwd: curdir,
-            });
+          try {
+            shellresult = child.execSync(cmd,
+              {
+                cwd: curdir,
+              });
+          } catch (error) {
+            //Logger.error(req, JSON.stringify(error));
+          }
           if (fs.existsSync(outfile) === false) {
             msg += `PDF ${outfile} is niet aangemaakt ...\n`;
           }
@@ -1542,10 +1558,14 @@ where naam = '${bewerkingsoort}'`;
           msg += `DWG ${infile} onbekend ...\n`;
         } else {
           cmd = `${curdir}\\${dwg} "${infile}" "${outfile}"`;
-          shellresult = child.execSync(cmd,
-            {
-              cwd: curdir,
-            });
+          try {
+            shellresult = child.execSync(cmd,
+              {
+                cwd: curdir,
+              });
+          } catch (error) {
+            //Logger.error(req, JSON.stringify(error));
+          }
           if (fs.existsSync(outfile) === false) {
             msg += `PDF ${outfile} is niet aangemaakt ...\n`;
           }

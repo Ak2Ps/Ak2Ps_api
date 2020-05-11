@@ -272,7 +272,7 @@ export class Template {
       //
       console.log(`${table}`);
       //
-      fs.writeFileSync(`C:/Ak2Ps/Ak2Ps_server/nodeapi/src/generated/${table}.ts`, Template.makeTs(table, thisDict));
+      fs.writeFileSync(`C:/Ak2Ps/Ak2Ps_api/src/generated/${table}.ts`, Template.makeTs(table, thisDict));
     });
     //
     //

@@ -1478,9 +1478,8 @@ var Toolbox = /** @class */ (function () {
                 scandir = config_1.Config.appDir + "/pdf";
                 try {
                     fs.readdirSync(scandir).forEach(function (file) {
-                        var _a;
                         var ext = String(file).split('.').pop();
-                        if (((_a = ext) === null || _a === void 0 ? void 0 : _a.toUpperCase()) == "PDF") {
+                        if ((ext === null || ext === void 0 ? void 0 : ext.toUpperCase()) == "PDF") {
                             if (file.toUpperCase().indexOf("MNL_") == 0) {
                                 var jaar = Number(file.substr(4, 4));
                                 var maand = Number(file.substr(8, 2));
@@ -1596,9 +1595,14 @@ var Toolbox = /** @class */ (function () {
                                 }
                                 else {
                                     cmd = curdir + "\\" + dwg + " \"" + infile + "\" \"" + outfile + "\"";
-                                    shellresult = child.execSync(cmd, {
-                                        cwd: curdir,
-                                    });
+                                    try {
+                                        shellresult = child.execSync(cmd, {
+                                            cwd: curdir,
+                                        });
+                                    }
+                                    catch (error) {
+                                        //Logger.error(req, JSON.stringify(error));
+                                    }
                                     if (fs.existsSync(outfile) === false) {
                                         error += "PDF " + outfile + " is niet aangemaakt ...\n";
                                     }
@@ -1677,9 +1681,14 @@ var Toolbox = /** @class */ (function () {
                             }
                             else {
                                 cmd = curdir + "\\" + dwg + " \"" + infile + "\" \"" + outfile + "\"";
-                                shellresult = child.execSync(cmd, {
-                                    cwd: curdir,
-                                });
+                                try {
+                                    shellresult = child.execSync(cmd, {
+                                        cwd: curdir,
+                                    });
+                                }
+                                catch (error) {
+                                    //Logger.error(req, JSON.stringify(error));
+                                }
                                 if (fs.existsSync(outfile) === false) {
                                     msg += "PDF " + outfile + " is niet aangemaakt ...\n";
                                 }
@@ -1703,9 +1712,14 @@ var Toolbox = /** @class */ (function () {
                                 }
                                 else {
                                     cmd = curdir + "\\" + dwg + " \"" + infile + "\" \"" + outfile + "\"";
-                                    shellresult = child.execSync(cmd, {
-                                        cwd: curdir,
-                                    });
+                                    try {
+                                        shellresult = child.execSync(cmd, {
+                                            cwd: curdir,
+                                        });
+                                    }
+                                    catch (error) {
+                                        //Logger.error(req, JSON.stringify(error));
+                                    }
                                     if (fs.existsSync(outfile) === false) {
                                         msg += "PDF " + outfile + " is niet aangemaakt ...\n";
                                     }
@@ -1726,9 +1740,14 @@ var Toolbox = /** @class */ (function () {
                             }
                             else {
                                 cmd = curdir + "\\" + dwg + " \"" + infile + "\" \"" + outfile + "\"";
-                                shellresult = child.execSync(cmd, {
-                                    cwd: curdir,
-                                });
+                                try {
+                                    shellresult = child.execSync(cmd, {
+                                        cwd: curdir,
+                                    });
+                                }
+                                catch (error) {
+                                    //Logger.error(req, JSON.stringify(error));
+                                }
                                 if (fs.existsSync(outfile) === false) {
                                     msg += "PDF " + outfile + " is niet aangemaakt ...\n";
                                 }
@@ -1748,9 +1767,14 @@ var Toolbox = /** @class */ (function () {
                             }
                             else {
                                 cmd = curdir + "\\" + dwg + " \"" + infile + "\" \"" + outfile + "\"";
-                                shellresult = child.execSync(cmd, {
-                                    cwd: curdir,
-                                });
+                                try {
+                                    shellresult = child.execSync(cmd, {
+                                        cwd: curdir,
+                                    });
+                                }
+                                catch (error) {
+                                    //Logger.error(req, JSON.stringify(error));
+                                }
                                 if (fs.existsSync(outfile) === false) {
                                     msg += "PDF " + outfile + " is niet aangemaakt ...\n";
                                 }

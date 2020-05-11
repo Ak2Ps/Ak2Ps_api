@@ -243,29 +243,29 @@ var Retourproduct = /** @class */ (function (_super) {
         });
     };
     Retourproduct.prototype.doInit = function (req, res, next, options) {
-        var _a, _b, _c;
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var result, sql, _d, rows;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var result, sql, _b, rows;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         result = true;
-                        _d = res;
+                        _b = res;
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
-                        _d.crudConnection = _e.sent();
+                        _b.crudConnection = _c.sent();
                         sql = "\ninsert into RETOURPRODUCT (referentie)\nselect '" + req.query.referentie + "' from DUAL\nwhere not exists (select 1 from RETOURPRODUCT where referentie = '" + req.query.referentie + "')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 2:
-                        rows = _e.sent();
+                        rows = _c.sent();
                         //
                         sql = "select";
-                        sql += this.addSelectFields(req, res, next, (_b = (_a = dict) === null || _a === void 0 ? void 0 : _a.query) === null || _b === void 0 ? void 0 : _b.fields);
-                        sql += " from " + ((_c = dict) === null || _c === void 0 ? void 0 : _c.table);
+                        sql += this.addSelectFields(req, res, next, (_a = dict === null || dict === void 0 ? void 0 : dict.query) === null || _a === void 0 ? void 0 : _a.fields);
+                        sql += " from " + (dict === null || dict === void 0 ? void 0 : dict.table);
                         sql += " where referentie = '" + req.query.referentie + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 3:
-                        rows = _e.sent();
+                        rows = _c.sent();
                         //
                         res.crudConnection.release();
                         res.status(200).send(rows[0]);

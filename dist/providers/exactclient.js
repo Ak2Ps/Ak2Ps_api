@@ -66,6 +66,7 @@ var logger_1 = require("../logger");
 var fs = __importStar(require("fs"));
 var config_1 = require("../config");
 var https_1 = __importDefault(require("https"));
+var http_1 = __importDefault(require("http"));
 var xml2js_1 = require("xml2js");
 //
 var dict = {
@@ -140,36 +141,84 @@ var Exactclient = /** @class */ (function (_super) {
         }
         return db_1.default.fix(result);
     };
-    Exactclient.prototype.getAuth = function (req, res, next, options) {
-        return new Promise(function (resolve, reject) {
-            var body = options.body;
-            var headers = {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Content-Length": body.length,
-                "Accept": '*/*',
-            };
-            var exactreq = https_1.default.request({
-                host: "start.exactonline.nl",
-                path: "/api/oauth2/token",
-                method: 'POST',
-                port: 443,
-                headers: headers,
-                protocol: 'https:'
-            }, function (exactres) {
-                var responseString = "";
-                exactres.on("data", function (data) {
-                    responseString += data;
-                });
-                exactres.on("end", function () {
-                    resolve(responseString);
-                });
-                exactres.on("error", function (error) {
-                    resolve(JSON.stringify(error));
-                });
+    Exactclient.prototype.checkRunningInterface = function (req, res, next) {
+        var _this = this;
+        return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+            var headers, ak2req;
+            return __generator(this, function (_a) {
+                if (config_1.Config.serverPort == 9001) {
+                    //
+                    // Ik handel het antwoord van exact zelf wel af
+                    //
+                    resolve(true);
+                }
+                else {
+                    headers = {};
+                    ak2req = http_1.default.request({
+                        host: "localhost",
+                        path: "/",
+                        method: 'GET',
+                        port: 9001,
+                        headers: headers,
+                        protocol: 'http:'
+                    }, function (ak2res) {
+                        var responseString = "";
+                        ak2res.on("data", function (data) {
+                            responseString += data;
+                        });
+                        ak2res.on("end", function () {
+                            resolve(true);
+                        });
+                        ak2res.on("error", function (error) {
+                            logger_1.Logger.error(req, JSON.stringify(error));
+                            resolve(false);
+                        });
+                    });
+                    ak2req.on("error", function (error) {
+                        logger_1.Logger.error(req, JSON.stringify(error));
+                        resolve(false);
+                    });
+                    ak2req.end();
+                }
+                return [2 /*return*/];
             });
-            exactreq.write(body);
-            exactreq.end();
-        });
+        }); });
+    };
+    Exactclient.prototype.getAuth = function (req, res, next, options) {
+        var _this = this;
+        return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+            var body, headers, exactreq;
+            return __generator(this, function (_a) {
+                body = options.body;
+                headers = {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Content-Length": body.length,
+                    "Accept": '*/*',
+                };
+                exactreq = https_1.default.request({
+                    host: "start.exactonline.nl",
+                    path: "/api/oauth2/token",
+                    method: 'POST',
+                    port: 443,
+                    headers: headers,
+                    protocol: 'https:'
+                }, function (exactres) {
+                    var responseString = "";
+                    exactres.on("data", function (data) {
+                        responseString += data;
+                    });
+                    exactres.on("end", function () {
+                        resolve(responseString);
+                    });
+                    exactres.on("error", function (error) {
+                        resolve(JSON.stringify(error));
+                    });
+                });
+                exactreq.write(body);
+                exactreq.end();
+                return [2 /*return*/];
+            });
+        }); });
     };
     Exactclient.prototype.getData = function (req, res, next, options) {
         return new Promise(function (resolve, reject) {
@@ -240,24 +289,28 @@ var Exactclient = /** @class */ (function (_super) {
                         if (query.outfile != '') {
                             outfile = config_1.Config.appDir + "/" + query.outfile;
                         }
-                        //
-                        //
-                        //
-                        if (query.action == 'GETCODE') {
-                            thisUrl = "https://start.exactonline.nl/api/oauth2/auth"
-                                + '?client_id='
-                                + config_1.Config.exactclientid
-                                + '&redirect_uri='
-                                + config_1.Config.urlRedirect
-                                + '&response_type=code';
-                            res.set({
-                                Location: thisUrl
-                            });
+                        if (!(query.action == 'GETCODE')) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.checkRunningInterface(req, res, next)];
+                    case 4:
+                        if ((_f.sent()) == false) {
+                            res.send("Server 9001 moet lopen om het antwoord van Exact af te kunnen handelen (redirectUrl van de ExactApi)");
                             res.crudConnection.release();
-                            res.status(302).send();
                             return [2 /*return*/];
                         }
-                        if (!(query.action == 'GETFIRSTREFRESH')) return [3 /*break*/, 8];
+                        thisUrl = "https://start.exactonline.nl/api/oauth2/auth"
+                            + '?client_id='
+                            + config_1.Config.exactclientid
+                            + '&redirect_uri='
+                            + config_1.Config.urlRedirect
+                            + '&response_type=code';
+                        res.set({
+                            Location: thisUrl
+                        });
+                        res.crudConnection.release();
+                        res.status(302).send();
+                        return [2 /*return*/];
+                    case 5:
+                        if (!(query.action == 'GETFIRSTREFRESH')) return [3 /*break*/, 10];
                         //
                         // get refresh
                         //
@@ -283,21 +336,21 @@ var Exactclient = /** @class */ (function (_super) {
                                 + "&client_secret=" + config_1.Config.exactclientsecret
                                 + "&redirect_uri=" + config_1.Config.urlRedirect
                         };
-                        _f.label = 4;
-                    case 4:
-                        _f.trys.push([4, 6, , 7]);
+                        _f.label = 6;
+                    case 6:
+                        _f.trys.push([6, 8, , 9]);
                         _c = (_b = JSON).parse;
                         return [4 /*yield*/, this.getAuth(req, res, next, options)];
-                    case 5:
+                    case 7:
                         thisResponse = _c.apply(_b, [_f.sent()]);
                         res.crudData.refresh = thisResponse.refresh_token;
-                        return [3 /*break*/, 7];
-                    case 6:
+                        return [3 /*break*/, 9];
+                    case 8:
                         error_1 = _f.sent();
                         logger_1.Logger.error(JSON.stringify(error_1));
                         res.crudData.refresh = '';
-                        return [3 /*break*/, 7];
-                    case 7:
+                        return [3 /*break*/, 9];
+                    case 9:
                         if (res.crudData.refresh == "") {
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
@@ -318,8 +371,8 @@ var Exactclient = /** @class */ (function (_super) {
                         result += '</p>';
                         res.status(200).send(result);
                         return [2 /*return*/];
-                    case 8:
-                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 13];
+                    case 10:
+                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 15];
                         res.crudData.refresh = '';
                         res.crudData.access = '';
                         thisResponse = void 0;
@@ -340,22 +393,22 @@ var Exactclient = /** @class */ (function (_super) {
                                 + "&grant_type=refresh_token"
                                 + "&client_secret=" + config_1.Config.exactclientsecret
                         };
-                        _f.label = 9;
-                    case 9:
-                        _f.trys.push([9, 11, , 12]);
+                        _f.label = 11;
+                    case 11:
+                        _f.trys.push([11, 13, , 14]);
                         _e = (_d = JSON).parse;
                         return [4 /*yield*/, this.getAuth(req, res, next, options)];
-                    case 10:
+                    case 12:
                         thisResponse = _e.apply(_d, [_f.sent()]);
                         res.crudData.access = thisResponse.access_token;
                         res.crudData.refresh = thisResponse.refresh_token;
-                        return [3 /*break*/, 12];
-                    case 11:
+                        return [3 /*break*/, 14];
+                    case 13:
                         error_2 = _f.sent();
                         logger_1.Logger.error(JSON.stringify(error_2));
                         res.crudData.refresh = '';
-                        return [3 /*break*/, 12];
-                    case 12:
+                        return [3 /*break*/, 14];
+                    case 14:
                         if (res.crudData.access == "") {
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
@@ -383,9 +436,9 @@ var Exactclient = /** @class */ (function (_super) {
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
                         }
-                        _f.label = 13;
-                    case 13:
-                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 20];
+                        _f.label = 15;
+                    case 15:
+                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 22];
                         sep = "?";
                         thisPathFirst = '';
                         thisPathGet = '';
@@ -439,23 +492,23 @@ var Exactclient = /** @class */ (function (_super) {
                         //
                         thisPathGet = thisPathFirst;
                         retry = 1;
-                        _f.label = 14;
-                    case 14:
-                        if (!(retry == 1)) return [3 /*break*/, 19];
+                        _f.label = 16;
+                    case 16:
+                        if (!(retry == 1)) return [3 /*break*/, 21];
                         options = {
                             path: thisPathGet
                         };
                         return [4 /*yield*/, this.getData(req, res, next, options)];
-                    case 15:
+                    case 17:
                         result = _f.sent();
-                        if (!(result == "")) return [3 /*break*/, 16];
+                        if (!(result == "")) return [3 /*break*/, 18];
                         if (tlblok == -1) {
                             res.status(401).send("HTTP/1.0 401 Unauthorized : Empty response, wrong division? [" + config_1.Config.exactdivision + "]");
                             return [2 /*return*/];
                         }
-                        return [3 /*break*/, 18];
-                    case 16: return [4 /*yield*/, this.getJson(result)];
-                    case 17:
+                        return [3 /*break*/, 20];
+                    case 18: return [4 /*yield*/, this.getJson(result)];
+                    case 19:
                         json = _f.sent();
                         thisTs_d = this.getField(json.eExact, 'Topics', 'Topic', '$', 'ts_d');
                         thisData = '';
@@ -488,17 +541,17 @@ var Exactclient = /** @class */ (function (_super) {
                         else {
                             thisPathGet = thisPathFirst + "&TSPaging=" + thisTs_d;
                         }
-                        _f.label = 18;
-                    case 18: return [3 /*break*/, 14];
-                    case 19:
+                        _f.label = 20;
+                    case 20: return [3 /*break*/, 16];
+                    case 21:
                         if (tlblok >= 0) {
                             fs.appendFileSync(outfile, "]}");
                         }
                         result = {
                             msg: "Aantal blokken ingelezen: " + (tlblok + 1)
                         };
-                        _f.label = 20;
-                    case 20:
+                        _f.label = 22;
+                    case 22:
                         res.crudConnection.release();
                         res.status(200).send(result);
                         return [2 /*return*/];
