@@ -78,7 +78,7 @@ var Bb = /** @class */ (function () {
                         rows = _a.sent();
                         connection.release();
                         result = { items: [{ msg: "" }] };
-                        return [2 /*return*/];
+                        return [2 /*return*/, result];
                 }
             });
         });

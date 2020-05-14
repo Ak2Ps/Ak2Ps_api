@@ -56,7 +56,7 @@ values (
     rows = await db.waitQuery(connection, sql);
     connection.release();
     result = { items: [{ msg: "" }] };
-    return;
+    return result;
   }
 
   private async getMsg(bb: string) {

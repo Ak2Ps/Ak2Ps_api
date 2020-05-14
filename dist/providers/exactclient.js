@@ -447,7 +447,7 @@ var Exactclient = /** @class */ (function (_super) {
                             + config_1.Config.exactdivision
                             + '&Topic=' + query.topic;
                         sep = '&';
-                        if (query.Params_Status != '') {
+                        if ((query.Params_Status || '') != '') {
                             thisPathFirst += sep
                                 + 'Params_Status='
                                 + query.Params_Status;
@@ -472,13 +472,13 @@ var Exactclient = /** @class */ (function (_super) {
                             sep = '&';
                         }
                         //
-                        if (query.filter != '') {
+                        if ((query.filter || '') != '') {
                             thisPathFirst += sep
                                 + '$filter='
                                 + encodeURIComponent(query.filter);
                             sep = '&';
                         }
-                        if (query.select != '') {
+                        if ((query.select || '') != '') {
                             thisPathFirst += sep
                                 + '$select='
                                 + encodeURIComponent(query.select);
@@ -491,6 +491,7 @@ var Exactclient = /** @class */ (function (_super) {
                         sep = '&';
                         //
                         thisPathGet = thisPathFirst;
+                        logger_1.Logger.info("    exactclient getting: " + query.topic);
                         retry = 1;
                         _f.label = 16;
                     case 16:
@@ -506,6 +507,9 @@ var Exactclient = /** @class */ (function (_super) {
                             res.status(401).send("HTTP/1.0 401 Unauthorized : Empty response, wrong division? [" + config_1.Config.exactdivision + "]");
                             return [2 /*return*/];
                         }
+                        else {
+                            retry = 0;
+                        }
                         return [3 /*break*/, 20];
                     case 18: return [4 /*yield*/, this.getJson(result)];
                     case 19:
@@ -515,6 +519,7 @@ var Exactclient = /** @class */ (function (_super) {
                         if (json.eExact[query.topic]) {
                             if (json.eExact[query.topic][0]) {
                                 tlblok++;
+                                logger_1.Logger.info("    " + query.topic + ": " + (tlblok + 1));
                                 thisData = json.eExact[query.topic][0];
                                 firstproperty = 1;
                                 thisSingleTopic = '';

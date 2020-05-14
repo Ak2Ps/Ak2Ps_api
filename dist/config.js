@@ -63,37 +63,6 @@ var Config = /** @class */ (function () {
             Config.bbsmtp = "192.168.43.7";
             //
         }
-        else if (Config.app == "A") {
-            //
-            Config.server = "localhost";
-            Config.serverPort = 9003;
-            Config.runmode = "test" /* test */;
-            Config.show_error = true;
-            Config.show_warning = true;
-            Config.show_info = true;
-            Config.show_sql = false;
-            //
-            Config.ecmserver = "localhost";
-            Config.ecmport = 8080;
-            Config.ecmpath = "/ecm/CreateBatch.php";
-            Config.ecmpath = "/ecm/CreateBatch.php";
-            Config.bestellingendir = "C:/Ak2Ps/Ak2Ps_server/AK2PS/bestellingen/sensors";
-            Config.retourendir = "C:/Ak2Ps/Ak2Ps_server/AK2PS/retouren";
-            Config.appUrl = "/Ak2/AK2PS";
-            Config.appDir = "C:/Ak2Ps/Ak2Ps_server/AK2PS";
-            //
-            Config.dbhost = "localhost";
-            Config.dbuser = "ak2psdata";
-            Config.dbpassword = "antoon_ak2";
-            Config.dbschema = "ak2psdata";
-            //
-            Config.exactinterfaceapp = "nodeapi2local";
-            Config.exactdivision = "1716286";
-            Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
-            //
-            Config.bbsmtp = "localhost";
-            //
-        }
         else {
             //
             Config.server = "localhost";
@@ -161,6 +130,7 @@ var Config = /** @class */ (function () {
         //
         // exact interface naar localhost 9001
         //
+        Config.exactinterfaceapp = json.exactinterfaceapp || Config.exactinterfaceapp;
         if (Config.exactinterfaceapp == "nodeapi2local") {
             //
             // exact interface naar localhost

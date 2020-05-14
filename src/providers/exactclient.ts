@@ -376,7 +376,7 @@ export class Exactclient extends Crud {
                 + Config.exactdivision
                 + '&Topic=' + query.topic;
             sep = '&';
-            if (query.Params_Status != '') {
+            if ((query.Params_Status || '') != '') {
                 thisPathFirst += sep
                     + 'Params_Status='
                     + query.Params_Status;
@@ -401,13 +401,13 @@ export class Exactclient extends Crud {
                 sep = '&';
             }
             //
-            if (query.filter != '') {
+            if ((query.filter||'') != '') {
                 thisPathFirst += sep
                     + '$filter='
                     + encodeURIComponent(query.filter);
                 sep = '&';
             }
-            if (query.select != '') {
+            if ((query.select||'') != '') {
                 thisPathFirst += sep
                     + '$select='
                     + encodeURIComponent(query.select);
@@ -420,6 +420,7 @@ export class Exactclient extends Crud {
             sep = '&';
             //
             thisPathGet = thisPathFirst;
+            Logger.info(`    exactclient getting: ${query.topic}`);
             let retry = 1;
             //
             while (retry == 1) {
@@ -431,6 +432,8 @@ export class Exactclient extends Crud {
                     if (tlblok == -1) {
                         res.status(401).send(`HTTP/1.0 401 Unauthorized : Empty response, wrong division? [${Config.exactdivision}]`);
                         return;
+                    } else {
+                        retry = 0;
                     }
                 } else {
                     json = await this.getJson(result);
@@ -439,6 +442,7 @@ export class Exactclient extends Crud {
                     if (json.eExact[query.topic]) {
                         if (json.eExact[query.topic][0]) {
                             tlblok++;
+                            Logger.info(`    ${query.topic}: ${tlblok+1}`);
                             thisData = json.eExact[query.topic][0];
                             let firstproperty = 1;
                             let thisSingleTopic = '';

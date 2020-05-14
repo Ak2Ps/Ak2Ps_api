@@ -11,7 +11,7 @@ export class Gebruiker {
 
   private getQuery(where: string, orderby: string): string {
     if (!orderby) {
-      orderby = "GEBRUIKER";
+      orderby = "ucase(GEBRUIKER)";
     }
     //
     let sql = `
