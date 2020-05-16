@@ -713,7 +713,7 @@ var Upload = /** @class */ (function (_super) {
                         BESTEL = thisArray[iBestel];
                         leveranciernummer = this.getField(BESTEL, 'Supplier', '$', 'code');
                         leveranciernaam = this.getField(BESTEL, 'Supplier', 'Name');
-                        bestelnummer = this.getField(BESTEL, 'ordernumber');
+                        bestelnummer = this.getField(BESTEL, '$', 'ordernumber');
                         datum = this.getDate(this.getField(BESTEL, 'OrderDate'));
                         leverdatum = this.getDate(this.getField(BESTEL, 'ReceiptDate'));
                         startdatum = this.getNow();
@@ -723,7 +723,7 @@ var Upload = /** @class */ (function (_super) {
                     case 3:
                         if (!(iLine < BESTEL.PurchaseOrderLine.length)) return [3 /*break*/, 12];
                         LINE = BESTEL.PurchaseOrderLine[iLine];
-                        regelnummer = this.getField(LINE, 'line');
+                        regelnummer = this.getField(LINE, '$', 'line');
                         productnummer = this.getField(LINE, 'Item', '$', 'code');
                         bestelling = Number(this.getField(LINE, 'Quantity'));
                         leverancierproductnummer = this.getField(LINE, 'SupplierItemCode');

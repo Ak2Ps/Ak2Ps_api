@@ -1,2 +1,2 @@
 title compile nodeapi
-npm run com
+npm run compile

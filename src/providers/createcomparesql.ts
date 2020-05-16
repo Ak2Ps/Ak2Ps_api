@@ -165,6 +165,111 @@ order by sav.bestelnummer,sav.regelnummer
         //
         //
         //
+        if (query.action == 'productvraag' || query.action == 'all') {
+            sql += `
+-- delete from ak2.productvraag;
+select * from 
+(SELECT * FROM ak2.productvraag) TAS
+right join
+(select * from ak2psdata.productvraag) SAV
+on TAS.ordernummer = SAV.ordernummer
+and TAS.regelnummer = SAV.regelnummer
+where 
+TAS.id is not null
+and (
+ifnull(TAS.orderreferentie,'') != ifnull(SAV.orderreferentie,'')
+or ifnull(TAS.orderdatumtijd,0) != ifnull(SAV.orderdatumtijd,0)
+or ifnull(TAS.productnummer,'') != ifnull(SAV.productnummer,'')
+or ifnull(TAS.initvraag,0) != ifnull(SAV.initvraag,0)
+or ifnull(TAS.vraag,0) != ifnull(SAV.vraag,0)
+or ifnull(TAS.initvraagdatumtijd,0) != ifnull(SAV.initvraagdatumtijd,0)
+ or ifnull(TAS.acceptdatumtijd,0) != ifnull(SAV.acceptdatumtijd,0)
+or ifnull(TAS.klantnummer,'') != ifnull(SAV.klantnummer,'')
+or ifnull(TAS.einddatumtijd,0) != ifnull(SAV.einddatumtijd,0)
+or ifnull(TAS.opmerking,'') != ifnull(SAV.opmerking,'')
+or ifnull(TAS.vraagdatumtijd,0) != ifnull(SAV.vraagdatumtijd,0)
+)
+order by sav.ordernummer,sav.regelnummer
+`;
+        }
+        //
+        //
+        //
+        if (query.action == 'bewerking' || query.action == 'all') {
+            sql += `
+-- delete from ak2.bewerking;
+select * from 
+(SELECT * FROM ak2.bewerking) TAS
+right join
+(select * from ak2psdata.bewerking) SAV
+on TAS.bewerkingsnummer = SAV.bewerkingsnummer
+and TAS.productnummer = SAV.productnummer
+where 
+TAS.id is not null
+and (
+ifnull(TAS.status,'') != ifnull(SAV.status,'')
+or ifnull(TAS.productieaantal,0) != ifnull(SAV.productieaantal,0)
+or ifnull(TAS.startaantal,0) != ifnull(SAV.startaantal,0)
+or ifnull(TAS.initstartdatumtijd,0) != ifnull(SAV.initstartdatumtijd,0)
+or ifnull(TAS.lijn,'') != ifnull(SAV.lijn,'')
+or ifnull(TAS.plandatumtijd,0) != ifnull(SAV.plandatumtijd,0)
+or ifnull(TAS.adviesplandatumtijd,0) != ifnull(SAV.adviesplandatumtijd,0)
+or ifnull(TAS.exactplandatumtijd,0) != ifnull(SAV.exactplandatumtijd,0)
+or ifnull(TAS.einddatumtijd,0) != ifnull(SAV.einddatumtijd,0)
+or ifnull(TAS.eindcontrolenummer,'') != ifnull(SAV.eindcontrolenummer,'')
+or ifnull(TAS.opmerking,'') != ifnull(SAV.opmerking,'')
+)
+order by sav.bewerkingsnummer,sav.productnummer
+`;
+        }
+        //
+        //
+        //
+        if (query.action == 'voorraad' || query.action == 'all') {
+            sql += `
+-- delete from ak2.productvoorraad;
+select * from 
+(SELECT * FROM ak2.productvoorraad) TAS
+right join
+(select * from ak2psdata.productvoorraad) SAV
+on TAS.productnummer = SAV.productnummer
+and TAS.voorraaddatumtijd = SAV.voorraaddatumtijd
+and TAS.actienummer = SAV.actienummer
+where 
+TAS.id is not null
+and (
+ifnull(TAS.voorraad,0) != ifnull(SAV.voorraad,0)
+or ifnull(TAS.actie,'') != ifnull(SAV.actie,'')
+or ifnull(TAS.actieomschrijving,'') != ifnull(SAV.actieomschrijving,'')
+or ifnull(TAS.actiedatumtijd,0) != ifnull(SAV.actiedatumtijd,0)
+or ifnull(TAS.tebestellen,0) != ifnull(SAV.tebestellen,0)
+or ifnull(TAS.besteld,0) != ifnull(SAV.besteld,0)
+or ifnull(TAS.onderdelen,0) != ifnull(SAV.onderdelen,0)
+or ifnull(TAS.expanded,0) != ifnull(SAV.expanded,0)
+or ifnull(TAS.beperkstatus,'') != ifnull(SAV.beperkstatus,'')
+or ifnull(TAS.beperknummer,'') != ifnull(SAV.beperknummer,'')
+or ifnull(TAS.initdatumtijd,0) != ifnull(SAV.initdatumtijd,0)
+)
+order by sav.productnummer,sav.voorraaddatumtijd,sav.actienummer;
+
+select productnummer,voorraaddatumtijd,type,voorraad from
+(
+SELECT 'TAS' as type, productvoorraad.* FROM ak2.productvoorraad
+union all
+select 'SAV', productvoorraad.* from ak2psdata.productvoorraad
+order by productnummer,
+voorraaddatumtijd,
+type
+) base
+order by productnummer,
+voorraaddatumtijd,
+type;
+
+`;
+        }
+        //
+        //
+        //
         //let rows = await db.waitQuery(res.crudConnection, sql);
         res.crudConnection.release();
         res.status(200).send(sql);
