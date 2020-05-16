@@ -764,8 +764,6 @@ order by BEWERKINGFLOW.bewerkingsoort`;
         let method = req.method;
         let action = db.fix(req.query.action||'');
         //
-        Logger.test(`${this.dict.table}: ${method}, ${action} `);
-        //
         if (action == "bewerkingrap") {
             this.doBewerkingrap(req, res, next, this.dict);
         } else if (action == "nogtedoen") {

@@ -58,7 +58,7 @@ var util_1 = require("../util");
 var logger_1 = require("../logger");
 //
 var dict = {
-    table: "empty",
+    table: "emptycrid",
     key: [],
     altKeys: [],
     foreignKeys: [],
@@ -76,12 +76,12 @@ var dict = {
         fields: [],
     },
 };
-var Empty = /** @class */ (function (_super) {
-    __extends(Empty, _super);
-    function Empty() {
+var EmptyCrud = /** @class */ (function (_super) {
+    __extends(EmptyCrud, _super);
+    function EmptyCrud() {
         return _super.call(this, dict) || this;
     }
-    Empty.prototype.doSelect = function (req, res, next, options) {
+    EmptyCrud.prototype.doSelect = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var query, _a, sql, rows;
             return __generator(this, function (_b) {
@@ -103,7 +103,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doQuery = function (req, res, next, options) {
+    EmptyCrud.prototype.doQuery = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var query, _a, sql, rows;
             return __generator(this, function (_b) {
@@ -125,7 +125,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doUpdate = function (req, res, next, options) {
+    EmptyCrud.prototype.doUpdate = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, id, sql;
             return __generator(this, function (_b) {
@@ -150,7 +150,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doInsert = function (req, res, next, options) {
+    EmptyCrud.prototype.doInsert = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, sql, result;
             return __generator(this, function (_b) {
@@ -173,7 +173,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doDelete = function (req, res, next, options) {
+    EmptyCrud.prototype.doDelete = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, id, sql;
             return __generator(this, function (_b) {
@@ -198,7 +198,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.routes = function (req, res, next) {
+    EmptyCrud.prototype.routes = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var method, action;
             return __generator(this, function (_a) {
@@ -229,7 +229,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    return Empty;
+    return EmptyCrud;
 }(crud_1.Crud));
-exports.Empty = Empty;
-//# sourceMappingURL=empty.js.map
+exports.EmptyCrud = EmptyCrud;
+//# sourceMappingURL=emptycrud.js.map

@@ -15,7 +15,6 @@ export class Loginfo {
     let method = req.method;
     let action = db.fix(req.query.action||'');
     let filename = `${Config.appDir}/log/api.log`;
-    Logger.test(`loginfo: ${method}, ${action}`);
     //
     //
     if (action == "loadlog") {

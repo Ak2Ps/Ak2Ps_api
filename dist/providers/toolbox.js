@@ -1999,7 +1999,7 @@ var Toolbox = /** @class */ (function () {
                     klok_1.Klok.scan(req, res, next);
                 }
                 else {
-                    util_1.Util.exePhp(req, res, next);
+                    util_1.Util.unknownOperation(req, res, next);
                 }
                 return [2 /*return*/];
             });

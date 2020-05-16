@@ -38,18 +38,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var db_1 = __importDefault(require("./db"));
-var http_1 = __importDefault(require("http"));
-var fs = __importStar(require("fs"));
-var config_1 = require("./config");
 var logger_1 = require("./logger");
 var Util = /** @class */ (function () {
     function Util() {
@@ -69,123 +59,6 @@ var Util = /** @class */ (function () {
         result = encodeURI(result);
         result = result.replace(/\./gi, "_");
         return result;
-    };
-    Util.compareWithPhp = function (rows, req, res, next) {
-        if (config_1.Config.runmode != "test" /* test */) {
-            return;
-        }
-        var comparetype = typeof rows;
-        this.testPhp(req, res, next, function (responseString) {
-            var result = "";
-            var phpstring = "";
-            var nodestring = "";
-            var phpobj = {};
-            if (comparetype == "string") {
-                phpstring = responseString;
-                nodestring = rows;
-            }
-            else {
-                try {
-                    phpobj = JSON.parse(responseString);
-                }
-                catch (e) {
-                    phpobj = responseString;
-                }
-            }
-            logger_1.Logger.test("    Comparing with " + req.path + " " + JSON.stringify(req.query) + " ...");
-            try {
-                if (comparetype == "string") {
-                    if (String(phpstring).substr(0, 1) == '<') {
-                        phpstring = String(phpstring).replace(/\n/g, '');
-                        phpstring = String(phpstring).replace(/\r/g, '');
-                        phpstring = String(phpstring).replace(/\t/g, '');
-                        phpstring = String(phpstring).replace(/<\/tr>/gi, '</tr>\n');
-                        phpstring = String(phpstring).replace(/<\/div>/gi, '</div>\n');
-                        phpstring = String(phpstring).replace(/<\/table>/gi, '</table>\n');
-                        nodestring = String(nodestring).replace(/\n/g, '');
-                        nodestring = String(nodestring).replace(/\r/g, '');
-                        nodestring = String(nodestring).replace(/\t/g, '');
-                        nodestring = String(nodestring).replace(/<\/tr>/gi, '</tr>\n');
-                        nodestring = String(nodestring).replace(/<\/div>/gi, '</div>\n');
-                        nodestring = String(nodestring).replace(/<\/table>/gi, '</table>\n');
-                    }
-                }
-                else {
-                    phpstring = JSON.stringify(phpobj, null, 2);
-                    nodestring = JSON.stringify(rows, null, 2);
-                }
-                if (phpstring != nodestring) {
-                    fs.writeFileSync(config_1.Config.appDir + "/log" + Util.makeFilename(req.path) + ".phpdat", "" + phpstring);
-                    fs.writeFileSync(config_1.Config.appDir + "/log" + Util.makeFilename(req.path) + ".nodedat", "" + nodestring);
-                    logger_1.Logger.test("    *********************");
-                    logger_1.Logger.test("    * Compare diffs found");
-                    logger_1.Logger.test("    *********************");
-                    fs.appendFileSync(config_1.Config.appDir + "/log/test.log", req.path + " diffs ...\n");
-                }
-                else {
-                    logger_1.Logger.test("    Compare ok");
-                    fs.appendFileSync(config_1.Config.appDir + "/log/test.log", req.path + " ok ...\n");
-                }
-            }
-            catch (e) {
-                console.log(phpobj);
-                console.log(rows);
-                logger_1.Logger.test(e);
-                logger_1.Logger.test("    Compare failed ");
-            }
-        });
-        return;
-    };
-    Util.testPhp = function (req, res, next, callback) {
-        var body = JSON.stringify(req.body);
-        var headers = req.headers;
-        headers["Content-Type"] = "application/json";
-        headers["Content-Length"] = body.length;
-        var testreq = http_1.default.request({
-            host: "localhost",
-            path: "/" + config_1.Config.appUrl + req.originalUrl,
-            method: req.method,
-            headers: headers
-        }, function (testres) {
-            var responseString = "";
-            testres.on("data", function (data) {
-                responseString += data;
-            });
-            testres.on("end", function () {
-                callback(responseString);
-            });
-        });
-        testreq.write(body);
-        testreq.end();
-    };
-    Util.exePhp = function (req, res, next) {
-        var body = JSON.stringify(req.body);
-        logger_1.Logger.test("    ********************************************************");
-        logger_1.Logger.test("    * reroute to " + req.path + " " + JSON.stringify(req.query));
-        logger_1.Logger.test("    ********************************************************");
-        fs.appendFileSync(config_1.Config.appDir + "/log/test.log", req.path + " reroute ...\n");
-        var headers = req.headers;
-        headers["Content-Type"] = "application/json";
-        headers["Content-Length"] = body.length;
-        var exereq = http_1.default.request({
-            host: "localhost",
-            path: "/" + config_1.Config.appUrl + req.originalUrl,
-            method: req.method,
-            headers: headers
-        }, function (exeres) {
-            var responseString = "";
-            exeres.on("error", function (error) {
-                logger_1.Logger.test(error);
-            });
-            exeres.on("data", function (data) {
-                responseString += data;
-            });
-            exeres.on("end", function () {
-                res.status(200).send(responseString);
-            });
-        });
-        exereq.write(body);
-        exereq.end();
     };
     Util.decodeOpmerking = function (opmerking, maxlen) {
         var result = '';

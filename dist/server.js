@@ -28,10 +28,11 @@ var App = /** @class */ (function () {
         this.app.use(frontware_1.Frontware.frontware);
         this.router = new router_1.Router(this.app);
         //
-        this.app.listen(config_1.Config.serverPort, function () {
+        var server = this.app.listen(config_1.Config.serverPort, function () {
             logger_1.Logger.info("Ak2 is listening for " + config_1.Config.appUrl + " on port " + config_1.Config.serverPort + " ...");
             process.title = "Ak2: " + config_1.Config.appUrl + ", " + config_1.Config.serverPort;
         });
+        server.setTimeout(1800000);
     }
     return App;
 }());

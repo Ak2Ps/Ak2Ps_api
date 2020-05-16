@@ -211,6 +211,7 @@ export class Exactclient extends Crud {
         res.crudConnection = await db.waitConnection();
         let exactserver = await Util.waitParam(req, res, next, 'EXACTSERVER');
         let exactstart = await Util.waitParam(req, res, next, 'EXACTSTART');
+        res.crudConnection.release();
         if (exactstart == '') {
             exactstart = '01-01-2018';
         }
@@ -239,7 +240,6 @@ export class Exactclient extends Crud {
         if (query.action == 'GETCODE') {
             if (await this.checkRunningInterface(req, res, next) == false) {
                 res.send("Server 9001 moet lopen om het antwoord van Exact af te kunnen handelen (redirectUrl van de ExactApi)");
-                res.crudConnection.release();
                 return;
             }
             let thisUrl = "https://start.exactonline.nl/api/oauth2/auth"
@@ -251,7 +251,6 @@ export class Exactclient extends Crud {
             res.set({
                 Location: thisUrl
             });
-            res.crudConnection.release();
             res.status(302).send();
             return;
         }
@@ -472,12 +471,12 @@ export class Exactclient extends Crud {
             if (tlblok >= 0) {
                 fs.appendFileSync(outfile, `]}`);
             }
+            Logger.info(`    ${query.topic}: ready ...`);
             result = {
                 msg: `Aantal blokken ingelezen: ${tlblok + 1}`
             };
 
         }
-        res.crudConnection.release();
         res.status(200).send(result);
         return;
     }

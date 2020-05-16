@@ -266,6 +266,7 @@ var Exactclient = /** @class */ (function (_super) {
                         return [4 /*yield*/, util_1.Util.waitParam(req, res, next, 'EXACTSTART')];
                     case 3:
                         exactstart = _f.sent();
+                        res.crudConnection.release();
                         if (exactstart == '') {
                             exactstart = '01-01-2018';
                         }
@@ -294,7 +295,6 @@ var Exactclient = /** @class */ (function (_super) {
                     case 4:
                         if ((_f.sent()) == false) {
                             res.send("Server 9001 moet lopen om het antwoord van Exact af te kunnen handelen (redirectUrl van de ExactApi)");
-                            res.crudConnection.release();
                             return [2 /*return*/];
                         }
                         thisUrl = "https://start.exactonline.nl/api/oauth2/auth"
@@ -306,7 +306,6 @@ var Exactclient = /** @class */ (function (_super) {
                         res.set({
                             Location: thisUrl
                         });
-                        res.crudConnection.release();
                         res.status(302).send();
                         return [2 /*return*/];
                     case 5:
@@ -552,12 +551,12 @@ var Exactclient = /** @class */ (function (_super) {
                         if (tlblok >= 0) {
                             fs.appendFileSync(outfile, "]}");
                         }
+                        logger_1.Logger.info("    " + query.topic + ": ready ...");
                         result = {
                             msg: "Aantal blokken ingelezen: " + (tlblok + 1)
                         };
                         _f.label = 22;
                     case 22:
-                        res.crudConnection.release();
                         res.status(200).send(result);
                         return [2 /*return*/];
                 }

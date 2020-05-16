@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -52,85 +39,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var crud_1 = require("../crud");
-var db_1 = __importDefault(require("../db"));
-var util_1 = require("../util");
-var dict = {
-    table: "MENU_2015",
-    key: [
-        {
-            body: "MENU",
-            sql: "MENU",
-        }
-    ],
-    altKeys: [],
-    foreignKeys: [],
-    select: {
-        orderby: "ucase(MENU)",
-        where: [
-            {
-                query: "value",
-                sql: "ucase(MENU) like '%?%'",
-            }
-        ],
-        fields: [
-            {
-                row: "ID",
-                sql: "MENU as ID"
-            },
-            {
-                row: "MENU",
-                sql: "MENU AS VALUE"
-            }
-        ],
-    },
-};
-var Menu = /** @class */ (function (_super) {
-    __extends(Menu, _super);
-    function Menu() {
-        return _super.call(this, dict) || this;
+var db_1 = __importDefault(require("./db"));
+var util_1 = require("./util");
+var logger_1 = require("./logger");
+var Action = /** @class */ (function () {
+    function Action(action) {
+        logger_1.Logger.info("Creating " + action);
     }
-    Menu.prototype.doQuery = function (req, res, next, options) {
+    Action.prototype.doAction = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var sql, connection, rows;
+            var result;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        sql = "\nselect \na.omschrijving as MENU,\nb.omschrijving as OPTIE,\nb.link as ACTION\nfrom MENUREGEL_2015 a, MENUREGEL_2015 b\nwhere a.submenu = b.menu\nand a.menu = '" + db_1.default.fix(req.query.menu) + "'\norder by a.volgnummer, b.volgnummer";
-                        return [4 /*yield*/, db_1.default.waitConnection()];
-                    case 1:
-                        connection = _a.sent();
-                        return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
-                    case 2:
-                        rows = _a.sent();
-                        connection.release();
-                        res.status(200).send(rows);
-                        return [2 /*return*/];
-                }
+                result = '';
+                res.status(200).send(result);
+                return [2 /*return*/];
             });
         });
     };
-    Menu.prototype.routes = function (req, res, next) {
+    Action.prototype.routes = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var method, action;
             return __generator(this, function (_a) {
                 method = req.method;
                 action = db_1.default.fix(req.query.action || '');
                 //
+                logger_1.Logger.request(req);
+                //
                 if (action == "select") {
-                    this.doSelect(req, res, next, dict);
+                    this.doAction(req, res, next);
                 }
                 else if (method == "GET") {
-                    this.doQuery(req, res, next, dict);
+                    this.doAction(req, res, next);
                 }
                 else if (method == "PUT") {
-                    util_1.Util.unknownOperation(req, res, next);
+                    this.doAction(req, res, next);
                 }
                 else if (method == "POST") {
-                    util_1.Util.unknownOperation(req, res, next);
+                    this.doAction(req, res, next);
                 }
                 else if (method == "DELETE") {
-                    util_1.Util.unknownOperation(req, res, next);
+                    this.doAction(req, res, next);
                 }
                 else {
                     util_1.Util.unknownOperation(req, res, next);
@@ -139,7 +87,7 @@ var Menu = /** @class */ (function (_super) {
             });
         });
     };
-    return Menu;
-}(crud_1.Crud));
-exports.Menu = Menu;
-//# sourceMappingURL=menu.js.map
+    return Action;
+}());
+exports.Action = Action;
+//# sourceMappingURL=action.js.map

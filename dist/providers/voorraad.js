@@ -871,7 +871,7 @@ var Voorraad = /** @class */ (function () {
                     this.doQuery(req, res, next);
                 }
                 else {
-                    util_1.Util.exePhp(req, res, next);
+                    util_1.Util.unknownOperation(req, res, next);
                 }
                 return [2 /*return*/];
             });

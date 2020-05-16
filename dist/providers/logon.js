@@ -55,7 +55,6 @@ var Logon = /** @class */ (function () {
                     case 0:
                         method = req.method;
                         action = db_1.default.fix(req.query.action || '');
-                        logger_1.Logger.test("logon: " + method + ", " + action);
                         if (!(method == "GET")) return [3 /*break*/, 1];
                         util_1.Util.unknownOperation(req, res, next);
                         return [2 /*return*/];

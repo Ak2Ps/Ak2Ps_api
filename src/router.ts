@@ -8,6 +8,7 @@ import { Config } from './config';
 import { Template } from "./providers/template";
 import { Ecmtester } from "./providers/ecmtester";
 import { Patch } from "./providers/patch";
+import { CreateCompareSql } from "./providers/createcomparesql";
 //
 import { Exactinterface } from "./providers/exactinterface";
 //
@@ -95,6 +96,7 @@ export class Router {
   private template: Template;
   private ecmtester: Ecmtester;
   private patch: Patch;
+  private createcomparesql: CreateCompareSql;
   //
   private exactinterface: Exactinterface;
   //
@@ -185,6 +187,7 @@ export class Router {
     this.template = new Template();
     this.ecmtester = new Ecmtester();
     this.patch = new Patch();
+    this.createcomparesql = new CreateCompareSql();
     //
     this.exactinterface = new Exactinterface();
     //
@@ -283,6 +286,7 @@ export class Router {
     this.app.route('/generate').all(this.template.generate);
     this.app.route('/ecmtester.php').all((req, res, next) => this.ecmtester.routes(req, res, next));
     this.app.route('/patch.php').all((req, res, next) => this.patch.routes(req, res, next));
+    this.app.route('/createcomparesql').all((req, res, next) => this.createcomparesql.routes(req, res, next));
     //
     // static serve some files
     //
@@ -379,7 +383,7 @@ export class Router {
     this.app.route('/productbewerkingrap.php').all((req, res, next) => this.productbewerkingrap.routes(req, res, next));
     this.app.route('/productuitvalrap.php').all((req, res, next) => this.productuitvalrap.routes(req, res, next));
     //
-    this.app.route('*').all(Util.exePhp);
+    this.app.route('*').all(Util.unknownOperation);
   }
 }
 

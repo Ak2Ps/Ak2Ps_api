@@ -128,7 +128,7 @@ var Mailer = /** @class */ (function () {
                         resolve(false);
                     }
                     else {
-                        logger_1.Logger.test('Email sent: ' + info.response);
+                        logger_1.Logger.info('Email sent: ' + info.response);
                         resolve(true);
                     }
                 });

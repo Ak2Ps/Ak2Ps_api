@@ -196,7 +196,6 @@ ${where}`;
         rows = await db.waitQuery(res.crudConnection, sql);
         res.crudConnection.release();
         res.status(200).send(rows);
-        Logger.test("Ignore: zeer weinig verschillen: het is niet duidelijk wie er gelijk heeft...");
         return;
     }
 

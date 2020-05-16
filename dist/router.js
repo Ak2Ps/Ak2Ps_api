@@ -7,6 +7,7 @@ var config_1 = require("./config");
 var template_1 = require("./providers/template");
 var ecmtester_1 = require("./providers/ecmtester");
 var patch_1 = require("./providers/patch");
+var createcomparesql_1 = require("./providers/createcomparesql");
 //
 var exactinterface_1 = require("./providers/exactinterface");
 //
@@ -98,6 +99,7 @@ var Router = /** @class */ (function () {
         this.template = new template_1.Template();
         this.ecmtester = new ecmtester_1.Ecmtester();
         this.patch = new patch_1.Patch();
+        this.createcomparesql = new createcomparesql_1.CreateCompareSql();
         //
         this.exactinterface = new exactinterface_1.Exactinterface();
         //
@@ -197,6 +199,7 @@ var Router = /** @class */ (function () {
         this.app.route('/generate').all(this.template.generate);
         this.app.route('/ecmtester.php').all(function (req, res, next) { return _this.ecmtester.routes(req, res, next); });
         this.app.route('/patch.php').all(function (req, res, next) { return _this.patch.routes(req, res, next); });
+        this.app.route('/createcomparesql').all(function (req, res, next) { return _this.createcomparesql.routes(req, res, next); });
         //
         // static serve some files
         //
@@ -293,7 +296,7 @@ var Router = /** @class */ (function () {
         this.app.route('/productbewerkingrap.php').all(function (req, res, next) { return _this.productbewerkingrap.routes(req, res, next); });
         this.app.route('/productuitvalrap.php').all(function (req, res, next) { return _this.productuitvalrap.routes(req, res, next); });
         //
-        this.app.route('*').all(util_1.Util.exePhp);
+        this.app.route('*').all(util_1.Util.unknownOperation);
     };
     return Router;
 }());

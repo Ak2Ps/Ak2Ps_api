@@ -1748,7 +1748,7 @@ where naam = '${bewerkingsoort}'`;
     } else if (action == "scan") {
       Klok.scan(req, res, next);
     } else {
-      Util.exePhp(req, res, next);
+      Util.unknownOperation(req, res, next);
     }
   }
 }

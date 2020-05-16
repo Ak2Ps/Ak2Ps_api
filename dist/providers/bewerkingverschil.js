@@ -138,7 +138,6 @@ var Bewerkingverschil = /** @class */ (function () {
             return __generator(this, function (_a) {
                 method = req.method;
                 action = db_1.default.fix(req.query.action || '');
-                logger_1.Logger.test("bewerkingverschil: " + method + ", " + action);
                 //
                 if (method == "GET") {
                     this.doQuery(req, res, next);

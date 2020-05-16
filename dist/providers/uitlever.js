@@ -206,7 +206,6 @@ var Uitlever = /** @class */ (function (_super) {
                         rows = _b.sent();
                         res.crudConnection.release();
                         res.status(200).send(rows);
-                        logger_1.Logger.test("Ignore: zeer weinig verschillen: het is niet duidelijk wie er gelijk heeft...");
                         return [2 /*return*/];
                 }
             });

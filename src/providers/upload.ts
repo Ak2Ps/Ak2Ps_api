@@ -630,14 +630,14 @@ status = 'OLD'`;
                 let BESTEL = thisArray[iBestel];
                 let leveranciernummer = this.getField(BESTEL, 'Supplier', '$', 'code');
                 let leveranciernaam = this.getField(BESTEL, 'Supplier', 'Name');
-                let bestelnummer = this.getField(BESTEL, 'ordernumber');
+                let bestelnummer = this.getField(BESTEL, '$', 'ordernumber');
                 let datum = this.getDate(this.getField(BESTEL, 'OrderDate'));
                 let leverdatum = this.getDate(this.getField(BESTEL, 'ReceiptDate'));
                 let startdatum = this.getNow();
                 if (BESTEL.PurchaseOrderLine) {
                     for (let iLine = 0; iLine < BESTEL.PurchaseOrderLine.length; iLine++) {
                         let LINE = BESTEL.PurchaseOrderLine[iLine];
-                        let regelnummer = this.getField(LINE, 'line');
+                        let regelnummer = this.getField(LINE, '$','line');
                         let productnummer = this.getField(LINE, 'Item', '$', 'code');
                         let bestelling = Number(this.getField(LINE, 'Quantity'));
                         let leverancierproductnummer = this.getField(LINE, 'SupplierItemCode');

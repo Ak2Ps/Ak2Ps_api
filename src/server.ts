@@ -30,10 +30,11 @@ class App {
         this.app.use(Frontware.frontware)
         this.router = new Router(this.app);
         //
-        this.app.listen(Config.serverPort, () => {
+        let server = this.app.listen(Config.serverPort, () => {
             Logger.info(`Ak2 is listening for ${Config.appUrl} on port ${Config.serverPort} ...`);
             process.title = `Ak2: ${Config.appUrl}, ${Config.serverPort}`;
         });
+        server.setTimeout(1800000);
     }
 }
 

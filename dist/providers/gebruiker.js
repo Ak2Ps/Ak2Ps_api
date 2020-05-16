@@ -48,7 +48,7 @@ var Gebruiker = /** @class */ (function () {
     }
     Gebruiker.prototype.getQuery = function (where, orderby) {
         if (!orderby) {
-            orderby = "GEBRUIKER";
+            orderby = "ucase(GEBRUIKER)";
         }
         //
         var sql = "\nselect \ncast(id as CHAR) as ID,\ngebruiker as GEBRUIKER,\nmenu as MENU,\ntelefoon as TELEFOON,\nemail as EMAIL,\ncontactpersoon as CONTACTPERSOON,\nland as LAND,\nwoonplaats as WOONPLAATS,\nadres as ADRES,\nnaam as NAAM,\nhandtekening as HANDTEKENING,\naktief as AKTIEF,\nifnull(afdeling,'') as AFDELING,\n'' as HANDTEKENING_OMS,\nifnull(badge1,'') as BADGE1,\nifnull(badge2,'') as BADGE2,\nifnull((select naam from AFDELING where AFDELING.AFDELING = GEBRUIKER.AFDELING),'') as AFDELING_OMS\nfrom GEBRUIKER\nwhere gebruiker not in ('Admin','Gast','Mod')";
@@ -110,7 +110,6 @@ var Gebruiker = /** @class */ (function () {
                             .fix(req.query.value)
                             .toUpperCase()
                             .replace(/\*/gi, "%");
-                        logger_1.Logger.test("Gebruiker: " + method + ", " + action + ", " + value);
                         if (!(method == "GET")) return [3 /*break*/, 10];
                         if (!(action == "select")) return [3 /*break*/, 3];
                         return [4 /*yield*/, db_1.default.waitConnection()];

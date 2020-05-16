@@ -62,7 +62,6 @@ var Loginfo = /** @class */ (function () {
                 method = req.method;
                 action = db_1.default.fix(req.query.action || '');
                 filename = config_1.Config.appDir + "/log/api.log";
-                logger_1.Logger.test("loginfo: " + method + ", " + action);
                 //
                 //
                 if (action == "loadlog") {

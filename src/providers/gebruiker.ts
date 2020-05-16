@@ -178,7 +178,6 @@ where ucase(gebruiker) = ucase('${db.fix(params.gebruiker)}');`;
       .fix(req.query.value)
       .toUpperCase()
       .replace(/\*/gi, "%");
-    Logger.test(`Gebruiker: ${method}, ${action}, ${value}`);
     //
     if (method == "GET") {
       //

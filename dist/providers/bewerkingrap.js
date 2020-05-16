@@ -55,7 +55,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
-var logger_1 = require("../logger");
 //
 var dict = {
     table: "bewerkingrap",
@@ -643,8 +642,6 @@ var Bewerkingrap = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 method = req.method;
                 action = db_1.default.fix(req.query.action || '');
-                //
-                logger_1.Logger.test(this.dict.table + ": " + method + ", " + action + " ");
                 //
                 if (action == "bewerkingrap") {
                     this.doBewerkingrap(req, res, next, this.dict);

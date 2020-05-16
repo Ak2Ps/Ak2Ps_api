@@ -340,7 +340,6 @@ var Calender = /** @class */ (function () {
             return __generator(this, function (_a) {
                 method = req.method;
                 action = db_1.default.fix(req.query.action || '');
-                logger_1.Logger.test("toolbox: " + method + ", " + action);
                 //
                 if (action == "getColumns") {
                     this.getColumns(req, res, next);

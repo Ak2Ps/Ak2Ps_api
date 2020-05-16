@@ -52,36 +52,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var crud_1 = require("../crud");
+var action_1 = require("../action");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
 var logger_1 = require("../logger");
 //
-var dict = {
-    table: "empty",
-    key: [],
-    altKeys: [],
-    foreignKeys: [],
-    select: {
-        orderby: "",
-        where: [],
-        fields: [],
-    },
-    query: {
-        orderby: "",
-        where: [],
-        fields: [],
-    },
-    update: {
-        fields: [],
-    },
-};
-var Empty = /** @class */ (function (_super) {
-    __extends(Empty, _super);
-    function Empty() {
-        return _super.call(this, dict) || this;
+var EmptyAction = /** @class */ (function (_super) {
+    __extends(EmptyAction, _super);
+    function EmptyAction() {
+        return _super.call(this, "Emptyaction") || this;
     }
-    Empty.prototype.doSelect = function (req, res, next, options) {
+    EmptyAction.prototype.doSelect = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var query, _a, sql, rows;
             return __generator(this, function (_b) {
@@ -103,7 +84,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doQuery = function (req, res, next, options) {
+    EmptyAction.prototype.doQuery = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var query, _a, sql, rows;
             return __generator(this, function (_b) {
@@ -125,7 +106,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doUpdate = function (req, res, next, options) {
+    EmptyAction.prototype.doUpdate = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, id, sql;
             return __generator(this, function (_b) {
@@ -150,7 +131,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doInsert = function (req, res, next, options) {
+    EmptyAction.prototype.doInsert = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, sql, result;
             return __generator(this, function (_b) {
@@ -173,7 +154,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.doDelete = function (req, res, next, options) {
+    EmptyAction.prototype.doDelete = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, id, sql;
             return __generator(this, function (_b) {
@@ -198,7 +179,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    Empty.prototype.routes = function (req, res, next) {
+    EmptyAction.prototype.routes = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var method, action;
             return __generator(this, function (_a) {
@@ -208,19 +189,19 @@ var Empty = /** @class */ (function (_super) {
                 logger_1.Logger.request(req);
                 //
                 if (action == "select") {
-                    this.doSelect(req, res, next, this.dict);
+                    this.doSelect(req, res, next);
                 }
                 else if (method == "GET") {
-                    this.doQuery(req, res, next, this.dict);
+                    this.doQuery(req, res, next);
                 }
                 else if (method == "PUT") {
-                    this.doUpdate(req, res, next, this.dict);
+                    this.doUpdate(req, res, next);
                 }
                 else if (method == "POST") {
-                    this.doInsert(req, res, next, this.dict);
+                    this.doInsert(req, res, next);
                 }
                 else if (method == "DELETE") {
-                    this.doDelete(req, res, next, this.dict);
+                    this.doDelete(req, res, next);
                 }
                 else {
                     util_1.Util.unknownOperation(req, res, next);
@@ -229,7 +210,7 @@ var Empty = /** @class */ (function (_super) {
             });
         });
     };
-    return Empty;
-}(crud_1.Crud));
-exports.Empty = Empty;
-//# sourceMappingURL=empty.js.map
+    return EmptyAction;
+}(action_1.Action));
+exports.EmptyAction = EmptyAction;
+//# sourceMappingURL=emptyaction.js.map

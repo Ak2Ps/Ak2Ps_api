@@ -187,7 +187,6 @@ var Inkoop = /** @class */ (function (_super) {
                                 result += '[]';
                             }
                             res.status(200).send(result);
-                            logger_1.Logger.test("Ignore diffs because of JSON.stringify versus db.jsonRow");
                         }
                         //
                         res.crudConnection.release();

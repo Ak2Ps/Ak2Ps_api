@@ -369,7 +369,6 @@ var Productbewerkingrap = /** @class */ (function (_super) {
                         //
                         res.crudConnection.release();
                         res.status(200).send(result);
-                        logger_1.Logger.test("Ignore diffs because of JSON.stringify versus db.jsonRow");
                         return [2 /*return*/];
                     case 34: return [2 /*return*/];
                 }

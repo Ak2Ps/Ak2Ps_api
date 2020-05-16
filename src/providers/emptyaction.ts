@@ -1,45 +1,20 @@
 
-import { Crud } from '../crud';
+import { Action } from '../action';
 //
 import { Request, Response, NextFunction } from "express";
 import db from "../db";
 import { Util } from "../util";
 import { Logger } from "../logger";
 //
-const dict: Dict = {
-    table: "empty",
-    key: [
-    ],
-    altKeys: [],
-    foreignKeys: [],
-    select: {
-        orderby: "",
-        where: [
-        ],
-        fields: [
-        ],
-    },
-    query: {
-        orderby: "",
-        where: [
-        ],
-        fields: [
-        ],
-    },
-    update: {
-        fields: [
-        ],
-    },
-}
 
-export class Empty extends Crud {
+export class EmptyAction extends Action {
     constructor() {
         super(
-            dict
+            "Emptyaction"
         )
     }
 
-    protected async doSelect(req: Request, res: Response, next: NextFunction, options?: Dict) {
+    protected async doSelect(req: Request, res: Response, next: NextFunction) {
         let query = db.fixQuery(req.query);
         res.crudConnection = await db.waitConnection();
         //
@@ -48,7 +23,6 @@ export class Empty extends Crud {
         let rows = await db.waitQuery(res.crudConnection, sql);
         res.crudConnection.release();
         res.status(200).send(rows);
-        Util.compareWithPhp(rows, req, res, next);
         return;
     }
 
@@ -62,7 +36,6 @@ export class Empty extends Crud {
         let rows = await db.waitQuery(res.crudConnection, sql);
         res.crudConnection.release();
         res.status(200).send(rows);
-        Util.compareWithPhp(rows, req, res, next);
         return;
     }
 
@@ -117,15 +90,15 @@ where id = '${id}'`;
         Logger.request(req);
         //
         if (action == "select") {
-            this.doSelect(req, res, next, this.dict);
+            this.doSelect(req, res, next);
         } else if (method == "GET") {
-            this.doQuery(req, res, next, this.dict);
+            this.doQuery(req, res, next);
         } else if (method == "PUT") {
-            this.doUpdate(req, res, next, this.dict);
+            this.doUpdate(req, res, next);
         } else if (method == "POST") {
-            this.doInsert(req, res, next, this.dict);
+            this.doInsert(req, res, next);
         } else if (method == "DELETE") {
-            this.doDelete(req, res, next, this.dict);
+            this.doDelete(req, res, next);
         } else {
             Util.unknownOperation(req, res, next);
         }

@@ -898,7 +898,7 @@ from DUAL`;
     } else if (method == "GET") {
       this.doQuery(req, res, next);
     } else {
-      Util.exePhp(req, res, next);
+      Util.unknownOperation(req, res, next);
     }
   }
 }

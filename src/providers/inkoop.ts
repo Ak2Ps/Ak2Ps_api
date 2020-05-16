@@ -192,7 +192,6 @@ where minvrd < 0`;
                 result += '[]';
             }
             res.status(200).send(result);
-            Logger.test("Ignore diffs because of JSON.stringify versus db.jsonRow");
         }
         //
         res.crudConnection.release();

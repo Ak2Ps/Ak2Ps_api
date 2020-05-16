@@ -408,7 +408,6 @@ order by gebruiker, datum`;
     //
     let method = req.method;
     let action = db.fix(req.query.action||'');
-    Logger.test(`toolbox: ${method}, ${action}`);
     //
     if (action == "getColumns") {
       this.getColumns(req, res, next);

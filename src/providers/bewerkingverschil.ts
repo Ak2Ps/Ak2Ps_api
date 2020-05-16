@@ -159,7 +159,6 @@ where id = ${db.fix(id)};
     //
     let method = req.method;
     let action = db.fix(req.query.action||'');
-    Logger.test(`bewerkingverschil: ${method}, ${action}`);
     //
     if (method == "GET") {
       this.doQuery(req, res, next);

@@ -90,8 +90,6 @@ values (
     let action = Util.getLast(req.query.action);
     let bb = req.query.bb;
     //
-    Logger.test(`bb: ${method}, ${action}`);
-    //
     if (action == "getsettings") {
       let bbmod = "";
       let bbadmin = "";

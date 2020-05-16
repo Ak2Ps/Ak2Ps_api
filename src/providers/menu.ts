@@ -64,8 +64,6 @@ order by a.volgnummer, b.volgnummer`;
     let method = req.method;
     let action = db.fix(req.query.action||'');
     //
-    Logger.test(`menu: ${method}, ${action}`);
-    //
     if (action == "select") {
       this.doSelect(req, res, next, dict);
     } else if (method == "GET") {

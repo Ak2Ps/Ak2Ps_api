@@ -399,7 +399,6 @@ from DUAL`;
             //
             res.crudConnection.release();
             res.status(200).send(result);
-            Logger.test("Ignore diffs because of JSON.stringify versus db.jsonRow");
             return;
         }
     }

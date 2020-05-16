@@ -128,8 +128,6 @@ var Bb = /** @class */ (function () {
                         method = req.method;
                         action = util_1.Util.getLast(req.query.action);
                         bb = req.query.bb;
-                        //
-                        logger_1.Logger.test("bb: " + method + ", " + action);
                         if (!(action == "getsettings")) return [3 /*break*/, 3];
                         bbmod_1 = "";
                         bbadmin_1 = "";

@@ -13,7 +13,6 @@ export class Logon {
     //
     let method = req.method;
     let action = db.fix(req.query.action||'');
-    Logger.test(`logon: ${method}, ${action}`);
     //
     //
     if (method == "GET") {

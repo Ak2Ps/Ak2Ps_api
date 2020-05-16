@@ -74,7 +74,7 @@ where NAAM = 'BBADMIN'`;
           Logger.error(<Request><unknown>undefined,error);
           resolve(false);
         } else {
-          Logger.test('Email sent: ' + info.response);
+          Logger.info('Email sent: ' + info.response);
           resolve(true);
         }
       });
