@@ -30,7 +30,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(NAAM) like '%?%'",
+                sql: "ucase(NAAM) like ucase('%?%')",
             }
         ],
         fields: [
@@ -53,11 +53,11 @@ var dict = {
             },
             {
                 query: "soort",
-                sql: "SOORT like ('%?%')",
+                sql: "ucase(SOORT) like ucase('%?%')",
             },
             {
                 query: "naam",
-                sql: "NAAM like ('%?%')",
+                sql: "ucase(NAAM) like ucase('%?%')",
             }
         ],
         fields: [

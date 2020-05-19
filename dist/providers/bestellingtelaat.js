@@ -104,13 +104,13 @@ var Bestellingtelaat = /** @class */ (function (_super) {
                         where = '';
                         sql = "\nselect BASE.* from (\nselect \ngetLijn(product.productnummer) as lijn,\nBESTELLING.productnummer, \nPRODUCT.productnaam,\nBESTELLING.bestelling,\nBESTELLING.leveranciernummer, \nBESTELLING.leveranciernaam, \nBESTELLING.bestelnummer,\nPRODUCT.Leverdagen,\nifnull((select datediff(besteldatumtijd,sysdate())),0) as DAGEN,\nontvangendatumtijd,\ndate2screendate(ontvangendatumtijd) as ONTVANGENDATUM,\nbesteldatumtijd,\ndate2screendate(besteldatumtijd) as BESTELDATUM\nfrom \nBESTELLING,\nPRODUCT\nwhere BESTELLING.productnummer = PRODUCT.productnummer";
                         if ((productgroep != '') && (productnummer != '')) {
-                            where += "\nand \n(PRODUCT.productnummer in \n(select productnummer from PRODUCTGROEPREGEL \nwhere productgroep = '" + productgroep + "')\nor PRODUCT.productnummer like ('" + productnummer + "%'))";
+                            where += "\nand \n(PRODUCT.productnummer in \n(select productnummer from PRODUCTGROEPREGEL \nwhere productgroep = '" + productgroep + "')\nor ucase(PRODUCT.productnummer) like ucase('" + productnummer + "%'))";
                         }
                         else if (productgroep != '') {
                             where += "\nand \nPRODUCT.productnummer in \n(select productnummer from PRODUCTGROEPREGEL\nwhere productgroep = '" + productgroep + "')";
                         }
                         else if (productnummer != '') {
-                            where += "\nand \nPRODUCT.productnummer like ('" + productnummer + "%')";
+                            where += "\nand \nucase(PRODUCT.productnummer) like ucase('" + productnummer + "%')";
                         }
                         else {
                         }

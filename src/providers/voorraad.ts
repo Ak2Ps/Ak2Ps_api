@@ -611,7 +611,7 @@ on PRODUCTVOORRAAD.PRODUCTNUMMER = PRODUCT.PRODUCTNUMMER`;
       }
       if (like == '1') {
         where += `
-PRODUCTVOORRAAD.productnummer like('${productnummer}%')`;
+ucase(PRODUCTVOORRAAD.productnummer) like ucase('${productnummer}%')`;
       } else {
         where += `
 PRODUCTVOORRAAD.productnummer = ('${productnummer}')`;

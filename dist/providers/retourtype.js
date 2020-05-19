@@ -29,7 +29,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(NAAM) like '%?%'",
+                sql: "ucase(NAAM) like ucase('%?%')",
             }
         ],
         fields: [
@@ -52,11 +52,11 @@ var dict = {
             },
             {
                 query: "retourtype",
-                sql: "RETOURTYPE like ('%?%')",
+                sql: "ucase(RETOURTYPE) like ucase('%?%')",
             },
             {
                 query: "naam",
-                sql: "NAAM like ('%?%')",
+                sql: "ucase(NAAM) like ucase('%?%')",
             }
         ],
         fields: [

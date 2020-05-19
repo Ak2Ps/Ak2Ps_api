@@ -86,31 +86,31 @@ or isnull(afleveremail)=false)`;
         where += ` and klantnummer = '${klantnummer}'`;
       }
       if (aflevernaam != '') {
-        where += ` and aflevernaam like '${aflevernaam}%'`;
+        where += ` and ucase(aflevernaam) like ucase('${aflevernaam}%')`;
       }
       if (afleveradres != '') {
-        where += ` and afleveradres like '${afleveradres}%'`;
+        where += ` and ucase(afleveradres) like ucase('${afleveradres}%')`;
       }
       if (afleverwoonplaats != '') {
-        where += ` and afleverwoonplaats like '${afleverwoonplaats}%'`;
+        where += ` and ucase(afleverwoonplaats) like ucase('${afleverwoonplaats}%')`;
       }
       if (afleverpostcode != '') {
-        where += ` and afleverpostcode like '${afleverpostcode}%'`;
+        where += ` and ucase(afleverpostcode) like ucase('${afleverpostcode}%')`;
       }
       if (afleverland != '') {
-        where += ` and afleverland like '${afleverland}%'`;
+        where += ` and ucase(afleverland) like ucase('${afleverland}%')`;
       }
       if (afleverdpdnummer != '') {
-        where += ` and afleverdpdnummer like '${afleverdpdnummer}%'`;
+        where += ` and ucase(afleverdpdnummer) like ucase('${afleverdpdnummer}%')`;
       }
       if (aflevertelefoon != '') {
-        where += ` and aflevertelefoon like '${aflevertelefoon}%'`;
+        where += ` and ucase(aflevertelefoon) like ucase('${aflevertelefoon}%')`;
       }
       if (afleverfax != '') {
-        where += ` and afleverfax like '${afleverfax}%'`;
+        where += ` and ucase(afleverfax) like ucase('${afleverfax}%')`;
       }
       if (afleveremail != '') {
-        where += ` and afleveremail like '${afleveremail}%'`;
+        where += ` and ucase(afleveremail) like ucase('${afleveremail}%')`;
       }
       sql += `
 ${where}

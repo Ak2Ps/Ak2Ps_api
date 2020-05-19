@@ -61,7 +61,7 @@ var Gebruiker = /** @class */ (function () {
     Gebruiker.prototype.getSelectQuery = function (value) {
         var sql = "\nselect \ngebruiker as ID,\nnaam as VALUE \nfrom GEBRUIKER\nwhere gebruiker not in ('Admin','Gast','Mod')\nand aktief = 1";
         if (value) {
-            sql += " and ucase(naam) like '" + value + "'";
+            sql += " and ucase(naam) like ucase('" + value + "')";
         }
         sql += " order by ucase(naam);";
         return sql;

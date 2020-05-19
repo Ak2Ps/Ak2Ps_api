@@ -102,7 +102,7 @@ where PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer`;
 and (PRODUCT.productnummer in 
 (select productnummer from PRODUCTGROEPREGEL 
 where productgroep = '${productgroep}')
-or PRODUCT.productnummer like ('${productnummer}%'))`;
+or ucase(PRODUCT.productnummer) like ucase('${productnummer}%'))`;
         } else if (productgroep != '') {
             where += `
 and PRODUCT.productnummer in 
@@ -110,7 +110,7 @@ and PRODUCT.productnummer in
 where productgroep = '${productgroep}')`;
         } else if (productnummer != '') {
             where += `
-and PRODUCT.productnummer like ('${productnummer}%')`;
+and ucase(PRODUCT.productnummer) like ucase('${productnummer}%')`;
         }
         //
         if (leverancier != '') {

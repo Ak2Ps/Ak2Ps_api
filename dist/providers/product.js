@@ -30,7 +30,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(PRODUCTNUMMER) like '%?%'",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             }
         ],
         fields: [
@@ -51,13 +51,9 @@ var dict = {
                 query: "id",
                 sql: "ID = ?",
             },
-            //{
-            //query: "productnummer",
-            //sql: "PRODUCTNUMMER like ('?%')",
-            //},
             {
                 query: "productnaam",
-                sql: "PRODUCTNAAM like ('%?%')",
+                sql: "ucase(PRODUCTNAAM) like ucase('%?%')",
             },
             {
                 query: "voorraad",
@@ -81,11 +77,11 @@ var dict = {
             },
             {
                 query: "soort",
-                sql: "SOORT like ('%?%')",
+                sql: "ucase(SOORT) like ucase('%?%')",
             },
             {
                 query: "lijn",
-                sql: "LIJN like ('%?%')",
+                sql: "ucase(LIJN) like ucase('%?%')",
             },
             {
                 query: "performance",
@@ -105,7 +101,7 @@ var dict = {
             },
             {
                 query: "locatie",
-                sql: "LOCATIE like ('%?%')",
+                sql: "ucase(LOCATIE) like ucase('%?%')",
             },
             {
                 query: "leveranciernummer",
@@ -113,7 +109,7 @@ var dict = {
             },
             {
                 query: "leverancierproductnummer",
-                sql: "LEVERANCIERPRODUCTNUMMER like ('?%')",
+                sql: "ucase(LEVERANCIERPRODUCTNUMMER) like ucase('?%')",
             }
         ],
         fields: [
@@ -326,7 +322,7 @@ var Product = /** @class */ (function (_super) {
                 result += "productnummer = '" + req.query.productnummer + "'";
             }
             else {
-                result += "productnummer like ('" + req.query.productnummer + "%')";
+                result += "ucase(productnummer) like ucase('" + req.query.productnummer + "%')";
             }
         }
         return result;

@@ -20,7 +20,7 @@ const dict: Dict = {
     where: [
       {
         query: "value",
-        sql: "ucase(KLANTNUMMER) like '%?%'",
+        sql: "ucase(KLANTNUMMER) like ucase('%?%')",
       }
     ],
     fields: [
@@ -43,91 +43,91 @@ const dict: Dict = {
       },
       {
         query: "referentie",
-        sql: "REFERENTIE like ('%?%')",
+        sql: "ucase(REFERENTIE) like ucase('%?%')",
       },
       {
         query: "klantnummer",
-        sql: "KLANTNUMMER like ('%?%')",
+        sql: "ucase(KLANTNUMMER) like ucase('%?%')",
       },
       {
         query: "naam",
-        sql: "NAAM like ('%?%')",
+        sql: "ucase(NAAM) like ucase('%?%')",
       },
       {
         query: "zoekcode",
-        sql: "ZOEKCODE like ('%?%')",
+        sql: "ucase(ZOEKCODE) like ucase('%?%')",
       },
       {
         query: "adres",
-        sql: "ADRES like ('%?%')",
+        sql: "ucase(ADRES) like ucase('%?%')",
       },
       {
         query: "woonplaats",
-        sql: "WOONPLAATS like ('%?%')",
+        sql: "ucase(WOONPLAATS) like ucase('%?%')",
       },
       {
         query: "postcode",
-        sql: "POSTCODE like ('%?%')",
+        sql: "ucase(POSTCODE) like ucase('%?%')",
       },
       {
         query: "land",
-        sql: "LAND like ('%?%')",
+        sql: "ucase(LAND) like ucase('%?%')",
       },
       {
         query: "telefoon",
-        sql: "TELEFOON like ('%?%')",
+        sql: "ucase(TELEFOON) like ucase('%?%')",
       },
       {
         query: "fax",
-        sql: "FAX like ('%?%')",
+        sql: "ucase(FAX) like ucase('%?%')",
       },
       {
         query: "email",
-        sql: "EMAIL like ('%?%')",
+        sql: "ucase(EMAIL) like ucase('%?%')",
       },
       {
         query: "aflevernaam",
-        sql: "AFLEVERNAAM like ('%?%')",
+        sql: "ucase(AFLEVERNAAM) like ucase('%?%')",
       },
       {
         query: "afleveradres",
-        sql: "AFLEVERADRES like ('%?%')",
+        sql: "ucase(AFLEVERADRES) like ucase('%?%')",
       },
       {
         query: "afleverwoonplaats",
-        sql: "AFLEVERWOONPLAATS like ('%?%')",
+        sql: "ucase(AFLEVERWOONPLAATS) like ucase('%?%')",
       },
       {
         query: "afleverpostcode",
-        sql: "AFLEVERPOSTCODE like ('%?%')",
+        sql: "ucase(AFLEVERPOSTCODE) like ucase('%?%')",
       },
       {
         query: "afleverland",
-        sql: "AFLEVERLAND like ('%?%')",
+        sql: "ucase(AFLEVERLAND) like ucase('%?%')",
       },
       {
         query: "afleverdpdnummer",
-        sql: "AFLEVERDPDNUMMER like ('%?%')",
+        sql: "ucase(AFLEVERDPDNUMMER) like ucase('%?%')",
       },
       {
         query: "aflevertelefoon",
-        sql: "AFLEVERTELEFOON like ('%?%')",
+        sql: "ucase(AFLEVERTELEFOON) like ucase('%?%')",
       },
       {
         query: "afleverfax",
-        sql: "AFLEVERFAX like ('%?%')",
+        sql: "ucase(AFLEVERFAX) like ucase('%?%')",
       },
       {
         query: "afleveremail",
-        sql: "AFLEVEREMAIL like ('%?%')",
+        sql: "ucase(AFLEVEREMAIL) like ucase('%?%')",
       },
       {
         query: "contact",
-        sql: "CONTACT like ('%?%')",
+        sql: "ucase(CONTACT) like ucase('%?%')",
       },
       {
         query: "opmerking",
-        sql: "OPMERKING like ('%?%')",
+        sql: "ucase(OPMERKING) like ucase('%?%')",
       }
     ],
     fields: [

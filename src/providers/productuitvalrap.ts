@@ -171,7 +171,7 @@ and startdatumtijd >= screendate2date('${startstatistiek}')`;
 
         if (query.productnummer != '') {
             where += Util.addAnd(where);
-            where += `PRODUCT.productnummer like ('${query.productnummer}%')`;
+            where += `ucase(PRODUCT.productnummer) like ucase('${query.productnummer}%')`;
         }
         if (query.klant.trim() != '') {
             where += Util.addAnd(where);

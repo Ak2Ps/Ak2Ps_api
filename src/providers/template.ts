@@ -160,13 +160,13 @@ export class Template {
         } else if (field.Type.indexOf("decimal") >= 0) {
           expression = `${thisField} = ?`;
         } else if (field.Type.indexOf("char") >= 0) {
-          expression = `${thisField} like ('%?%')`;
+          expression = `ucase(${thisField}) like ucase('%?%')`;
         } else if (field.Type.indexOf("text") >= 0) {
-          expression = `${thisField} like ('%?%')`;
+          expression = `ucase(${thisField}) like ucase('%?%')`;
         } else if (field.Type.indexOf("datetime") >= 0) {
           expression = `${thisField} > screendate2date('?')`;
         } else {
-          expression = `${thisField} like ('%?%')`;
+          expression = `ucase(${thisField}) like ucase('%?%')`;
         }
         //
         thisWhere += `\n        query: "${query.toLowerCase()}",`;

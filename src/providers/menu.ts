@@ -19,7 +19,7 @@ const dict: Dict = {
     where: [
       {
         query: "value",
-        sql: "ucase(MENU) like '%?%'",
+        sql: "ucase(MENU) like ucase('%?%')",
       }
     ],
     fields: [

@@ -64,7 +64,7 @@ export class Uitlever extends Crud {
         }
         if (query.productnummer != '') {
             vraagwhere += Util.addAnd(vraagwhere);
-            vraagwhere += `productnummer like '${query.productnummer}%`;
+            vraagwhere += `ucase(productnummer) like ucase('${query.productnummer}%')`;
         }
         if (query.einddatum != '') {
             vraagwhere += Util.addAnd(vraagwhere);
@@ -105,7 +105,7 @@ ${vraagwhere}
         //
         if (query.productnummer != '') {
             where += Util.addAnd(where);
-            where += `productnummer like '${query.productnummer}%'`;
+            where += `ucase(productnummer) like ucase('${query.productnummer}%')`;
         }
         if (query.productgroep != '') {
             where += Util.addAnd(where);
@@ -187,7 +187,7 @@ and initvraagdatumtijd <= screendate2date('31-12-2044')`;
         if (query.zoekcode) {
             if (query.zoekcode != '') {
                 where += Util.addAnd(where);
-                where = `klantzoekcode like '${query.zoekcode}%'`;
+                where = `ucase(klantzoekcode) like ucase('${query.zoekcode}%')`;
             }
         }
         sql += `

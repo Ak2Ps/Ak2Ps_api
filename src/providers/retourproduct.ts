@@ -21,7 +21,7 @@ const dict: Dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(PRODUCTNUMMER) like '%?%'",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             }
         ],
         fields: [
@@ -44,11 +44,11 @@ const dict: Dict = {
             },
             {
                 query: "referentie",
-                sql: "REFERENTIE like ('%?%')",
+                sql: "ucase(REFERENTIE) like ucase('%?%')",
             },
             {
                 query: "productnummer",
-                sql: "PRODUCTNUMMER like ('%?%')",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             },
             {
                 query: "aantal",
@@ -56,11 +56,11 @@ const dict: Dict = {
             },
             {
                 query: "klantproductnummer",
-                sql: "KLANTPRODUCTNUMMER like ('%?%')",
+                sql: "ucase(KLANTPRODUCTNUMMER) like ucase('%?%')",
             },
             {
                 query: "serienummer",
-                sql: "SERIENUMMER like ('%?%')",
+                sql: "ucase(SERIENUMMER) like ucase('%?%')",
             },
             {
                 query: "productiedatumtijd",
@@ -68,7 +68,7 @@ const dict: Dict = {
             },
             {
                 query: "opmerking",
-                sql: "OPMERKING like ('%?%')",
+                sql: "ucase(OPMERKING) like ucase('%?%')",
             }
         ],
         fields: [

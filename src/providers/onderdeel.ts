@@ -25,7 +25,7 @@ select: {
     where: [
         {
             query: "value",
-            sql: "ucase(PRODUCTNUMMER) like '%?%'",
+            sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
         }
     ],
     fields: [
@@ -48,11 +48,11 @@ query: {
         },
         {
         query: "productnummer",
-        sql: "PRODUCTNUMMER like ('?%')",
+        sql: "ucase(PRODUCTNUMMER) like ucase('?%')",
         },
         {
         query: "onderdeelnummer",
-        sql: "ONDERDEELNUMMER like ('%?%')",
+        sql: "ucase(ONDERDEELNUMMER) like ucase('%?%')",
         },
         {
         query: "faktor",

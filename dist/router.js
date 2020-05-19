@@ -8,6 +8,7 @@ var template_1 = require("./providers/template");
 var ecmtester_1 = require("./providers/ecmtester");
 var patch_1 = require("./providers/patch");
 var createcomparesql_1 = require("./providers/createcomparesql");
+var schedule_1 = require("./providers/schedule");
 //
 var exactinterface_1 = require("./providers/exactinterface");
 //
@@ -96,10 +97,7 @@ var Router = /** @class */ (function () {
         //
         logger_1.Logger.info("Creating Router");
         //
-        this.template = new template_1.Template();
-        this.ecmtester = new ecmtester_1.Ecmtester();
-        this.patch = new patch_1.Patch();
-        this.createcomparesql = new createcomparesql_1.CreateCompareSql();
+        this.schedule = new schedule_1.Schedule();
         //
         this.exactinterface = new exactinterface_1.Exactinterface();
         //
@@ -193,13 +191,26 @@ var Router = /** @class */ (function () {
         //
         //
         this.app.route('/').all(util_1.Util.isRunning);
+        this.app.route('/schedule').all(function (req, res, next) { return _this.schedule.routes(req, res, next); });
         //
         // Extra's
         //
-        this.app.route('/generate').all(this.template.generate);
-        this.app.route('/ecmtester.php').all(function (req, res, next) { return _this.ecmtester.routes(req, res, next); });
-        this.app.route('/patch.php').all(function (req, res, next) { return _this.patch.routes(req, res, next); });
-        this.app.route('/createcomparesql').all(function (req, res, next) { return _this.createcomparesql.routes(req, res, next); });
+        this.app.route('/generate').all(function (req, res, next) {
+            var template = new template_1.Template();
+            template.generate(req, res, next);
+        });
+        this.app.route('/ecmtester.php').all(function (req, res, next) {
+            var ecmtester = new ecmtester_1.Ecmtester();
+            ecmtester.routes(req, res, next);
+        });
+        this.app.route('/patch.php').all(function (req, res, next) {
+            var patch = new patch_1.Patch();
+            patch.routes(req, res, next);
+        });
+        this.app.route('/createcomparesql').all(function (req, res, next) {
+            var createcomparesql = new createcomparesql_1.CreateCompareSql();
+            createcomparesql.routes(req, res, next);
+        });
         //
         // static serve some files
         //
@@ -302,91 +313,6 @@ var Router = /** @class */ (function () {
 }());
 exports.Router = Router;
 /*
-ok afdeling.php
-ok afleveradres.php
-- application.php = Config
-ok bb.php
-ok bestelling.php
-ok bestellingkop.php
-* bestellingkoprap.php
-ok bestellingproductgroep.php = productgroepbestelling.php
-ok bestellingtelaat.php
-ok bewerking.php
-ok bewerkingflow.php
-ok bewerkingflowbewerk.php
-ok bewerkingfloweindcontrole.php
-ok bewerkingflowperformance_inc.php
-ok bewerkingflowpick.php
-ok bewerkingrap.php
-ok bewerkingsoort.php
-ok bewerkingtijd.php
-ok bewerkinguitval.php
-ok bewerkinguitvalrap.php
-ok bewerkingverschil.php
-ok calender.php
-- config.php = Config
-ok contact.php
-- db.php = db.ts
-* exactclient.php
-frmUpload.php
-ok gebruiker.php
-ok gebruikerrap.php
-ok gebruikershift.php
-ok gebruikertijd.php
-ok inkoop.php
-ok janee.php
-ok janeealle.php
-ok klant.php
-ok layout.php
-ok leverancier.php
-ok lijn.php
-ok loginfo.php
-ok logistiek.php
-ok logon.php
-ok menu.php
-ok menuregel.php
-ok mnl.php
-ok onderdeel.php
-ok param.php
-ok patch.php
-ok performance.php
-- phpinfo.php nvt
-ok planning.php
-ok plansoort.php
-ok product.php
-ok productbewerkingrap.php
-ok productgroep.php
-* productgroepbestelling.php = bestellingproductgroep.php
-ok productlijn.php
-ok productuitvalrap.php
-ok productvoorraad.php
-ok productvraag.php
-ok retour.php
-ok retouractie.php
-ok retouractietype.php
-ok retourgarantie.php
-ok retourgebruiker.php
-ok retourklant.php
-ok retourontvangst.php
-ok retourproduct.php
-ok retourrap.php
-ok retourtermijn.php
-ok retourtype.php
-ok retourverzend.php
-ok retourverzendleverancier.php
-- serviceImportPrint.php nvt
-ok soort.php (wordt nog nergens gebruiker)
-- test.php nvt
-- testmail.php nvt (php mail tester)
-ok toolbox.php
-ok uitlever.php
-ok uitval.php
-ok uitvalsoort.php
-* upload.php
-ok voorraad.php
-//
-//
-//
 todo:
 exactclient.php
 frmUpload.php

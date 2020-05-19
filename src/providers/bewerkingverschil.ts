@@ -82,11 +82,11 @@ from
        ( SELECT sum( bewerkingaantal) FROM BEWERKINGFLOW,BEWERKINGSOORT
          WHERE BEWERKINGFLOW.bewerkingsoort = BEWERKINGSOORT.bewerkingsoort 
          and BEWERKINGFLOW.bewerkingsnummer = BEWERKING.bewerkingsnummer 
-         and BEWERKINGSOORT.naam like (\'logistiek%\')) as logistiekflowaantal,
+         and ucase(BEWERKINGSOORT.naam) like ucase(\'logistiek%\')) as logistiekflowaantal,
        ( SELECT count( distinct(BEWERKINGFLOW.bewerkingsoort)) FROM BEWERKINGFLOW,BEWERKINGSOORT
          WHERE bewerkingflow.bewerkingsoort = BEWERKINGSOORT.bewerkingsoort 
          and BEWERKINGFLOW.bewerkingsnummer = BEWERKING.bewerkingsnummer 
-         and BEWERKINGSOORT.naam like (\'logistiek%\')) as logistiekflowaantalbewerkingen,
+         and ucase(BEWERKINGSOORT.naam) like ucase(\'logistiek%\')) as logistiekflowaantalbewerkingen,
        ( SELECT max( BEWERKINGFLOW.einddatumtijd) FROM BEWERKINGFLOW
          WHERE BEWERKINGFLOW.bewerkingsnummer = BEWERKING.bewerkingsnummer 
        AND NOT EXISTS (select 1 from BEWERKINGFLOW where BEWERKINGFLOW.bewerkingsnummer = BEWERKING.bewerkingsnummer 
@@ -110,7 +110,7 @@ from
       } else {
         where += " and ";
       }
-      where += ` productnummer like '%${req.query.productnummer}%'`;
+      where += ` ucase(productnummer) like ucase('%${req.query.productnummer}%')`;
     }
     if (req.query.lijn) {
       if (where == '') {

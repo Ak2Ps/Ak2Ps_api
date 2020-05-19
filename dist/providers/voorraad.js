@@ -565,7 +565,7 @@ var Voorraad = /** @class */ (function () {
                                 where += ' and ';
                             }
                             if (like == '1') {
-                                where += "\nPRODUCTVOORRAAD.productnummer like('" + productnummer + "%')";
+                                where += "\nucase(PRODUCTVOORRAAD.productnummer) like ucase('" + productnummer + "%')";
                             }
                             else {
                                 where += "\nPRODUCTVOORRAAD.productnummer = ('" + productnummer + "')";

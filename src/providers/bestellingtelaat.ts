@@ -80,7 +80,7 @@ and
 (PRODUCT.productnummer in 
 (select productnummer from PRODUCTGROEPREGEL 
 where productgroep = '${productgroep}')
-or PRODUCT.productnummer like ('${productnummer}%'))`;
+or ucase(PRODUCT.productnummer) like ucase('${productnummer}%'))`;
         } else if (productgroep != '') {
             where += `
 and 
@@ -90,7 +90,7 @@ where productgroep = '${productgroep}')`;
         } else if (productnummer != '') {
             where += `
 and 
-PRODUCT.productnummer like ('${productnummer}%')`;
+ucase(PRODUCT.productnummer) like ucase('${productnummer}%')`;
         } else {
         }
         if (leveranciernummer != '') {

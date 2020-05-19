@@ -97,14 +97,14 @@ from PRODUCT`;
             where += Util.addAnd(where);
             where += `(productnummer in (select productnummer from PRODUCTGROEPREGEL 
 where productgroep = '${query.productgroep}')
-or productnummer like ('${query.productnummer}%'))`;
+or ucase(productnummer) like ucase('${query.productnummer}%'))`;
         } else if (query.productgroep != '') {
             where += Util.addAnd(where);
             where += `productnummer in (select productnummer from PRODUCTGROEPREGEL 
 where productgroep = '${query.productgroep}')`;
         } else if (query.productnummer != '') {
             where += Util.addAnd(where);
-            where += `productnummer like ('${query.productnummer}%')`;
+            where += `ucase(productnummer) like ucase('${query.productnummer}%')`;
         } else {
             where += Util.addAnd(where);
             where += `productnummer ='????'`;

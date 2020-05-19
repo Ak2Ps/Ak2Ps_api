@@ -113,7 +113,7 @@ var Bestellingproductgroep = /** @class */ (function (_super) {
                             else {
                                 where += ' and ';
                             }
-                            where += "\n(productnummer in \n(select productnummer from PRODUCTGROEPREGEL\nwhere productgroep = '" + productgroep + "'\nor productnummer like ('" + productnummer + "%'))";
+                            where += "\n(productnummer in \n(select productnummer from PRODUCTGROEPREGEL\nwhere productgroep = '" + productgroep + "'\nor ucase(productnummer) like ucase('" + productnummer + "%'))";
                         }
                         else if (productgroep != '') {
                             if (where == '') {
@@ -131,7 +131,7 @@ var Bestellingproductgroep = /** @class */ (function (_super) {
                             else {
                                 where += ' and ';
                             }
-                            where += "\nproductnummer like ('" + productnummer + "%')";
+                            where += "\nucase(productnummer) like ucase('" + productnummer + "%')";
                         }
                         else {
                             if (where == '') {

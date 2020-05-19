@@ -42,7 +42,7 @@ var dict = {
         where: [
             {
                 query: "naam",
-                sql: "naam like ('%?%')"
+                sql: "ucase(naam) like ucase('%?%')"
             },
             {
                 query: "uitval",

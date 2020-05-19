@@ -22,7 +22,7 @@ const dict: Dict = {
     where: [
       {
         query: "value",
-        sql: "ucase(REFERENTIE) like '%?%'",
+        sql: "ucase(REFERENTIE) like ucase('%?%')",
       }
     ],
     fields: [
@@ -45,11 +45,11 @@ const dict: Dict = {
       },
       {
         query: "referentie",
-        sql: "REFERENTIE like ('%?%')",
+        sql: "ucase(REFERENTIE) like ucase('%?%')",
       },
       {
         query: "klantreferentie",
-        sql: "KLANTREFERENTIE like ('%?%')",
+        sql: "ucase(KLANTREFERENTIE) like ucase('%?%')",
       },
       {
         query: "klantnummer",
@@ -57,7 +57,7 @@ const dict: Dict = {
       },
       {
         query: "productnummer",
-        sql: "PRODUCTNUMMER like ('%?%')",
+        sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
       },
     ],
   },
@@ -249,10 +249,10 @@ referentie = '${db.fix(req.body.REFERENTIE)}',
 klantreferentie = '${db.fix(req.body.KLANTREFERENTIE)}',
 Startdatumtijd = screendate2date('${db.fix(req.body.START)}'),
 Gereeddatumtijd = screendate2date('${db.fix(req.body.GEREED)}'),
-Garantie = (select min(garantie) from RETOURGARANTIE where upper(naam) like  upper('${db.fix(req.body.GARANTIE_DESC)}%')),
+Garantie = (select min(garantie) from RETOURGARANTIE where ucase(naam) like  ucase('${db.fix(req.body.GARANTIE_DESC)}%')),
 kosten = '${db.fix(req.body.KOSTEN_DESC)}',
-Type = (select min(retourtype) from RETOURTYPE where upper(naam) like  upper('${db.fix(req.body.TYPE_DESC)}%')),
-Termijn = (select min(retourtermijn) from RETOURTERMIJN where upper(naam) like  upper('${db.fix(req.body.TERMIJN_DESC)}%')),
+Type = (select min(retourtype) from RETOURTYPE where ucase(naam) like  ucase('${db.fix(req.body.TYPE_DESC)}%')),
+Termijn = (select min(retourtermijn) from RETOURTERMIJN where ucase(naam) like  ucase('${db.fix(req.body.TERMIJN_DESC)}%')),
 Prijsopgave = '${prijsopgave}'
 where id = '${db.fix(id)}'`;
     result = await db.waitQuery(res.crudConnection, sql);
@@ -302,7 +302,7 @@ and gebruiker = ''` ;
     sql = `
 select max(referentie) as REF 
 from RETOUR 
-where referentie like 'TR${voorvoegsel}_${jaar}_%'`;
+where ucase(referentie) like ucase('TR${voorvoegsel}_${jaar}_%')`;
     rows = await db.waitQuery(res.crudConnection, sql);
     if (rows[0]) {
       let vlnr = Number(String(rows[0].REF).substr(9));
@@ -324,9 +324,9 @@ screendate2date('${db.fix(req.body.START)}'),
 screendate2date('${db.fix(req.body.GEREED)}'),
 '${db.fix(req.ak2_user)}',
 '${db.fix(req.query.KOSTEN_DESC)}',
-(select min(garantie) from RETOURGARANTIE where upper(naam) like  upper('${db.fix(req.body.GARANTIE_DESC)}%')),
-(select min(retourtype) from RETOURTYPE where upper(naam) like  upper('${db.fix(req.body.TYPE_DESC)}%')),
-(select min(retourtermijn) from RETOURTERMIJN where upper(naam) like  upper('${db.fix(req.body.TERMIJN_DESC)}%')),
+(select min(garantie) from RETOURGARANTIE where ucase(naam) like  ucase('${db.fix(req.body.GARANTIE_DESC)}%')),
+(select min(retourtype) from RETOURTYPE where ucase(naam) like  ucase('${db.fix(req.body.TYPE_DESC)}%')),
+(select min(retourtermijn) from RETOURTERMIJN where ucase(naam) like  ucase('${db.fix(req.body.TERMIJN_DESC)}%')),
 Prijsopgave = '${prijsopgave}')`;
     rows = await db.waitQuery(res.crudConnection, sql);
     req.body.ID = rows.insertId;

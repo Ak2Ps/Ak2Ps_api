@@ -18,7 +18,7 @@ const dict: Dict = {
     where: [
       {
         query: "value",
-        sql: "ucase(ACTIE) like '%?%'",
+        sql: "ucase(ACTIE) like ucase('%?%')",
       }
     ],
     fields: [
@@ -41,19 +41,19 @@ const dict: Dict = {
       },
       {
         query: "referentie",
-        sql: "REFERENTIE like ('?%')",
+        sql: "ucase(REFERENTIE) like ucase('?%')",
       },
       {
         query: "actie",
-        sql: "ACTIE like ('?%')",
+        sql: "ucase(ACTIE) like ucase('?%')",
       },
       {
         query: "gebruiker",
-        sql: "GEBRUIKER like ('?%')",
+        sql: "ucase(GEBRUIKER) like ucase('?%')",
       },
       {
         query: "garantie",
-        sql: "GARANTIE like ('?%')",
+        sql: "ucase(GARANTIE) like ucase('?%')",
       },
       {
         query: "kosten",
@@ -61,7 +61,7 @@ const dict: Dict = {
       },
       {
         query: "opmerking",
-        sql: "OPMERKING like ('?%')",
+        sql: "ucase(OPMERKING) like ucase('?%')",
       }
     ],
     fields: [

@@ -167,7 +167,7 @@ var Bewerking = /** @class */ (function (_super) {
                                 where += "\nproductnummer = '" + productnummer + "'";
                             }
                             else {
-                                where += "\nproductnummer like ('" + productnummer + "%')";
+                                where += "\nucase(productnummer) like ucase('" + productnummer + "%')";
                             }
                         }
                         if (open == 'Nee') {

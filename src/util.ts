@@ -72,26 +72,88 @@ export class Util {
     return result;
   }
 
+  public static Date2Screentime(date: Date): string {
+    let result = '';
+    let uren = String(date.getHours());
+    while (uren.length < 2) {
+      uren = '0' + uren;
+    }
+    let minuten = String(date.getMinutes());
+    while (minuten.length < 2) {
+      minuten = '0' + minuten;
+    }
+    result = `${uren}:${minuten}`;
+    return result;
+  }
+
+  public static Date2Screendate(date: Date): string {
+    let result = '';
+    //
+    let jaar = String(date.getFullYear());
+    while (jaar.length < 4) {
+      jaar = '0' + jaar;
+    }
+    let maand = String(date.getMonth() + 1);
+    while (maand.length < 2) {
+      maand = '0' + maand;
+    }
+    let dag = String(date.getDate());
+    while (dag.length < 2) {
+      dag = '0' + dag;
+    }
+    result = `${dag}-${maand}-${jaar}`;
+    return result;
+  }
+
+  public static Date2Screendatetime(date: Date): string {
+    let result = '';
+    //
+    let jaar = String(date.getFullYear());
+    while (jaar.length < 4) {
+      jaar = '0' + jaar;
+    }
+    let maand = String(date.getMonth() + 1);
+    while (maand.length < 2) {
+      maand = '0' + maand;
+    }
+    let dag = String(date.getDate());
+    while (dag.length < 2) {
+      dag = '0' + dag;
+    }
+    result = `${dag}-${maand}-${jaar}`;
+    //
+    let uren = String(date.getHours());
+    while (uren.length < 2) {
+      uren = '0' + uren;
+    }
+    let minuten = String(date.getMinutes());
+    while (minuten.length < 2) {
+      minuten = '0' + minuten;
+    }
+    result = `${dag}-${maand}-${jaar} ${uren}:${minuten}`;
+    return result;
+  }
+
   public static unknownOperation(req: Request, res: Response, next: NextFunction): void {
-    Logger.error(req,`${req.path}  ${req.method} ${JSON.stringify(req.query)} not implemented`);
+    Logger.error(req, `${req.path}  ${req.method} ${JSON.stringify(req.query)} not implemented`);
     res.status(501).send(req.method + ": " + JSON.stringify(req.query) + "not implemented");
   }
 
   public static async waitParam(req: Request, res: Response, next: NextFunction, naam: string) {
-      let result = '';
-      let connection = await db.waitConnection();
-      let sql = `
+    let result = '';
+    let connection = await db.waitConnection();
+    let sql = `
 select INHOUD
 from param
 where NAAM = '${naam}'`;
-      let rows = await db.waitQuery(connection, sql);
-      if (rows[0]) {
-        let row = rows[0];
-        result = row.INHOUD;
-      }
-      //
-      connection.release();
-      return(result);
+    let rows = await db.waitQuery(connection, sql);
+    if (rows[0]) {
+      let row = rows[0];
+      result = row.INHOUD;
+    }
+    //
+    connection.release();
+    return (result);
   }
 
   public static addAnd(where: string): string {

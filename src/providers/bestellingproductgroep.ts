@@ -96,7 +96,7 @@ from PRODUCT`;
 (productnummer in 
 (select productnummer from PRODUCTGROEPREGEL
 where productgroep = '${productgroep}'
-or productnummer like ('${productnummer}%'))`;
+or ucase(productnummer) like ucase('${productnummer}%'))`;
         } else if (productgroep != '') {
             if (where == '') {
                 where += ' where';
@@ -114,7 +114,7 @@ where productgroep = '${productgroep}')`;
                 where += ' and ';
             }
             where += `
-productnummer like ('${productnummer}%')`;
+ucase(productnummer) like ucase('${productnummer}%')`;
         } else {
             if (where == '') {
                 where += ' where';

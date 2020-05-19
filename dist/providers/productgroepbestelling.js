@@ -97,7 +97,7 @@ var Productgroepbestelling = /** @class */ (function (_super) {
                         sql = "\nselect * from \n(select *, \nvoorraad + inbestelling + inproductie + inbewerking + inorder as vrij,\ndate2screendate(mindatum) as MINDATUM_OMS\nfrom (\nselect \nid, \nproductnummer, \nproductnaam,\nlijn,\n'" + query.productgroep + "' as productgroep,\nifnull((select 'Ja' from PRODUCTGROEPREGEL \nwhere PRODUCTGROEPREGEL.productgroep = '' . query.productgroep . '' \nand PRODUCT.Productnummer = PRODUCTGROEPREGEL.Productnummer),'Nee') \nas ingroep,\n(select IsOnderdeel from PRODUCTGROEPREGEL \nwhere PRODUCTGROEPREGEL.productgroep = '" + query.productgroep + "' \nand PRODUCT.Productnummer = PRODUCTGROEPREGEL.Productnummer) \nas IsOnderdeel,\nifnull(voorraad,0) as voorraad,\nifnull(leverdagen,0) as leverdagen,\nifnull((select sum(voorraad) from PRODUCTVOORRAAD\nwhere PRODUCT.productnummer = PRODUCTVOORRAAD.productnummer \nand PRODUCTVOORRAAD.actie = 'VE'),0) \nas inorder,\nifnull((select sum(voorraad) from PRODUCTVOORRAAD \nwhere PRODUCT.productnummer = PRODUCTVOORRAAD.productnummer \nand PRODUCTVOORRAAD.actie = 'BE'),0) \nas inproductie,\nifnull((select sum(voorraad) from PRODUCTVOORRAAD \nwhere PRODUCT.productnummer = PRODUCTVOORRAAD.productnummer \nand PRODUCTVOORRAAD.actie = 'OP'),0) \nas inbewerking,\nifnull((select sum(voorraad) from PRODUCTVOORRAAD \nwhere PRODUCT.productnummer = PRODUCTVOORRAAD.productnummer \nand PRODUCTVOORRAAD.actie = 'BES'),0) \nas inbestelling,\nifnull((select min(actievoorraad) from PRODUCTVOORRAAD \nwhere PRODUCT.productnummer = PRODUCTVOORRAAD.productnummer),0) \nas minvoorraad,\nifnull((select min(voorraaddatumtijd) from PRODUCTVOORRAAD \nwhere PRODUCT.productnummer = PRODUCTVOORRAAD.productnummer \nand actievoorraad < 0),0) \nas mindatum,\ndate2screendate(voorraaddatumtijd) as VOORRAADDATUM\nfrom PRODUCT";
                         if ((query.productgroep != '') && (query.productnummer != '')) {
                             where += util_1.Util.addAnd(where);
-                            where += "(productnummer in (select productnummer from PRODUCTGROEPREGEL \nwhere productgroep = '" + query.productgroep + "')\nor productnummer like ('" + query.productnummer + "%'))";
+                            where += "(productnummer in (select productnummer from PRODUCTGROEPREGEL \nwhere productgroep = '" + query.productgroep + "')\nor ucase(productnummer) like ucase('" + query.productnummer + "%'))";
                         }
                         else if (query.productgroep != '') {
                             where += util_1.Util.addAnd(where);
@@ -105,7 +105,7 @@ var Productgroepbestelling = /** @class */ (function (_super) {
                         }
                         else if (query.productnummer != '') {
                             where += util_1.Util.addAnd(where);
-                            where += "productnummer like ('" + query.productnummer + "%')";
+                            where += "ucase(productnummer) like ucase('" + query.productnummer + "%')";
                         }
                         else {
                             where += util_1.Util.addAnd(where);

@@ -201,7 +201,7 @@ null
 from PRODUCT` ;
             if (query.productnummer != '') {
                 where += Util.addAnd(where);
-                where += `productnummer like ('${query.productnummer}%')`;
+                where += `ucase(productnummer) like ucase('${query.productnummer}%')`;
             }
             if (query.klant.trim() != '') {
                 where += Util.addAnd(where);

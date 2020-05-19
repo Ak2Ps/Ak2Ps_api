@@ -26,7 +26,7 @@ export class EmptyAction extends Action {
         return;
     }
 
-    protected async doQuery(req: Request, res: Response, next: NextFunction, options?: Dict) {
+    protected async doQuery(req: Request, res: Response, next: NextFunction) {
         //
         let query = db.fixQuery(req.query);
         res.crudConnection = await db.waitConnection();
@@ -39,7 +39,7 @@ export class EmptyAction extends Action {
         return;
     }
 
-    protected async doUpdate(req: Request, res: Response, next: NextFunction, options?: Dict) {
+    protected async doUpdate(req: Request, res: Response, next: NextFunction) {
         let body = db.fixBody(req.body);
         res.crudConnection = await db.waitConnection();
         //
@@ -54,7 +54,7 @@ where id = '${id}'`;
         return;
     }
 
-    protected async doInsert(req: Request, res: Response, next: NextFunction, options?: Dict) {
+    protected async doInsert(req: Request, res: Response, next: NextFunction) {
         let body = db.fixBody(req.body);
         res.crudConnection = await db.waitConnection();
         //
@@ -67,7 +67,7 @@ where id = '${id}'`;
         return;
     }
 
-    protected async doDelete(req: Request, res: Response, next: NextFunction, options?: Dict) {
+    protected async doDelete(req: Request, res: Response, next: NextFunction) {
         let body = db.fixBody(req.body);
         res.crudConnection = await db.waitConnection();
         //

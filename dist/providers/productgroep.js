@@ -72,7 +72,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(PRODUCTGROEP) like '%?%'",
+                sql: "ucase(PRODUCTGROEP) like ucase('%?%')",
             }
         ],
         fields: [
@@ -95,11 +95,11 @@ var dict = {
             },
             {
                 query: "productgroep",
-                sql: "PRODUCTGROEP like ('?%')",
+                sql: "ucase(PRODUCTGROEP) like ucase('?%')",
             },
             {
                 query: "metonderdelen",
-                sql: "METONDERDELEN like ('?%')",
+                sql: "ucase(METONDERDELEN) like ucase('?%')",
             }
         ],
         fields: [

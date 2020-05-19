@@ -151,7 +151,7 @@ var Planning = /** @class */ (function (_super) {
                                 where += "productnummer = '" + productnummer + "'";
                             }
                             else {
-                                where += "productnummer like '" + productnummer + "%'";
+                                where += "ucase(productnummer) like ucase('" + productnummer + "%')";
                             }
                         }
                         //
@@ -262,7 +262,7 @@ var Planning = /** @class */ (function (_super) {
                                 where += "productnummer = '" + query.productnummer + "'";
                             }
                             else {
-                                where += "productnummer like '" + query.productnummer + "%'";
+                                where += "ucase(productnummer) like ucase('" + query.productnummer + "%')";
                             }
                         }
                         if (query.open == 'Nee') {
@@ -352,7 +352,7 @@ var Planning = /** @class */ (function (_super) {
                                     where += "PRODUCTVOORRAAD.productnummer = '" + query.productnummer + "'";
                                 }
                                 else {
-                                    where += "PRODUCTVOORRAAD.productnummer like '" + query.productnummer + "%'";
+                                    where += "ucase(PRODUCTVOORRAAD.productnummer) like ucase('" + query.productnummer + "%')";
                                 }
                             }
                             if (query.sel44 == 'Nee') {
@@ -393,7 +393,7 @@ var Planning = /** @class */ (function (_super) {
                                     where += "PRODUCTVOORRAAD.productnummer = '" + query.productnummer + "'";
                                 }
                                 else {
-                                    where += "PRODUCTVOORRAAD.productnummer like '" + query.productnummer + "%'";
+                                    where += "ucase(PRODUCTVOORRAAD.productnummer) like ucase('" + query.productnummer + "%')";
                                 }
                             }
                             if (query.seltm != '') {

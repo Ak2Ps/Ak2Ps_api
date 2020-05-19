@@ -142,7 +142,7 @@ var Productbewerkingrap = /** @class */ (function (_super) {
                         sql = "\nselect * from (\nselect 'P' as TYPE, \nPRODUCTNUMMER,SOORT,\nif ((select max(productielijn) from PRODUCTLIJN lijnprdl where lijnprdl.productlijn = (select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer)) is not null,\n(select max(productielijn) from PRODUCTLIJN lijnprdl where lijnprdl.productlijn = (select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer)),\nif ((select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer) is not null,\n(select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer),\nnull\n)\n) as lijn\nfrom PRODUCT";
                         if (query.productnummer != '') {
                             where += util_1.Util.addAnd(where);
-                            where += "productnummer like ('" + query.productnummer + "%')";
+                            where += "ucase(productnummer) like ucase('" + query.productnummer + "%')";
                         }
                         if (query.klant.trim() != '') {
                             where += util_1.Util.addAnd(where);

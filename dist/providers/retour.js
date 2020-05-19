@@ -71,7 +71,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(REFERENTIE) like '%?%'",
+                sql: "ucase(REFERENTIE) like ucase('%?%')",
             }
         ],
         fields: [
@@ -94,11 +94,11 @@ var dict = {
             },
             {
                 query: "referentie",
-                sql: "REFERENTIE like ('%?%')",
+                sql: "ucase(REFERENTIE) like ucase('%?%')",
             },
             {
                 query: "klantreferentie",
-                sql: "KLANTREFERENTIE like ('%?%')",
+                sql: "ucase(KLANTREFERENTIE) like ucase('%?%')",
             },
             {
                 query: "klantnummer",
@@ -106,7 +106,7 @@ var dict = {
             },
             {
                 query: "productnummer",
-                sql: "PRODUCTNUMMER like ('%?%')",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             },
         ],
     },
@@ -242,7 +242,7 @@ var Retour = /** @class */ (function (_super) {
                         else {
                             prijsopgave = '0';
                         }
-                        sql = "\nupdate RETOUR set\nreferentie = '" + db_1.default.fix(req.body.REFERENTIE) + "',\nklantreferentie = '" + db_1.default.fix(req.body.KLANTREFERENTIE) + "',\nStartdatumtijd = screendate2date('" + db_1.default.fix(req.body.START) + "'),\nGereeddatumtijd = screendate2date('" + db_1.default.fix(req.body.GEREED) + "'),\nGarantie = (select min(garantie) from RETOURGARANTIE where upper(naam) like  upper('" + db_1.default.fix(req.body.GARANTIE_DESC) + "%')),\nkosten = '" + db_1.default.fix(req.body.KOSTEN_DESC) + "',\nType = (select min(retourtype) from RETOURTYPE where upper(naam) like  upper('" + db_1.default.fix(req.body.TYPE_DESC) + "%')),\nTermijn = (select min(retourtermijn) from RETOURTERMIJN where upper(naam) like  upper('" + db_1.default.fix(req.body.TERMIJN_DESC) + "%')),\nPrijsopgave = '" + prijsopgave + "'\nwhere id = '" + db_1.default.fix(id) + "'";
+                        sql = "\nupdate RETOUR set\nreferentie = '" + db_1.default.fix(req.body.REFERENTIE) + "',\nklantreferentie = '" + db_1.default.fix(req.body.KLANTREFERENTIE) + "',\nStartdatumtijd = screendate2date('" + db_1.default.fix(req.body.START) + "'),\nGereeddatumtijd = screendate2date('" + db_1.default.fix(req.body.GEREED) + "'),\nGarantie = (select min(garantie) from RETOURGARANTIE where ucase(naam) like  ucase('" + db_1.default.fix(req.body.GARANTIE_DESC) + "%')),\nkosten = '" + db_1.default.fix(req.body.KOSTEN_DESC) + "',\nType = (select min(retourtype) from RETOURTYPE where ucase(naam) like  ucase('" + db_1.default.fix(req.body.TYPE_DESC) + "%')),\nTermijn = (select min(retourtermijn) from RETOURTERMIJN where ucase(naam) like  ucase('" + db_1.default.fix(req.body.TERMIJN_DESC) + "%')),\nPrijsopgave = '" + prijsopgave + "'\nwhere id = '" + db_1.default.fix(id) + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 7:
                         result = _b.sent();
@@ -291,7 +291,7 @@ var Retour = /** @class */ (function (_super) {
                         // 0123456789012
                         voorvoegsel = req.ak2_app;
                         newref = jaar + '_0000';
-                        sql = "\nselect max(referentie) as REF \nfrom RETOUR \nwhere referentie like 'TR" + voorvoegsel + "_" + jaar + "_%'";
+                        sql = "\nselect max(referentie) as REF \nfrom RETOUR \nwhere ucase(referentie) like ucase('TR" + voorvoegsel + "_" + jaar + "_%')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 2:
                         rows = _b.sent();
@@ -304,7 +304,7 @@ var Retour = /** @class */ (function (_super) {
                             }
                             newref = 'TR' + voorvoegsel + "_" + jaar + '_' + strVlnr;
                         }
-                        sql = "\ninsert into RETOUR\n(referentie,klantreferentie,startdatumtijd,gereeddatumtijd,gebruiker,\nkosten,garantie,type,termijn,prijsopgave)\nvalues (\n'" + newref + "',\n'" + db_1.default.fix(req.body.KLANTREFERENTIE) + "',\nscreendate2date('" + db_1.default.fix(req.body.START) + "'),\nscreendate2date('" + db_1.default.fix(req.body.GEREED) + "'),\n'" + db_1.default.fix(req.ak2_user) + "',\n'" + db_1.default.fix(req.query.KOSTEN_DESC) + "',\n(select min(garantie) from RETOURGARANTIE where upper(naam) like  upper('" + db_1.default.fix(req.body.GARANTIE_DESC) + "%')),\n(select min(retourtype) from RETOURTYPE where upper(naam) like  upper('" + db_1.default.fix(req.body.TYPE_DESC) + "%')),\n(select min(retourtermijn) from RETOURTERMIJN where upper(naam) like  upper('" + db_1.default.fix(req.body.TERMIJN_DESC) + "%')),\nPrijsopgave = '" + prijsopgave + "')";
+                        sql = "\ninsert into RETOUR\n(referentie,klantreferentie,startdatumtijd,gereeddatumtijd,gebruiker,\nkosten,garantie,type,termijn,prijsopgave)\nvalues (\n'" + newref + "',\n'" + db_1.default.fix(req.body.KLANTREFERENTIE) + "',\nscreendate2date('" + db_1.default.fix(req.body.START) + "'),\nscreendate2date('" + db_1.default.fix(req.body.GEREED) + "'),\n'" + db_1.default.fix(req.ak2_user) + "',\n'" + db_1.default.fix(req.query.KOSTEN_DESC) + "',\n(select min(garantie) from RETOURGARANTIE where ucase(naam) like  ucase('" + db_1.default.fix(req.body.GARANTIE_DESC) + "%')),\n(select min(retourtype) from RETOURTYPE where ucase(naam) like  ucase('" + db_1.default.fix(req.body.TYPE_DESC) + "%')),\n(select min(retourtermijn) from RETOURTERMIJN where ucase(naam) like  ucase('" + db_1.default.fix(req.body.TERMIJN_DESC) + "%')),\nPrijsopgave = '" + prijsopgave + "')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 3:
                         rows = _b.sent();

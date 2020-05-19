@@ -21,7 +21,7 @@ const dict: Dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(PRODUCTNUMMER) like '%?%'",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             }
         ],
         fields: [
@@ -42,13 +42,9 @@ const dict: Dict = {
                 query: "id",
                 sql: "ID = ?",
             },
-            //{
-            //query: "productnummer",
-            //sql: "PRODUCTNUMMER like ('?%')",
-            //},
             {
                 query: "productnaam",
-                sql: "PRODUCTNAAM like ('%?%')",
+                sql: "ucase(PRODUCTNAAM) like ucase('%?%')",
             },
             {
                 query: "voorraad",
@@ -72,11 +68,11 @@ const dict: Dict = {
             },
             {
                 query: "soort",
-                sql: "SOORT like ('%?%')",
+                sql: "ucase(SOORT) like ucase('%?%')",
             },
             {
                 query: "lijn",
-                sql: "LIJN like ('%?%')",
+                sql: "ucase(LIJN) like ucase('%?%')",
             },
             {
                 query: "performance",
@@ -96,7 +92,7 @@ const dict: Dict = {
             },
             {
                 query: "locatie",
-                sql: "LOCATIE like ('%?%')",
+                sql: "ucase(LOCATIE) like ucase('%?%')",
             },
             {
                 query: "leveranciernummer",
@@ -104,7 +100,7 @@ const dict: Dict = {
             },
             {
                 query: "leverancierproductnummer",
-                sql: "LEVERANCIERPRODUCTNUMMER like ('?%')",
+                sql: "ucase(LEVERANCIERPRODUCTNUMMER) like ucase('?%')",
             }
         ],
         fields: [
@@ -317,7 +313,7 @@ export class Product extends Crud {
             if (req.query.is == '1') {
                 result += `productnummer = '${req.query.productnummer}'`;
             } else {
-                result += `productnummer like ('${req.query.productnummer}%')`;
+                result += `ucase(productnummer) like ucase('${req.query.productnummer}%')`;
             }
         }
         return result;

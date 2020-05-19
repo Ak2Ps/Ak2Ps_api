@@ -102,7 +102,7 @@ and (BEWERKING.startdatumtijd is null or BEWERKING.startdatumtijd >= screendate2
         //
         if (productnummer != '') {
             sql += `
-and BEWERKING.productnummer like ('${productnummer}%')`;
+and ucase(BEWERKING.productnummer) like ucase('${productnummer}%')`;
         }
         if (selR == 'Nee') {
             sql += `

@@ -84,7 +84,7 @@ var EmptyAction = /** @class */ (function (_super) {
             });
         });
     };
-    EmptyAction.prototype.doQuery = function (req, res, next, options) {
+    EmptyAction.prototype.doQuery = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var query, _a, sql, rows;
             return __generator(this, function (_b) {
@@ -106,7 +106,7 @@ var EmptyAction = /** @class */ (function (_super) {
             });
         });
     };
-    EmptyAction.prototype.doUpdate = function (req, res, next, options) {
+    EmptyAction.prototype.doUpdate = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, id, sql;
             return __generator(this, function (_b) {
@@ -131,7 +131,7 @@ var EmptyAction = /** @class */ (function (_super) {
             });
         });
     };
-    EmptyAction.prototype.doInsert = function (req, res, next, options) {
+    EmptyAction.prototype.doInsert = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, sql, result;
             return __generator(this, function (_b) {
@@ -154,7 +154,7 @@ var EmptyAction = /** @class */ (function (_super) {
             });
         });
     };
-    EmptyAction.prototype.doDelete = function (req, res, next, options) {
+    EmptyAction.prototype.doDelete = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var body, _a, id, sql;
             return __generator(this, function (_b) {

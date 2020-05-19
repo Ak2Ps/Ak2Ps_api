@@ -104,13 +104,13 @@ var Inkoop = /** @class */ (function (_super) {
                         result = '';
                         sql = "\nselect *, \ncase when leveranciercount = 1 then leveranciermin else '...' end as leverancier,\ndate2screendate(mindatumtijd) as MINDATUM\n\nfrom (\nselect concat('V_',PRODUCTVOORRAAD.actie) \nas type,\n(select OPMERKING from PRODUCTOPMERKING \nwhere PRODUCT.productnummer = PRODUCTOPMERKING.productnummer \nand PRODUCTOPMERKING.bron = 'INKOOP') \nas PRODUCTOPMERKING,\nPRODUCTVOORRAAD.id, \nPRODUCTVOORRAAD.productnummer, \nPRODUCT.productnaam,\ngetLijn(PRODUCT.productnummer)\nas lijn,\ncase when PRODUCTVOORRAAD.actie = 'VRD' then PRODUCTVOORRAAD.voorraad else null end \nas voorraad,\nifnull(PRODUCT.leverdagen,0) as leverdagen,\ncase when PRODUCTVOORRAAD.actie = 'VE' then PRODUCTVOORRAAD.voorraad else null end \nas inorder,\ncase when PRODUCTVOORRAAD.actie = 'BE' then PRODUCTVOORRAAD.voorraad else null end \nas inproductie,\ncase when PRODUCTVOORRAAD.actie = 'OP' then PRODUCTVOORRAAD.voorraad else null end \nas inbewerking,\ncase when PRODUCTVOORRAAD.actie = 'BES' then PRODUCTVOORRAAD.voorraad else null end \nas inbestelling,\nPRODUCTVOORRAAD.actievoorraad as vrij,\n(select min(actievoorraad) from PRODUCTVOORRAAD MA \nwhere MA.productnummer = PRODUCTVOORRAAD.productnummer) as minvrd,\n(select min(voorraaddatumtijd) from PRODUCTVOORRAAD MA \nwhere MA.productnummer = PRODUCTVOORRAAD.productnummer \nand MA.actievoorraad < 0) as mindatumtijd,\n(select count(*) from BESTELLING \nwhere BESTELLING.productnummer = PRODUCTVOORRAAD.productnummer) \nas leveranciercount,\n(select min(leveranciernummer) from BESTELLING \nwhere BESTELLING.productnummer = PRODUCTVOORRAAD.productnummer) \nas leveranciermin,\ndate2screendate(PRODUCTVOORRAAD.voorraaddatumtijd) as VOORRAADDATUM,\nPRODUCTVOORRAAD.voorraaddatumtijd\nfrom PRODUCTVOORRAAD,PRODUCT\nwhere PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer";
                         if ((productgroep != '') && (productnummer != '')) {
-                            where += "\nand (PRODUCT.productnummer in \n(select productnummer from PRODUCTGROEPREGEL \nwhere productgroep = '" + productgroep + "')\nor PRODUCT.productnummer like ('" + productnummer + "%'))";
+                            where += "\nand (PRODUCT.productnummer in \n(select productnummer from PRODUCTGROEPREGEL \nwhere productgroep = '" + productgroep + "')\nor ucase(PRODUCT.productnummer) like ucase('" + productnummer + "%'))";
                         }
                         else if (productgroep != '') {
                             where += "\nand PRODUCT.productnummer in \n(select productnummer from PRODUCTGROEPREGEL \nwhere productgroep = '" + productgroep + "')";
                         }
                         else if (productnummer != '') {
-                            where += "\nand PRODUCT.productnummer like ('" + productnummer + "%')";
+                            where += "\nand ucase(PRODUCT.productnummer) like ucase('" + productnummer + "%')";
                         }
                         //
                         if (leverancier != '') {

@@ -82,7 +82,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(BEWERKINGSNUMMER) like '%?%'",
+                sql: "ucase(BEWERKINGSNUMMER) like ucase('%?%')",
             }
         ],
         fields: [
@@ -109,11 +109,11 @@ var dict = {
             },
             {
                 query: "bewerkingsnummer",
-                sql: "BEWERKINGSNUMMER like ('%?%')",
+                sql: "ucase(BEWERKINGSNUMMER) like ucase('%?%')",
             },
             {
                 query: "productnummer",
-                sql: "PRODUCTNUMMER like ('%?%')",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             },
             {
                 query: "bewerkingflowid",
@@ -121,7 +121,7 @@ var dict = {
             },
             {
                 query: "afdeling",
-                sql: "AFDELING like ('%?%')",
+                sql: "ucase(AFDELING) like ucase('%?%')",
             },
             {
                 query: "gebruiker",
@@ -129,7 +129,7 @@ var dict = {
             },
             {
                 query: "bewerkingsoort",
-                sql: "BEWERKINGSOORT like ('%?%')",
+                sql: "ucase(BEWERKINGSOORT) like ucase('%?%')",
             },
             {
                 query: "startdatumtijd",
@@ -145,7 +145,7 @@ var dict = {
             },
             {
                 query: "aantaluitval",
-                sql: "AANTALUITVAL like ('%?%')",
+                sql: "ucase(AANTALUITVAL) like ucase('%?%')",
             },
             {
                 query: "tijd",

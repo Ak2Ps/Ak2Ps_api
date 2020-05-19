@@ -72,7 +72,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(PRODUCTNUMMER) like '%?%'",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             }
         ],
         fields: [
@@ -95,11 +95,11 @@ var dict = {
             },
             {
                 query: "referentie",
-                sql: "REFERENTIE like ('%?%')",
+                sql: "ucase(REFERENTIE) like ucase('%?%')",
             },
             {
                 query: "productnummer",
-                sql: "PRODUCTNUMMER like ('%?%')",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             },
             {
                 query: "aantal",
@@ -107,11 +107,11 @@ var dict = {
             },
             {
                 query: "klantproductnummer",
-                sql: "KLANTPRODUCTNUMMER like ('%?%')",
+                sql: "ucase(KLANTPRODUCTNUMMER) like ucase('%?%')",
             },
             {
                 query: "serienummer",
-                sql: "SERIENUMMER like ('%?%')",
+                sql: "ucase(SERIENUMMER) like ucase('%?%')",
             },
             {
                 query: "productiedatumtijd",
@@ -119,7 +119,7 @@ var dict = {
             },
             {
                 query: "opmerking",
-                sql: "OPMERKING like ('%?%')",
+                sql: "ucase(OPMERKING) like ucase('%?%')",
             }
         ],
         fields: [

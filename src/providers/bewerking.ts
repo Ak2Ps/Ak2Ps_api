@@ -268,7 +268,7 @@ bewerkingsnummer = '${bewerkingsnummer}'`;
 productnummer = '${productnummer}'`;
             } else {
                 where += `
-productnummer like ('${productnummer}%')`;
+ucase(productnummer) like ucase('${productnummer}%')`;
             }
         }
         if (open == 'Nee') {

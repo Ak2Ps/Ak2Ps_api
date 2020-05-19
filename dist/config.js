@@ -41,6 +41,9 @@ var Config = /** @class */ (function () {
             Config.show_warning = true;
             Config.show_info = true;
             Config.show_sql = false;
+            Config.scheduleinterval = 60;
+            Config.backuptime = "01:30";
+            Config.exacttime = "01:50";
             //
             Config.ecmserver = "192.168.43.14";
             Config.ecmport = 8080;
@@ -72,6 +75,9 @@ var Config = /** @class */ (function () {
             Config.show_warning = true;
             Config.show_info = true;
             Config.show_sql = false;
+            Config.scheduleinterval = 60;
+            Config.backuptime = "00:30";
+            Config.exacttime = "00:50";
             //
             Config.ecmserver = "192.168.43.14";
             Config.ecmport = 8080;
@@ -105,6 +111,9 @@ var Config = /** @class */ (function () {
         Config.show_warning = json.show_warning || Config.show_warning;
         Config.show_info = json.show_info || Config.show_info;
         Config.show_sql = json.show_sql || Config.show_sql;
+        Config.scheduleinterval = json.scheduleinterval || Config.scheduleinterval;
+        Config.backuptime = json.backuptime || Config.backuptime;
+        Config.exacttime = json.exacttime || Config.exacttime;
         //
         Config.ecmserver = json.ecmserver || Config.ecmserver;
         Config.ecmport = json.ecmport || Config.ecmport;
@@ -178,6 +187,7 @@ var Config = /** @class */ (function () {
             show_warning: Config.show_warning,
             show_info: Config.show_info,
             show_sql: Config.show_sql,
+            scheduleinterval: Config.scheduleinterval,
             //
             ecmserver: Config.ecmserver,
             ecmport: Config.ecmport,

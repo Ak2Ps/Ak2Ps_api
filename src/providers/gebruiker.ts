@@ -51,7 +51,7 @@ from GEBRUIKER
 where gebruiker not in ('Admin','Gast','Mod')
 and aktief = 1`;
     if (value) {
-      sql += ` and ucase(naam) like '${value}'`;
+      sql += ` and ucase(naam) like ucase('${value}')`;
     }
     sql += ` order by ucase(naam);`;
     return sql;

@@ -29,7 +29,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(menu) like '%?%'",
+                sql: "ucase(menu) like ucase('%?%')",
             }
         ],
         fields: [
@@ -52,7 +52,7 @@ var dict = {
             },
             {
                 query: "menu",
-                sql: "MENU like ('?%')",
+                sql: "ucase(MENU) like ucase('?%')",
             },
             {
                 query: "volgnummer",
@@ -60,15 +60,15 @@ var dict = {
             },
             {
                 query: "omschrijving",
-                sql: "OMSCHRIJVING like ('?%')",
+                sql: "ucase(OMSCHRIJVING) like ucase('?%')",
             },
             {
                 query: "submenu",
-                sql: "SUBMENU like ('?%')",
+                sql: "ucase(SUBMENU) like ucase('?%')",
             },
             {
                 query: "link",
-                sql: "LINK like ('?%')",
+                sql: "ucase(LINK) like ucase('?%')",
             }
         ],
         fields: [

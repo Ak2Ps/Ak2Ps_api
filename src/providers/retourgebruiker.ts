@@ -15,7 +15,7 @@ select: {
    where: [
        {
            query: "value",
-           sql: "ucase(NAAM) like '%?%'",
+           sql: "ucase(NAAM) like ucase('%?%')",
        }
    ],
    fields: [
@@ -38,11 +38,11 @@ query: {
        },
        {
        query: "gebruiker",
-       sql: "GEBRUIKER like ('?%')",
+       sql: "ucase(GEBRUIKER) like ucase('?%')",
        },
        {
        query: "naam",
-       sql: "NAAM like ('?%')",
+       sql: "ucase(NAAM) like ucase('?%')",
        }
    ],
    fields: [

@@ -28,7 +28,7 @@ const dict: Dict = {
     where: [
       {
         query: "naam",
-        sql: "naam like ('%?%')"
+        sql: "ucase(naam) like ucase('%?%')"
       },
       {
         query: "uitval",

@@ -38,7 +38,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "PRODUCTNUMMER like '%?%'",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             }
         ],
         fields: [
@@ -61,11 +61,11 @@ var dict = {
             },
             {
                 query: "status",
-                sql: "STATUS like ('%?%')",
+                sql: "ucase(STATUS) like ucase('%?%')",
             },
             {
                 query: "lijststatus",
-                sql: "LIJSTSTATUS like ('%?%')",
+                sql: "ucase(LIJSTSTATUS) like ucase('%?%')",
             },
             {
                 query: "startdatumtijd",
@@ -73,7 +73,7 @@ var dict = {
             },
             {
                 query: "productnummer",
-                sql: "PRODUCTNUMMER like ('?%')",
+                sql: "ucase(PRODUCTNUMMER) like ucase('?%')",
             },
             {
                 query: "bestelling",
@@ -93,11 +93,11 @@ var dict = {
             },
             {
                 query: "leveranciernaam",
-                sql: "LEVERANCIERNAAM like ('%?%')",
+                sql: "ucase(LEVERANCIERNAAM) like ucase('%?%')",
             },
             {
                 query: "leverancierproductnummer",
-                sql: "LEVERANCIERPRODUCTNUMMER like ('%?%')",
+                sql: "ucase(LEVERANCIERPRODUCTNUMMER) like ucase('%?%')",
             },
             {
                 query: "bestelnummer",
@@ -105,7 +105,7 @@ var dict = {
             },
             {
                 query: "regelnummer",
-                sql: "REGELNUMMER like ('%?%')",
+                sql: "ucase(REGELNUMMER) like ucase('%?%')",
             },
             {
                 query: "geprintdatumtijd",
@@ -125,7 +125,7 @@ var dict = {
             },
             {
                 query: "contactpersoon",
-                sql: "CONTACTPERSOON like ('%?%')",
+                sql: "ucase(CONTACTPERSOON) like ucase('%?%')",
             },
             {
                 query: "inkoopprijs",
@@ -133,7 +133,7 @@ var dict = {
             },
             {
                 query: "opmerking",
-                sql: "OPMERKING like ('%?%')",
+                sql: "ucase(OPMERKING) like ucase('%?%')",
             }
         ],
         fields: [

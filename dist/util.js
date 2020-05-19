@@ -106,6 +106,65 @@ var Util = /** @class */ (function () {
         result = sign + struur + ":" + strminuten;
         return result;
     };
+    Util.Date2Screentime = function (date) {
+        var result = '';
+        var uren = String(date.getHours());
+        while (uren.length < 2) {
+            uren = '0' + uren;
+        }
+        var minuten = String(date.getMinutes());
+        while (minuten.length < 2) {
+            minuten = '0' + minuten;
+        }
+        result = uren + ":" + minuten;
+        return result;
+    };
+    Util.Date2Screendate = function (date) {
+        var result = '';
+        //
+        var jaar = String(date.getFullYear());
+        while (jaar.length < 4) {
+            jaar = '0' + jaar;
+        }
+        var maand = String(date.getMonth() + 1);
+        while (maand.length < 2) {
+            maand = '0' + maand;
+        }
+        var dag = String(date.getDate());
+        while (dag.length < 2) {
+            dag = '0' + dag;
+        }
+        result = dag + "-" + maand + "-" + jaar;
+        return result;
+    };
+    Util.Date2Screendatetime = function (date) {
+        var result = '';
+        //
+        var jaar = String(date.getFullYear());
+        while (jaar.length < 4) {
+            jaar = '0' + jaar;
+        }
+        var maand = String(date.getMonth() + 1);
+        while (maand.length < 2) {
+            maand = '0' + maand;
+        }
+        var dag = String(date.getDate());
+        while (dag.length < 2) {
+            dag = '0' + dag;
+        }
+        result = dag + "-" + maand + "-" + jaar;
+        //
+        var uren = String(date.getHours());
+        while (uren.length < 2) {
+            uren = '0' + uren;
+        }
+        var minuten = String(date.getMinutes());
+        while (minuten.length < 2) {
+            minuten = '0' + minuten;
+        }
+        result = dag + "-" + maand + "-" + jaar + " " + uren + ":" + minuten;
+        return result;
+    };
     Util.unknownOperation = function (req, res, next) {
         logger_1.Logger.error(req, req.path + "  " + req.method + " " + JSON.stringify(req.query) + " not implemented");
         res.status(501).send(req.method + ": " + JSON.stringify(req.query) + "not implemented");

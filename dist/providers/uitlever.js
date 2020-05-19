@@ -111,7 +111,7 @@ var Uitlever = /** @class */ (function (_super) {
                         }
                         if (query.productnummer != '') {
                             vraagwhere += util_1.Util.addAnd(vraagwhere);
-                            vraagwhere += "productnummer like '" + query.productnummer + "%";
+                            vraagwhere += "ucase(productnummer) like ucase('" + query.productnummer + "%')";
                         }
                         if (query.einddatum != '') {
                             vraagwhere += util_1.Util.addAnd(vraagwhere);
@@ -123,7 +123,7 @@ var Uitlever = /** @class */ (function (_super) {
                         //
                         if (query.productnummer != '') {
                             where += util_1.Util.addAnd(where);
-                            where += "productnummer like '" + query.productnummer + "%'";
+                            where += "ucase(productnummer) like ucase('" + query.productnummer + "%')";
                         }
                         if (query.productgroep != '') {
                             where += util_1.Util.addAnd(where);
@@ -196,7 +196,7 @@ var Uitlever = /** @class */ (function (_super) {
                         if (query.zoekcode) {
                             if (query.zoekcode != '') {
                                 where += util_1.Util.addAnd(where);
-                                where = "klantzoekcode like '" + query.zoekcode + "%'";
+                                where = "ucase(klantzoekcode) like ucase('" + query.zoekcode + "%')";
                             }
                         }
                         sql += "\n" + where;

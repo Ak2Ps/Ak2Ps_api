@@ -86,7 +86,7 @@ inner join PRODUCT
 on (PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer)`;
         if (query.productnummer != '') {
             where += Util.addAnd(where);
-            where += `PRODUCTVOORRAAD.productnummer like ('${query.productnummer}%')`;
+            where += `ucase(PRODUCTVOORRAAD.productnummer) like ucase('${query.productnummer}%')`;
         }
         if (query.klant.trim() != '') {
             where += `PRODUCTVOORRAAD.productnummer in 
@@ -108,7 +108,7 @@ order by PRODUCT.LIJN,PRODUCTVOORRAAD.voorraaddatumtijd,PRODUCTVOORRAAD.productn
 ) BASE`;
         if ((query.lijn != '') && (query.lijn != '0.00')) {
             sql += `
-where base.lijn like ('%${query.lijn}%')`;
+where ucase(base.lijn) like ucase('%${query.lijn}%')`;
         }
         //
         let rows = await db.waitQuery(res.crudConnection, sql);

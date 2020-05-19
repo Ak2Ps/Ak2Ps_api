@@ -9,6 +9,7 @@ import { Template } from "./providers/template";
 import { Ecmtester } from "./providers/ecmtester";
 import { Patch } from "./providers/patch";
 import { CreateCompareSql } from "./providers/createcomparesql";
+import { Schedule } from "./providers/schedule";
 //
 import { Exactinterface } from "./providers/exactinterface";
 //
@@ -93,10 +94,7 @@ import { Productbewerkingrap } from './providers/productbewerkingrap';
 import { Productuitvalrap } from './providers/productuitvalrap';
 export class Router {
   //
-  private template: Template;
-  private ecmtester: Ecmtester;
-  private patch: Patch;
-  private createcomparesql: CreateCompareSql;
+  private schedule: Schedule;
   //
   private exactinterface: Exactinterface;
   //
@@ -184,10 +182,7 @@ export class Router {
     //
     Logger.info("Creating Router");
     //
-    this.template = new Template();
-    this.ecmtester = new Ecmtester();
-    this.patch = new Patch();
-    this.createcomparesql = new CreateCompareSql();
+    this.schedule = new Schedule();
     //
     this.exactinterface = new Exactinterface();
     //
@@ -280,13 +275,26 @@ export class Router {
     //
     //
     this.app.route('/').all(Util.isRunning);
+    this.app.route('/schedule').all((req, res, next) => this.schedule.routes(req, res, next));
     //
     // Extra's
     //
-    this.app.route('/generate').all(this.template.generate);
-    this.app.route('/ecmtester.php').all((req, res, next) => this.ecmtester.routes(req, res, next));
-    this.app.route('/patch.php').all((req, res, next) => this.patch.routes(req, res, next));
-    this.app.route('/createcomparesql').all((req, res, next) => this.createcomparesql.routes(req, res, next));
+    this.app.route('/generate').all((req, res, next) => {
+      let template = new Template();
+      template.generate(req, res, next)
+    });
+    this.app.route('/ecmtester.php').all((req, res, next) => {
+      let ecmtester = new Ecmtester();
+      ecmtester.routes(req, res, next)
+    });
+    this.app.route('/patch.php').all((req, res, next) => {
+      let patch = new Patch();
+      patch.routes(req, res, next)
+    });
+    this.app.route('/createcomparesql').all((req, res, next) => {
+      let createcomparesql = new CreateCompareSql();
+      createcomparesql.routes(req, res, next);
+    });
     //
     // static serve some files
     //
@@ -386,93 +394,7 @@ export class Router {
     this.app.route('*').all(Util.unknownOperation);
   }
 }
-
 /*
-ok afdeling.php
-ok afleveradres.php
-- application.php = Config
-ok bb.php
-ok bestelling.php
-ok bestellingkop.php
-* bestellingkoprap.php
-ok bestellingproductgroep.php = productgroepbestelling.php
-ok bestellingtelaat.php
-ok bewerking.php
-ok bewerkingflow.php
-ok bewerkingflowbewerk.php
-ok bewerkingfloweindcontrole.php
-ok bewerkingflowperformance_inc.php
-ok bewerkingflowpick.php
-ok bewerkingrap.php
-ok bewerkingsoort.php
-ok bewerkingtijd.php
-ok bewerkinguitval.php
-ok bewerkinguitvalrap.php
-ok bewerkingverschil.php
-ok calender.php
-- config.php = Config
-ok contact.php
-- db.php = db.ts
-* exactclient.php
-frmUpload.php
-ok gebruiker.php
-ok gebruikerrap.php
-ok gebruikershift.php
-ok gebruikertijd.php
-ok inkoop.php
-ok janee.php
-ok janeealle.php
-ok klant.php
-ok layout.php
-ok leverancier.php
-ok lijn.php
-ok loginfo.php
-ok logistiek.php
-ok logon.php
-ok menu.php
-ok menuregel.php
-ok mnl.php
-ok onderdeel.php
-ok param.php
-ok patch.php
-ok performance.php
-- phpinfo.php nvt
-ok planning.php
-ok plansoort.php
-ok product.php
-ok productbewerkingrap.php
-ok productgroep.php
-* productgroepbestelling.php = bestellingproductgroep.php
-ok productlijn.php
-ok productuitvalrap.php
-ok productvoorraad.php
-ok productvraag.php
-ok retour.php
-ok retouractie.php
-ok retouractietype.php
-ok retourgarantie.php
-ok retourgebruiker.php
-ok retourklant.php
-ok retourontvangst.php
-ok retourproduct.php
-ok retourrap.php
-ok retourtermijn.php
-ok retourtype.php
-ok retourverzend.php
-ok retourverzendleverancier.php
-- serviceImportPrint.php nvt
-ok soort.php (wordt nog nergens gebruiker)
-- test.php nvt
-- testmail.php nvt (php mail tester)
-ok toolbox.php
-ok uitlever.php
-ok uitval.php
-ok uitvalsoort.php
-* upload.php
-ok voorraad.php
-//
-//
-//
 todo:
 exactclient.php
 frmUpload.php

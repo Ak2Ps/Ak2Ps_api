@@ -107,7 +107,7 @@ var Productuitvalrap = /** @class */ (function (_super) {
                         where += "not ISNULL(BEWERKING.einddatumtijd)\nand startdatumtijd >= screendate2date('" + startstatistiek + "')";
                         if (query.productnummer != '') {
                             where += util_1.Util.addAnd(where);
-                            where += "PRODUCT.productnummer like ('" + query.productnummer + "%')";
+                            where += "ucase(PRODUCT.productnummer) like ucase('" + query.productnummer + "%')";
                         }
                         if (query.klant.trim() != '') {
                             where += util_1.Util.addAnd(where);

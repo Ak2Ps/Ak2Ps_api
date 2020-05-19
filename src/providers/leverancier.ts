@@ -15,7 +15,7 @@ select: {
    where: [
        {
            query: "value",
-           sql: "ucase(concat(leveranciernummer,': ',naam)) like '%?%'",
+           sql: "ucase(concat(leveranciernummer,': ',naam)) like ucase('%?%')",
        }
    ],
    fields: [
@@ -38,51 +38,51 @@ query: {
        },
        {
        query: "leveranciernummer",
-       sql: "LEVERANCIERNUMMER like ('?%')",
+       sql: "ucase(LEVERANCIERNUMMER) like ucase('?%')",
        },
        {
        query: "naam",
-       sql: "NAAM like ('?%')",
+       sql: "ucase(NAAM) like ucase('?%')",
        },
        {
        query: "zoekcode",
-       sql: "ZOEKCODE like ('?%')",
+       sql: "ucase(ZOEKCODE) like ucase('?%')",
        },
        {
        query: "adres",
-       sql: "ADRES like ('?%')",
+       sql: "ucase(ADRES) like ucase('?%')",
        },
        {
        query: "woonplaats",
-       sql: "WOONPLAATS like ('?%')",
+       sql: "ucase(WOONPLAATS) like ucase('?%')",
        },
        {
        query: "postcode",
-       sql: "POSTCODE like ('?%')",
+       sql: "ucase(POSTCODE) like ucase('?%')",
        },
        {
        query: "telefoon",
-       sql: "TELEFOON like ('?%')",
+       sql: "ucase(TELEFOON) like ucase('?%')",
        },
        {
        query: "fax",
-       sql: "FAX like ('?%')",
+       sql: "ucase(FAX) like ucase('?%')",
        },
        {
        query: "email",
-       sql: "EMAIL like ('?%')",
+       sql: "ucase(EMAIL) like ucase('?%')",
        },
        {
        query: "categorie",
-       sql: "CATEGORIE like ('?%')",
+       sql: "ucase(CATEGORIE) like ucase('?%')",
        },
        {
        query: "contact",
-       sql: "CONTACT like ('?%')",
+       sql: "ucase(CONTACT) like ucase('?%')",
        },
        {
        query: "land",
-       sql: "LAND like ('?%')",
+       sql: "ucase(LAND) like ucase('?%')",
        },
        {
        query: "leverdagen",

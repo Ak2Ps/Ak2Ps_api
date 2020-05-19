@@ -118,7 +118,7 @@ var Productvoorraad = /** @class */ (function (_super) {
                         sql = "\nselect * \nfrom (\nselect \nPRODUCTVOORRAAD.id, \nPRODUCTVOORRAAD.productnummer,\nif ((select max(productielijn) from PRODUCTLIJN lijnprdl where lijnprdl.productlijn = (select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer)) is not null,\n(select max(productielijn) from PRODUCTLIJN lijnprdl where lijnprdl.productlijn = (select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer)),\nif ((select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer) is not null,\n(select max(lijn) from PRODUCT lijnprd where lijnprd.productnummer = PRODUCT.productnummer),\nnull\n)\n) as lijn,\nPRODUCTVOORRAAD.voorraad,\nPRODUCTVOORRAAD.actienummer,\nPRODUCTVOORRAAD.actie, \nPRODUCTVOORRAAD.actieomschrijving, \nPRODUCTVOORRAAD.actievoorraad,\nPRODUCTVOORRAAD.onderdelen, \nPRODUCTVOORRAAD.tebestellen, \nPRODUCTVOORRAAD.besteld,\ndate2screendate(PRODUCTVOORRAAD.voorraaddatumtijd) as VOORRAADDATUM,\ndate2screendate(PRODUCTVOORRAAD.actiedatumtijd) as ACTIEDATUM,\nconcat(date2screendate(PRODUCTVOORRAAD.beperkdatumtijd),' ',beperknummer) as KURK\nfrom PRODUCTVOORRAAD \ninner join PRODUCT \non (PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer)";
                         if (query.productnummer != '') {
                             where += util_1.Util.addAnd(where);
-                            where += "PRODUCTVOORRAAD.productnummer like ('" + query.productnummer + "%')";
+                            where += "ucase(PRODUCTVOORRAAD.productnummer) like ucase('" + query.productnummer + "%')";
                         }
                         if (query.klant.trim() != '') {
                             where += "PRODUCTVOORRAAD.productnummer in \n(select productnummer from PRODUCTVRAAG \nwhere klantnummer = trim('" + query.klant + "'))";
@@ -134,7 +134,7 @@ var Productvoorraad = /** @class */ (function (_super) {
                         //
                         sql += "\n" + where + "\norder by PRODUCT.LIJN,PRODUCTVOORRAAD.voorraaddatumtijd,PRODUCTVOORRAAD.productnummer,PRODUCTVOORRAAD.actievoorraad desc,PRODUCTVOORRAAD.id\n) BASE";
                         if ((query.lijn != '') && (query.lijn != '0.00')) {
-                            sql += "\nwhere base.lijn like ('%" + query.lijn + "%')";
+                            sql += "\nwhere ucase(base.lijn) like ucase('%" + query.lijn + "%')";
                         }
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 2:

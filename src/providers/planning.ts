@@ -81,7 +81,7 @@ export class Planning extends Crud {
             if (Number(is) == 1) {
                 where += `productnummer = '${productnummer}'`;
             } else {
-                where += `productnummer like '${productnummer}%'`;
+                where += `ucase(productnummer) like ucase('${productnummer}%')`;
             }
         }
         //
@@ -256,7 +256,7 @@ alter table berekening add index berekening_i1(productnummer)`;
             if (Number(query.is) == 1) {
                 where += `productnummer = '${query.productnummer}'`;
             } else {
-                where += `productnummer like '${query.productnummer}%'`;
+                where += `ucase(productnummer) like ucase('${query.productnummer}%')`;
             }
         }
         if (query.open == 'Nee') {
@@ -529,7 +529,7 @@ inner join PRODUCT on (PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer)`;
                 if (Number(query.is) == 1) {
                     where += `PRODUCTVOORRAAD.productnummer = '${query.productnummer}'`;
                 } else {
-                    where += `PRODUCTVOORRAAD.productnummer like '${query.productnummer}%'`;
+                    where += `ucase(PRODUCTVOORRAAD.productnummer) like ucase('${query.productnummer}%')`;
                 }
             }
             if (query.sel44 == 'Nee') {
@@ -626,7 +626,7 @@ on (PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer)`;
                 if (Number(query.is) == 1) {
                     where += `PRODUCTVOORRAAD.productnummer = '${query.productnummer}'`;
                 } else {
-                    where += `PRODUCTVOORRAAD.productnummer like '${query.productnummer}%'`;
+                    where += `ucase(PRODUCTVOORRAAD.productnummer) like ucase('${query.productnummer}%')`;
                 }
             }
             if (query.seltm != '') {

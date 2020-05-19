@@ -34,7 +34,7 @@ var dict = {
         where: [
             {
                 query: "value",
-                sql: "ucase(PRODUCTNUMMER) like '%?%'",
+                sql: "ucase(PRODUCTNUMMER) like ucase('%?%')",
             }
         ],
         fields: [
@@ -57,11 +57,11 @@ var dict = {
             },
             {
                 query: "productnummer",
-                sql: "PRODUCTNUMMER like ('?%')",
+                sql: "ucase(PRODUCTNUMMER) like ucase('?%')",
             },
             {
                 query: "onderdeelnummer",
-                sql: "ONDERDEELNUMMER like ('%?%')",
+                sql: "ucase(ONDERDEELNUMMER) like ucase('%?%')",
             },
             {
                 query: "faktor",

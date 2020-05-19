@@ -213,7 +213,7 @@ and startdatumtijd >= screendate2date('${startstatistiek}')`;
             } else {
                 where += `\nand `;
             }
-            where += `PRODUCT.productnummer like ('${productnummer}%')`;
+            where += `ucase(PRODUCT.productnummer) like ucase('${productnummer}%')`;
         }
         if (klant.trim() != '') {
             if (where == '') {
