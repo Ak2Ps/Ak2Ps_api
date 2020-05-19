@@ -1189,7 +1189,7 @@ var Toolbox = /** @class */ (function () {
                             msg = 'Logistiekbewerkingen waren compleet, geen toevoegingen nodig ...';
                         }
                         else {
-                            msg = "{$tlrow} logistiekbewerkingen toegevoegd ...";
+                            msg = tlrow + " logistiekbewerkingen toegevoegd ...";
                         }
                         _c.label = 11;
                     case 11:

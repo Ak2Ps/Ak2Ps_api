@@ -164,7 +164,7 @@ var Schedule = /** @class */ (function (_super) {
     };
     Schedule.prototype.waitImport = function (action) {
         return __awaiter(this, void 0, void 0, function () {
-            var message, result, data, thisPath, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, Start;
+            var message, result, data, thisPath, All, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, Start, tlcycle;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -174,6 +174,7 @@ var Schedule = /** @class */ (function (_super) {
                             message: message
                         };
                         thisPath = '';
+                        All = 0;
                         OperationalOnly = 0;
                         BestellingOnly = 0;
                         BewerkingOnly = 0;
@@ -189,7 +190,7 @@ var Schedule = /** @class */ (function (_super) {
                             success: "true",
                             message: "Too early for import (" + config_1.Config.exacttime + ") ..."
                         };
-                        return [3 /*break*/, 22];
+                        return [3 /*break*/, 59];
                     case 1:
                         if (!fs.existsSync(curdir + "/" + thisFilename)) return [3 /*break*/, 2];
                         result = {
@@ -197,11 +198,12 @@ var Schedule = /** @class */ (function (_super) {
                             success: "true",
                             message: "Import " + thisFilename + " already made ..."
                         };
-                        return [3 /*break*/, 22];
+                        return [3 /*break*/, 59];
                     case 2:
                         Start = 1;
                         switch (Number(action)) {
                             case 0:
+                                All = 1;
                                 break;
                             case 1:
                                 OperationalOnly = 1;
@@ -221,10 +223,14 @@ var Schedule = /** @class */ (function (_super) {
                             default:
                                 Start = 0;
                         }
-                        if (!(Start == 1)) return [3 /*break*/, 21];
-                        return [4 /*yield*/, this.cleanLog()];
-                    case 3:
+                        if (!(Start == 1)) return [3 /*break*/, 58];
+                        //
                         // cleanLog
+                        //
+                        thisPath = "/toolbox.php?app=" + config_1.Config.app
+                            + "&action=cleanlog";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 3:
                         data = _a.sent();
                         try {
                             if (data.items[0].MSG == '') {
@@ -237,21 +243,27 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += JSON.stringify(error);
                         }
-                        if (!(OperationalOnly == 1)) return [3 /*break*/, 4];
-                        return [3 /*break*/, 21];
-                    case 4:
-                        if (!(BestellingOnly == 1)) return [3 /*break*/, 5];
-                        return [3 /*break*/, 21];
-                    case 5:
-                        if (!(BewerkingOnly == 1)) return [3 /*break*/, 6];
-                        return [3 /*break*/, 21];
-                    case 6:
-                        if (!(OrderOnly == 1)) return [3 /*break*/, 7];
-                        return [3 /*break*/, 21];
-                    case 7:
-                        if (!(CalcOnly == 1)) return [3 /*break*/, 8];
-                        return [3 /*break*/, 21];
-                    case 8:
+                        //
+                        //
+                        //
+                        if (OperationalOnly == 1) {
+                            //me.getBESTELLING();
+                        }
+                        else if (BestellingOnly == 1) {
+                            //me.getBESTELLING();
+                        }
+                        else if (BewerkingOnly == 1) {
+                            //me.getBEWERK();
+                        }
+                        else if (OrderOnly == 1) {
+                            //me.getORDER();
+                        }
+                        else if (CalcOnly == 1) {
+                            //me.fase0();
+                        }
+                        else {
+                        }
+                        if (!(All == 1)) return [3 /*break*/, 6];
                         //
                         // getLEVERANCIER
                         //
@@ -261,7 +273,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&topic=Accounts"
                             + "&outfile=import/exactaccounts.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 9:
+                    case 4:
                         data = _a.sent();
                         try {
                             message += "\nLeverancier: " + data.msg + "<br>\n";
@@ -274,14 +286,17 @@ var Schedule = /** @class */ (function (_super) {
                             + "&action=get,exactleverancier"
                             + "&file=import/exactaccounts.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 10:
+                    case 5:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += "\nFase 0: " + data.items[0].msg + "\n";
                         }
                         catch (error) {
                             message += JSON.stringify(error);
                         }
+                        _a.label = 6;
+                    case 6:
+                        if (!(All == 1)) return [3 /*break*/, 9];
                         //
                         // getKLANT
                         //
@@ -291,7 +306,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&topic=Accounts"
                             + "&outfile=import/exactaccounts.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 11:
+                    case 7:
                         data = _a.sent();
                         try {
                             message += "\nKlant: " + data.msg + "<br>\n";
@@ -305,7 +320,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&action=get,exactklant"
                             + "&file=import/exactaccounts.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 12:
+                    case 8:
                         data = _a.sent();
                         try {
                             message += data.items[0].msg + "\n";
@@ -313,6 +328,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += JSON.stringify(error);
                         }
+                        _a.label = 9;
+                    case 9:
+                        if (!(All == 1)) return [3 /*break*/, 12];
                         //
                         // getPRODUCT
                         //
@@ -322,7 +340,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&topic=Items"
                             + "&outfile=import/exactitems.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 13:
+                    case 10:
                         data = _a.sent();
                         try {
                             message += "\nProduct: " + data.msg + "<br>\n";
@@ -336,7 +354,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&action=get,exactproduct"
                             + "&file=import/exactitems.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 14:
+                    case 11:
                         data = _a.sent();
                         try {
                             message += data.items[0].msg + "\n";
@@ -344,6 +362,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += JSON.stringify(error);
                         }
+                        _a.label = 12;
+                    case 12:
+                        if (!(All == 1)) return [3 /*break*/, 15];
                         //
                         // getSTUKLIJST
                         //
@@ -354,7 +375,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&Params_Status=30,20,10"
                             + "&outfile=import/exactmbom.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 15:
+                    case 13:
                         data = _a.sent();
                         try {
                             message += "\nStuklijst: " + data.msg + "<br>\n";
@@ -368,7 +389,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&action=get,exactproduct"
                             + "&file=import/exactmbom.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 16:
+                    case 14:
                         data = _a.sent();
                         try {
                             message += data.items[0].msg + "\n";
@@ -376,6 +397,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += JSON.stringify(error);
                         }
+                        _a.label = 15;
+                    case 15:
+                        if (!(All == 1)) return [3 /*break*/, 18];
                         //
                         // getLEVERANCIERPRODUCT
                         //
@@ -386,7 +410,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&Params_Status=10,20"
                             + "&outfile=import/exactpurchase.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 17:
+                    case 16:
                         data = _a.sent();
                         try {
                             message += "\nLeverancierproduct: " + data.msg + "<br>\n";
@@ -400,7 +424,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&action=get,exactleverancierproduct"
                             + "&file=import/exactpurchase.dat";
                         return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 18:
+                    case 17:
                         data = _a.sent();
                         try {
                             message += data.items[0].msg + "\n";
@@ -408,6 +432,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += JSON.stringify(error);
                         }
+                        _a.label = 18;
+                    case 18:
+                        if (!(All == 1)) return [3 /*break*/, 21];
                         //
                         // getVOORRAAD
                         //
@@ -437,28 +464,379 @@ var Schedule = /** @class */ (function (_super) {
                             message += data.items[0].msg + "\n";
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += JSON.
+                                stringify(error);
                         }
                         _a.label = 21;
                     case 21:
+                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 24];
                         //
-                        fs.appendFileSync(curdir + "/" + thisFilename, "Ready ...\n");
+                        // getBESTELLING
+                        //
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=PurchaseOrders"
+                            + "&Params_Status=10,20"
+                            + "&outfile=import/exactpurchase.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 22:
+                        data = _a.sent();
+                        try {
+                            message += "\nBestelling: " + data.msg + "<br>\n";
+                            ;
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        //
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactbestelling"
+                            + "&file=import/exactpurchase.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 23:
+                        data = _a.sent();
+                        try {
+                            message += data.items[0].msg + "\n";
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        _a.label = 24;
+                    case 24:
+                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 27];
+                        //
+                        // getRECEIPT
+                        //
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=Receipts"
+                            + "&outfile=import/exactreceipt.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 25:
+                        data = _a.sent();
+                        try {
+                            message += "\nOntvangsten: " + data.msg + "<br>\n";
+                            ;
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        //
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactreceipt"
+                            + "&file=import/exactreceipt.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 26:
+                        data = _a.sent();
+                        try {
+                            message += data.items[0].msg + "\n";
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        _a.label = 27;
+                    case 27:
+                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 30];
+                        //
+                        // getORDER
+                        //
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=SalesOrders"
+                            + "&Params_Status=12,20"
+                            + "&outfile=import/exactsales.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 28:
+                        data = _a.sent();
+                        try {
+                            message += "\nOrders: " + data.msg + "<br>\n";
+                            ;
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        //
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactorder"
+                            + "&file=import/exactsales.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 29:
+                        data = _a.sent();
+                        try {
+                            message += data.items[0].msg + "\n";
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        _a.label = 30;
+                    case 30:
+                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 33];
+                        //
+                        // getDELIVERY
+                        //
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=Deliveries"
+                            + "&outfile=import/exactdeliveries.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 31:
+                        data = _a.sent();
+                        try {
+                            message += "\nAfleveringen: " + data.msg + "<br>\n";
+                            ;
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        //
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactdelivery"
+                            + "&file=import/exactdeliveries.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 32:
+                        data = _a.sent();
+                        try {
+                            message += data.items[0].msg + "\n";
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        _a.label = 33;
+                    case 33:
+                        if (!(All == 1 || OperationalOnly == 1)) return [3 /*break*/, 36];
+                        //
+                        // getBEWERK
+                        //
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=ShopOrders"
+                            + "&Params_Status=20,10"
+                            + "&outfile=import/exactshoporders.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 34:
+                        data = _a.sent();
+                        try {
+                            message += "\nBewerkingen: " + data.msg + "<br>\n";
+                            ;
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        //
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactbewerk"
+                            + "&file=import/exactshoporders.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 35:
+                        data = _a.sent();
+                        try {
+                            message += data.items[0].msg + "\n";
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        _a.label = 36;
+                    case 36:
+                        if (!(All == 1 || OperationalOnly == 1)) return [3 /*break*/, 39];
+                        //
+                        // getBEWERKONTVANGST
+                        //
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=ShopOrderStockReceipts"
+                            + "&outfile=import/exactshoporderreceipts.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 37:
+                        data = _a.sent();
+                        try {
+                            message += "\nBewerkinggereedregels: " + data.msg + "<br>\n";
+                            ;
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        //
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactbewerkontvangst"
+                            + "&file=import/exactshoporderreceipts.dat";
+                        return [4 /*yield*/, this.getInfo(thisPath)];
+                    case 38:
+                        data = _a.sent();
+                        try {
+                            message += data.items[0].msg + "\n";
+                        }
+                        catch (error) {
+                            message += JSON.stringify(error);
+                        }
+                        _a.label = 39;
+                    case 39:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 41];
+                        //
+                        // fases 0
+                        //
+                        thisPath = "/toolbox.php?app=" + config_1.Config.app
+                            + "&action=addlogistiek";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 40:
+                        data = _a.sent();
+                        try {
+                            message += "\nDefault bewerkingen toevoegen: " + data.items[0].MSG + "<br>";
+                        }
+                        catch (error) {
+                            message += "\nFase 0: " + data + "<br>";
+                        }
+                        _a.label = 41;
+                    case 41:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 43];
+                        //
+                        // prefase
+                        //
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase0";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 42:
+                        data = _a.sent();
+                        try {
+                            message += "\nOude voorraadstand opschonen: " + data.items[0].msg + "<br>";
+                        }
+                        catch (error) {
+                            message += "\nPrefase: " + data + "<br>";
+                        }
+                        _a.label = 43;
+                    case 43:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 45];
+                        //
+                        // fase1
+                        //
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase1";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 44:
+                        data = _a.sent();
+                        try {
+                            message += "\nStartvoorraad, orders, bestellingen en bewerkingen doorrekenen: " + data.items[0].msg + "<br>";
+                        }
+                        catch (error) {
+                            message += "\nFase 1: " + data + "<br>";
+                        }
+                        _a.label = 45;
+                    case 45:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 47];
+                        //
+                        // Eerste keer fase2
+                        //
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase2";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 46:
+                        data = _a.sent();
+                        try {
+                            message += "\nVoorraad afboeken van onderdelen van producten waar tekorten van zijn ...<br>";
+                        }
+                        catch (error) {
+                            message += "\nEerste fase 2: " + data + "<br>";
+                        }
+                        _a.label = 47;
+                    case 47:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 52];
+                        tlcycle = 0;
+                        message += "\n" + data.items[0].regelsbesteld + " regels afgeboekt <br>";
+                        _a.label = 48;
+                    case 48:
+                        if (!(Number(data.items[0].regelsbesteld) > 0)) return [3 /*break*/, 52];
+                        tlcycle++;
+                        if (!(tlcycle > 6)) return [3 /*break*/, 49];
+                        message += "\nOnderdeel is Onderdeel probleem, toch maar opbouwen lijst ..." + "<br>";
+                        return [3 /*break*/, 52];
+                    case 49:
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase2";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 50:
+                        data = _a.sent();
+                        try {
+                            message += "\n" + data.items[0].regelsbesteld + " regels afgeboekt <br>";
+                        }
+                        catch (error) {
+                            message += "\nVolgende fase 2: " + data + "<br>";
+                        }
+                        _a.label = 51;
+                    case 51: return [3 /*break*/, 48];
+                    case 52:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 54];
+                        //
+                        // Eerste fase 4
+                        //
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase4";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 53:
+                        data = _a.sent();
+                        try {
+                            message += "\nBeperkende faktoren bijwerken (Zoek de kurk) ...<br>";
+                        }
+                        catch (error) {
+                            message += "\nFase 4: " + data + "<br>";
+                        }
+                        _a.label = 54;
+                    case 54:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 57];
+                        //
+                        // Volgende fase 4
+                        //
+                        message += "\n" + data.items[0].regels + " regels doorgezocht <br>";
+                        _a.label = 55;
+                    case 55:
+                        if (!(Number(data.items[0].regels) > 0)) return [3 /*break*/, 57];
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase4";
+                        return [4 /*yield*/, this.postInfo(thisPath)];
+                    case 56:
+                        data = _a.sent();
+                        try {
+                            message += "\n" + data.items[0].regels + " regels doorgezocht <br>";
+                        }
+                        catch (error) {
+                            message += "\nVolgende ase 4: " + data + "<br>";
+                        }
+                        return [3 /*break*/, 55];
+                    case 57:
+                        if (All == 1 || CalcOnly == 1) {
+                            //
+                            // Alles is bijgewerkt
+                            //
+                            message += "\nAlles is bijgewerkt, gereed ...</b><br>";
+                            //
+                            // insert message
+                            //
+                        }
+                        _a.label = 58;
+                    case 58:
+                        //
+                        fs.appendFileSync(curdir + "/" + thisFilename, message);
                         result = {
                             success: "true",
                             message: message
                         };
-                        _a.label = 22;
-                    case 22: return [2 /*return*/, result];
+                        _a.label = 59;
+                    case 59: return [2 /*return*/, result];
                 }
             });
         });
     };
-    Schedule.prototype.cleanLog = function () {
+    Schedule.prototype.postInfo = function (url) {
         return new Promise(function (resolve, reject) {
             var headers = {};
+            var result = {};
             var ak2req = http_1.default.request({
                 host: config_1.Config.server,
-                path: "/toolbox.php?app=" + config_1.Config.app + "&action=cleanlog",
+                path: url,
                 method: 'POST',
                 port: config_1.Config.serverPort,
                 headers: headers,
@@ -469,7 +847,13 @@ var Schedule = /** @class */ (function (_super) {
                     responseString += data;
                 });
                 ak2res.on("end", function () {
-                    resolve(JSON.parse(responseString));
+                    try {
+                        result = JSON.parse(responseString);
+                    }
+                    catch (error) {
+                        result = responseString;
+                    }
+                    resolve(result);
                 });
                 ak2res.on("error", function (error) {
                     logger_1.Logger.error(JSON.stringify(error));

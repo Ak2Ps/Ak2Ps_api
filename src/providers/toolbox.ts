@@ -1025,7 +1025,7 @@ where id = '${idbw}'`;
       if (tlrow == 0) {
         msg = 'Logistiekbewerkingen waren compleet, geen toevoegingen nodig ...';
       } else {
-        msg = `{$tlrow} logistiekbewerkingen toegevoegd ...`;
+        msg = `${tlrow} logistiekbewerkingen toegevoegd ...`;
       }
     }
     //
