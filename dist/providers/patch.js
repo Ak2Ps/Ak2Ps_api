@@ -255,6 +255,8 @@ var Patch = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             var query;
             return __generator(this, function (_a) {
+                //
+                logger_1.Logger.info("Init ...");
                 query = db_1.default.fixQuery(req.query);
                 //
                 res.crudResult.messages.push({ field: "Init", message: "Init is niet van toepassing" });
@@ -269,6 +271,8 @@ var Patch = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        //
+                        logger_1.Logger.info("DoUtf ...");
                         query = db_1.default.fixQuery(req.query);
                         sql = '';
                         sqldetail = '';
@@ -306,6 +310,8 @@ var Patch = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        //
+                        logger_1.Logger.info("DoP1 ...");
                         query = db_1.default.fixQuery(req.query);
                         sql = '';
                         sqldetail = '';
@@ -337,10 +343,12 @@ var Patch = /** @class */ (function (_super) {
     };
     Patch.prototype.doAlter = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var query, sql, rows, row, sqldetail, thisVersion, irow;
+            var query, sql, rows, row, sqldetail, thisVersion, irow, error_1, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        //
+                        logger_1.Logger.info("DoAlter ...");
                         query = db_1.default.fixQuery(req.query);
                         sql = "";
                         sqldetail = '';
@@ -348,6 +356,7 @@ var Patch = /** @class */ (function (_super) {
                     case 1:
                         thisVersion = _a.sent();
                         if (!(thisVersion == '2016.1')) return [3 /*break*/, 13];
+                        logger_1.Logger.info("DoAlter 2016.1 ...");
                         sql = "\n            select *, \n            upper(table_name) as new_name \n            from information_schema.tables\n            where table_schema = '" + config_1.Config.dbschema + "'";
                         rows = db_1.default.waitQuery(res.crudConnection, sql);
                         irow = 0;
@@ -399,6 +408,7 @@ var Patch = /** @class */ (function (_super) {
                         _a.label = 13;
                     case 13:
                         if (!(thisVersion == '2020.1')) return [3 /*break*/, 16];
+                        logger_1.Logger.info("DoAlter 2020.1 ...");
                         sql = "\ninsert into PARAM \n(inhoud,naam) \nselect \n'01-01-2019',\n'EXACTSTART' \nfrom dual\nwhere not exists (\nselect 1 from PARAM \nwhere naam = 'EXACTSTART')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 14:
@@ -408,18 +418,33 @@ var Patch = /** @class */ (function (_super) {
                         thisVersion = _a.sent();
                         _a.label = 16;
                     case 16:
-                        if (!(thisVersion == '2020.2')) return [3 /*break*/, 19];
+                        if (!(thisVersion == '2020.2')) return [3 /*break*/, 24];
+                        logger_1.Logger.info("DoAlter 2020.2 ...");
                         //thisVersion = await this.setVersion(req,res,next, '2020.3');
                         sql = "\ndrop table menu";
-                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                        _a.label = 17;
                     case 17:
-                        _a.sent();
-                        sql = "\ndrop table menuregel";
+                        _a.trys.push([17, 19, , 20]);
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 18:
                         _a.sent();
-                        _a.label = 19;
+                        return [3 /*break*/, 20];
                     case 19:
+                        error_1 = _a.sent();
+                        return [3 /*break*/, 20];
+                    case 20:
+                        sql = "\ndrop table menuregel";
+                        _a.label = 21;
+                    case 21:
+                        _a.trys.push([21, 23, , 24]);
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                    case 22:
+                        _a.sent();
+                        return [3 /*break*/, 24];
+                    case 23:
+                        error_2 = _a.sent();
+                        return [3 /*break*/, 24];
+                    case 24:
                         //
                         res.crudResult.messages.push({ field: "Patch", message: "database upgraded to version " + thisVersion + " ..." });
                         //
@@ -434,17 +459,17 @@ var Patch = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        //
+                        logger_1.Logger.info("DoMenu ...");
                         query = db_1.default.fixQuery(req.query);
                         res.crudResult.success = true;
                         sql = '';
                         //
                         // default gebruikers
                         //
+                        logger_1.Logger.info("DoMenu default gebruikers ...");
                         return [4 /*yield*/, this.addUser(req, res, next, 'Gast', 'Gast', 'Gast', '')];
                     case 1:
-                        //
-                        // default gebruikers
-                        //
                         _a.sent();
                         return [4 /*yield*/, this.addUser(req, res, next, 'Admin', 'Admin', 'Admin', '')];
                     case 2:
@@ -508,11 +533,9 @@ var Patch = /** @class */ (function (_super) {
                         //
                         // Menus
                         //
+                        logger_1.Logger.info("DoMenu menu's ...");
                         return [4 /*yield*/, this.addMenu(req, res, next, 'Gast')];
                     case 18:
-                        //
-                        // Menus
-                        //
                         _a.sent();
                         return [4 /*yield*/, this.addMenu(req, res, next, 'Admin')];
                     case 19:
@@ -532,794 +555,804 @@ var Patch = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.addMenu(req, res, next, 'Magazijn')];
                     case 24:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'Productie')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'Werkvoorbereiding')];
                     case 25:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'RenD')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'Productie')];
                     case 26:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'Planning')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'RenD')];
                     case 27:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdVerkoop')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'Planning')];
                     case 28:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdInkoop')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdVerkoop')];
                     case 29:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdOrderdesk')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdInkoop')];
                     case 30:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdRenD')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdOrderdesk')];
                     case 31:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'Zegwaard')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'HoofdRenD')];
                     case 32:
                         _a.sent();
-                        return [4 /*yield*/, this.addMenu(req, res, next, 'User')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'Zegwaard')];
                     case 33:
                         _a.sent();
-                        //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Gast', 1, 'Home', 'SubGastAfmelden', '')];
+                        return [4 /*yield*/, this.addMenu(req, res, next, 'User')];
                     case 34:
+                        _a.sent();
                         //
+                        logger_1.Logger.info("DoMenu options ...");
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Gast', 1, 'Home', 'SubGastAfmelden', '')];
+                    case 35:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 1, 'Home', 'SubAdminAfmelden', '')];
-                    case 35:
+                    case 36:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 2, 'Beheer', 'SubBeheer', '')];
-                    case 36:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 3, 'Klok', 'SubKlok', '')];
                     case 37:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 4, 'Importeren', 'SubImport', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 3, 'Klok', 'SubKlok', '')];
                     case 38:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 5, 'Overzichten', 'SubLijst', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 4, 'Importeren', 'SubImport', '')];
                     case 39:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 6, 'Productie', 'SubProductie', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 5, 'Overzichten', 'SubLijst', '')];
                     case 40:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 7, 'Inkoop', 'SubInkoop', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '')];
                     case 41:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 8, 'Orderadministratie', 'SubOrder', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 7, 'Productie', 'SubProductie', '')];
                     case 42:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 9, 'Retouren', 'SubRetouren', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 8, 'Inkoop', 'SubInkoop', '')];
                     case 43:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 10, 'Rapportage', 'SubRapportage', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 9, 'Orderadministratie', 'SubOrder', '')];
                     case 44:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 10, 'Retouren', 'SubRetouren', '')];
+                    case 45:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Admin', 11, 'Rapportage', 'SubRapportage', '')];
+                    case 46:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'Super', 1, 'Home', 'SubAfmelden', '')];
-                    case 45:
+                    case 47:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Super', 2, 'Beheer', 'SubSuperBeheer', '')];
-                    case 46:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 3, 'Klok', 'SubKlok', '')];
-                    case 47:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 4, 'Importeren', 'SubImport', '')];
                     case 48:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 6, 'Overzichten', 'SubLijst', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 3, 'Klok', 'SubKlok', '')];
                     case 49:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 7, 'Productie', 'SubProductie', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 4, 'Importeren', 'SubImport', '')];
                     case 50:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 8, 'Inkoop', 'SubInkoop', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 5, 'Overzichten', 'SubLijst', '')];
                     case 51:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 9, 'Orderadministratie', 'SubOrder', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '')];
                     case 52:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 9, 'Retouren', 'SubRetouren', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 7, 'Productie', 'SubProductie', '')];
                     case 53:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 10, 'Rapportage', 'SubRapportage', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 8, 'Inkoop', 'SubInkoop', '')];
                     case 54:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 9, 'Orderadministratie', 'SubOrder', '')];
+                    case 55:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 9, 'Retouren', 'SubRetouren', '')];
+                    case 56:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Super', 10, 'Rapportage', 'SubRapportage', '')];
+                    case 57:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'Verkoop', 1, 'Home', 'SubAfmelden', '')];
-                    case 55:
+                    case 58:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Verkoop', 4, 'Overzichten', 'SubVerkoopLijst', '')];
-                    case 56:
+                    case 59:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Verkoop', 7, 'Orderadministratie', 'SubOrder', '')];
-                    case 57:
+                    case 60:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Verkoop', 9, 'Rapportage', 'SubVerkoopRapportage', '')];
-                    case 58:
+                    case 61:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'Inkoop', 1, 'Home', 'SubAfmelden', '')];
-                    case 59:
+                    case 62:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Inkoop', 4, 'Overzichten', 'SubLijst', '')];
-                    case 60:
+                    case 63:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Inkoop', 6, 'Inkoop', 'SubInkoop', '')];
-                    case 61:
+                    case 64:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Inkoop', 7, 'Orderadministratie', 'SubOrder', '')];
-                    case 62:
+                    case 65:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'Orderdesk', 1, 'Home', 'SubAfmelden', '')];
-                    case 63:
+                    case 66:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Orderdesk', 4, 'Overzichten', 'SubOrderdeskLijst', '')];
-                    case 64:
+                    case 67:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Orderdesk', 6, 'Inkoop', 'SubInkoop', '')];
-                    case 65:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Orderdesk', 7, 'Orderadministratie', 'SubOrder', '')];
-                    case 66:
-                        _a.sent();
-                        //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Magazijn', 1, 'Home', 'SubAfmelden', '')];
-                    case 67:
-                        //
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Magazijn', 3, 'Klok', 'SubKlok', '')];
                     case 68:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Magazijn', 5, 'Productie', 'SubProductie', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Orderdesk', 7, 'Orderadministratie', 'SubOrder', '')];
                     case 69:
                         _a.sent();
                         //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Productie', 1, 'Home', 'SubAfmelden', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Magazijn', 1, 'Home', 'SubAfmelden', '')];
                     case 70:
                         //
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Productie', 3, 'Klok', 'SubKlok', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Magazijn', 3, 'Klok', 'SubKlok', '')];
                     case 71:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Productie', 4, 'Productie', 'SubProductieProductie', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Magazijn', 5, 'Productie', 'SubProductie', '')];
                     case 72:
                         _a.sent();
                         //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 1, 'Home', 'SubAfmelden', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Productie', 1, 'Home', 'SubAfmelden', '')];
                     case 73:
                         //
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 5, 'Productie', 'SubRenDProductie', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Productie', 3, 'Klok', 'SubKlok', '')];
                     case 74:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 8, 'Retouren', 'SubRetouren', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Productie', 4, 'Productie', 'SubProductieProductie', '')];
                     case 75:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 9, 'Rapportage', 'SubRenDRapportage', '')];
+                        //
+                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 1, 'Home', 'SubAfmelden', '')];
                     case 76:
+                        //
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 5, 'Productie', 'SubRenDProductie', '')];
+                    case 77:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 8, 'Retouren', 'SubRetouren', '')];
+                    case 78:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'RenD', 9, 'Rapportage', 'SubRenDRapportage', '')];
+                    case 79:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 1, 'Home', 'SubAfmelden', '')];
-                    case 77:
+                    case 80:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 2, 'Klok', 'SubKlok', '')];
-                    case 78:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 3, 'Beheer', 'SubPlanningBeheer', '')];
-                    case 79:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 4, 'Overzichten', 'SubLijst', '')];
-                    case 80:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 5, 'Productie', 'SubProductie', '')];
                     case 81:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 9, 'Rapportage', 'SubPlanningRapportage', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 3, 'Beheer', 'SubPlanningBeheer', '')];
                     case 82:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 4, 'Overzichten', 'SubLijst', '')];
+                    case 83:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 5, 'Productie', 'SubProductie', '')];
+                    case 84:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'Planning', 9, 'Rapportage', 'SubPlanningRapportage', '')];
+                    case 85:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 1, 'Home', 'SubAfmelden', '')];
-                    case 83:
+                    case 86:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 4, 'Overzichten', 'SubLijst', '')];
-                    case 84:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 5, 'Productie', 'SubProductie', '')];
-                    case 85:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 6, 'Inkoop', 'SubInkoop', '')];
-                    case 86:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 7, 'Orderadministratie', 'SubOrder', '')];
                     case 87:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 8, 'Retouren', 'SubZegwaardRetouren', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 5, 'Productie', 'SubProductie', '')];
                     case 88:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 9, 'Rapportage', 'SubHoofdVerkoopRapportage', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 6, 'Inkoop', 'SubInkoop', '')];
                     case 89:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 7, 'Orderadministratie', 'SubOrder', '')];
+                    case 90:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 8, 'Retouren', 'SubZegwaardRetouren', '')];
+                    case 91:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdVerkoop', 9, 'Rapportage', 'SubHoofdVerkoopRapportage', '')];
+                    case 92:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 1, 'Home', 'SubAfmelden', '')];
-                    case 90:
+                    case 93:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 4, 'Overzichten', 'SubLijst', '')];
-                    case 91:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 5, 'Productie', 'SubProductie', '')];
-                    case 92:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 6, 'Inkoop', 'SubInkoop', '')];
-                    case 93:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 7, 'Orderadministratie', 'SubOrder', '')];
                     case 94:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 9, 'Rapportage', 'SubHoofdInkoopRapportage', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 5, 'Productie', 'SubProductie', '')];
                     case 95:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 6, 'Inkoop', 'SubInkoop', '')];
+                    case 96:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 7, 'Orderadministratie', 'SubOrder', '')];
+                    case 97:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdInkoop', 9, 'Rapportage', 'SubHoofdInkoopRapportage', '')];
+                    case 98:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 1, 'Home', 'SubAfmelden', '')];
-                    case 96:
+                    case 99:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 4, 'Overzichten', 'SubLijst', '')];
-                    case 97:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 5, 'Productie', 'SubProductie', '')];
-                    case 98:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 6, 'Inkoop', 'SubInkoop', '')];
-                    case 99:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 7, 'Orderadministratie', 'SubOrder', '')];
                     case 100:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 8, 'Retouren', 'SubZegwaardRetouren', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 5, 'Productie', 'SubProductie', '')];
                     case 101:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 9, 'Rapportage', 'SubHoofdOrderdeskRapportage', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 6, 'Inkoop', 'SubInkoop', '')];
                     case 102:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 7, 'Orderadministratie', 'SubOrder', '')];
+                    case 103:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 8, 'Retouren', 'SubZegwaardRetouren', '')];
+                    case 104:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdOrderdesk', 9, 'Rapportage', 'SubHoofdOrderdeskRapportage', '')];
+                    case 105:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 1, 'Home', 'SubAfmelden', '')];
-                    case 103:
+                    case 106:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 2, 'Beheer', 'SubRenDBeheer', '')];
-                    case 104:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 4, 'Overzichten', 'SubLijst', '')];
-                    case 105:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 5, 'Productie', 'SubProductie', '')];
-                    case 106:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 6, 'Inkoop', 'SubInkoop', '')];
                     case 107:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 7, 'Orderadministratie', 'SubOrder', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 4, 'Overzichten', 'SubLijst', '')];
                     case 108:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 8, 'Retouren', 'SubRetouren', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 5, 'Productie', 'SubProductie', '')];
                     case 109:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 9, 'Rapportage', 'SubHoofdRenDRapportage', '')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 6, 'Inkoop', 'SubInkoop', '')];
                     case 110:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 7, 'Orderadministratie', 'SubOrder', '')];
+                    case 111:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 8, 'Retouren', 'SubRetouren', '')];
+                    case 112:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'HoofdRenD', 9, 'Rapportage', 'SubHoofdRenDRapportage', '')];
+                    case 113:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'Zegwaard', 1, 'Home', 'SubAfmelden', '')];
-                    case 111:
+                    case 114:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Zegwaard', 2, 'Klok', 'SubKlok', '')];
-                    case 112:
+                    case 115:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Zegwaard', 5, 'Productie', 'SubProductie', '')];
-                    case 113:
+                    case 116:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'Zegwaard', 8, 'Retouren', 'SubZegwaardRetouren', '')];
-                    case 114:
+                    case 117:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'User', 1, 'Home', 'SubAfmelden', '')];
-                    case 115:
+                    case 118:
                         //
                         _a.sent();
                         //
                         // Hoofdmenu
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubGastAfmelden', 1, 'Dashboard', '', 'showBb("Home")')];
-                    case 116:
+                    case 119:
                         //
                         // Hoofdmenu
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubGastAfmelden', 2, 'Afmelden', '', 'navigate("index.html")')];
-                    case 117:
-                        _a.sent();
-                        //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAfmelden', 1, 'Dashboard', '', 'showBb("Home")')];
-                    case 118:
-                        //
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAfmelden', 2, 'Afmelden', '', 'navigate("index.html")')];
-                    case 119:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAfmelden', 3, 'Mijn gegevens', '', 'showPage("gebruikerinfo.html")')];
                     case 120:
                         _a.sent();
                         //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 1, 'Dashboard', '', 'showBb("Home")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAfmelden', 1, 'Dashboard', '', 'showBb("Home")')];
                     case 121:
                         //
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 2, 'Afmelden', '', 'navigate("index.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAfmelden', 2, 'Afmelden', '', 'navigate("index.html")')];
                     case 122:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 3, 'Mijn gegevens', '', 'showPage("gebruikerinfo.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAfmelden', 3, 'Mijn gegevens', '', 'showPage("gebruikerinfo.html")')];
                     case 123:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 4, 'Dashboard bericht', '', 'insertBb("Home")')];
+                        //
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 1, 'Dashboard', '', 'showBb("Home")')];
                     case 124:
+                        //
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 2, 'Afmelden', '', 'navigate("index.html")')];
+                    case 125:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 3, 'Mijn gegevens', '', 'showPage("gebruikerinfo.html")')];
+                    case 126:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubAdminAfmelden', 4, 'Dashboard bericht', '', 'insertBb("Home")')];
+                    case 127:
                         _a.sent();
                         //
                         // Beheer
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 1, 'Gebruikers', '', 'showPage("gebruiker.html")')];
-                    case 125:
+                    case 128:
                         //
                         // Beheer
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 2, 'Berichtinstellingen', '', 'showPage("bbsettings.html")')];
-                    case 126:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 3, 'Menuregels', '', 'showPage("menuregel.html")')];
-                    case 127:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 4, 'Parameters', '', 'showPage("param.html")')];
-                    case 128:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 6, 'Log Info', '', 'showPage("loginfo.html")')];
                     case 129:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 7, 'Uitvalcodes', '', 'showPage("uitval.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 3, 'Menuregels', '', 'showPage("menuregel.html")')];
                     case 130:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 8, 'Bewerkingsoorten', '', 'showPage("bewerkingsoort.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 4, 'Parameters', '', 'showPage("param.html")')];
                     case 131:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 9, 'Standaard uurtarief', '', 'showPage("uurtarief.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 6, 'Log Info', '', 'showPage("loginfo.html")')];
                     case 132:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 10, 'Pauze', '', 'showPage("pauze.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 7, 'Uitvalcodes', '', 'showPage("uitval.html")')];
                     case 133:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 11, 'Afdelingen', '', 'showPage("afdeling.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 8, 'Bewerkingsoorten', '', 'showPage("bewerkingsoort.html")')];
                     case 134:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 12, 'Productgroepen', '', 'showPage("productgroep.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 9, 'Standaard uurtarief', '', 'showPage("uurtarief.html")')];
                     case 135:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 13, 'Productlijnen', '', 'showPage("productlijn.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 10, 'Pauze', '', 'showPage("pauze.html")')];
                     case 136:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 14, 'Startaantal verschil', '', 'showPage("bewerkingverschil.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 11, 'Afdelingen', '', 'showPage("afdeling.html")')];
                     case 137:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 15, 'Retourtypes', '', 'showPage("retourtype.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 12, 'Productgroepen', '', 'showPage("productgroep.html")')];
                     case 138:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 16, 'Retourtermijnen', '', 'showPage("retourtermijn.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 13, 'Productlijnen', '', 'showPage("productlijn.html")')];
                     case 139:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 17, 'RetourUitvoerders', '', 'showPage("retourgebruiker.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 14, 'Startaantal verschil', '', 'showPage("bewerkingverschil.html")')];
                     case 140:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 18, 'RetourGarantieopties', '', 'showPage("retourgarantie.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 15, 'Retourtypes', '', 'showPage("retourtype.html")')];
                     case 141:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 19, 'RetourActietypes', '', 'showPage("retouractietype.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 16, 'Retourtermijnen', '', 'showPage("retourtermijn.html")')];
                     case 142:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 20, 'Plansoorten', '', 'showPage("plansoort.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 17, 'RetourUitvoerders', '', 'showPage("retourgebruiker.html")')];
                     case 143:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 21, 'Update versie', '', 'showWindow("patch.php")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 18, 'RetourGarantieopties', '', 'showPage("retourgarantie.html")')];
                     case 144:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 19, 'RetourActietypes', '', 'showPage("retouractietype.html")')];
+                    case 145:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 20, 'Plansoorten', '', 'showPage("plansoort.html")')];
+                    case 146:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubBeheer', 21, 'Update versie', '', 'showWindow("patch.php")')];
+                    case 147:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 1, 'Gebruikers', '', 'showPage("gebruiker.html")')];
-                    case 145:
+                    case 148:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 7, 'Uitvalcodes', '', 'showPage("uitval.html")')];
-                    case 146:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 8, 'Bewerkingsoorten', '', 'showPage("bewerkingsoort.html")')];
-                    case 147:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 9, 'Standaard uurtarief', '', 'showPage("uurtarief.html")')];
-                    case 148:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 10, 'Pauze', '', 'showPage("pauze.html")')];
                     case 149:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 11, 'Afdelingen', '', 'showPage("afdeling.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 8, 'Bewerkingsoorten', '', 'showPage("bewerkingsoort.html")')];
                     case 150:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 12, 'Productgroepen', '', 'showPage("productgroep.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 9, 'Standaard uurtarief', '', 'showPage("uurtarief.html")')];
                     case 151:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 13, 'Productlijnen', '', 'showPage("productlijn.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 10, 'Pauze', '', 'showPage("pauze.html")')];
                     case 152:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 16, 'Retourtypes', '', 'showPage("retourtype.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 11, 'Afdelingen', '', 'showPage("afdeling.html")')];
                     case 153:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 17, 'Retourtermijnen', '', 'showPage("retourtermijn.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 12, 'Productgroepen', '', 'showPage("productgroep.html")')];
                     case 154:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 18, 'RetourUitvoerders', '', 'showPage("retourgebruiker.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 13, 'Productlijnen', '', 'showPage("productlijn.html")')];
                     case 155:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 19, 'RetourGarantieopties', '', 'showPage("retourgarantie.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 16, 'Retourtypes', '', 'showPage("retourtype.html")')];
                     case 156:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 20, 'RetourActietypes', '', 'showPage("retouractietype.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 17, 'Retourtermijnen', '', 'showPage("retourtermijn.html")')];
                     case 157:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 18, 'RetourUitvoerders', '', 'showPage("retourgebruiker.html")')];
+                    case 158:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 19, 'RetourGarantieopties', '', 'showPage("retourgarantie.html")')];
+                    case 159:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubSuperBeheer', 20, 'RetourActietypes', '', 'showPage("retouractietype.html")')];
+                    case 160:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubPlanningBeheer', 1, 'Gebruikers', '', 'showPage("gebruiker.html")')];
-                    case 158:
+                    case 161:
                         //
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRenDBeheer', 9, 'Standaard uurtarief', '', 'showPage("uurtarief.html")')];
-                    case 159:
+                    case 162:
                         //
                         _a.sent();
                         //
                         // klok
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubKlok', 1, 'Klok', '', 'showPage("gebruikertijd.html")')];
-                    case 160:
+                    case 163:
                         //
                         // klok
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubKlok', 2, 'Calender', '', 'showPage("calender.html")')];
-                    case 161:
+                    case 164:
                         _a.sent();
                         //
                         // Import
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 1, 'Herstel verbinding met Exact deel1', '', 'showPage("exact.html?getcode=1")')];
-                    case 162:
+                    case 165:
                         //
                         // Import
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 2, 'Herstel verbinding met Exact deel2', '', 'showPage("exact2.html?getfirstrefresh=1")')];
-                    case 163:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 11, 'Alle gegevens importeren en doorrekenen', '', 'showPage("upload.html")')];
-                    case 164:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 12, 'Operationele gegevens importeren', '', 'showPage("upload.html?OperationalOnly=1")')];
-                    case 165:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 13, 'Bestellingen importeren', '', 'showPage("upload.html?OperationalOnly=2")')];
                     case 166:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 14, 'Bewerkingen importeren', '', 'showPage("upload.html?OperationalOnly=3")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 11, 'Alle gegevens importeren en doorrekenen', '', 'showPage("upload.html")')];
                     case 167:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 15, 'Orders importeren', '', 'showPage("upload.html?OperationalOnly=4")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 12, 'Operationele gegevens importeren', '', 'showPage("upload.html?OperationalOnly=1")')];
                     case 168:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 16, 'Doorrekenen', '', 'showPage("calc.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 13, 'Bestellingen importeren', '', 'showPage("upload.html?OperationalOnly=2")')];
                     case 169:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 17, 'Logging', '', 'showBb("Log")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 14, 'Bewerkingen importeren', '', 'showPage("upload.html?OperationalOnly=3")')];
                     case 170:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 15, 'Orders importeren', '', 'showPage("upload.html?OperationalOnly=4")')];
+                    case 171:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 16, 'Doorrekenen', '', 'showPage("calc.html")')];
+                    case 172:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubImport', 17, 'Logging', '', 'showBb("Log")')];
+                    case 173:
                         _a.sent();
                         //
                         // Lijst
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 1, 'Leveranciers', '', 'showPage("leverancier.html")')];
-                    case 171:
+                    case 174:
                         //
                         // Lijst
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 2, 'Klanten', '', 'showPage("klant.html")')];
-                    case 172:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 3, 'Producten/startvoorraad', '', 'showPage("product.html")')];
-                    case 173:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 4, 'Stuklijst', '', 'showPage("onderdeel.html")')];
-                    case 174:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 5, 'Bestellingen', '', 'showPage("bestelling.html")')];
                     case 175:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 3, 'Producten/startvoorraad', '', 'showPage("product.html")')];
                     case 176:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 7, 'Productie', '', 'showPage("bewerking.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 4, 'Stuklijst', '', 'showPage("onderdeel.html")')];
                     case 177:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 8, 'Voorraad', '', 'showPage("productvoorraad.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 5, 'Bestellingen', '', 'showPage("bestelling.html")')];
                     case 178:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 9, 'Vrijgegeven dagen', '', 'showPage("mnl.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")')];
                     case 179:
                         _a.sent();
-                        //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubVerkoopLijst', 2, 'Klanten', '', 'showPage("klant.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 7, 'Productie', '', 'showPage("bewerking.html")')];
                     case 180:
-                        //
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubVerkoopLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 8, 'Voorraad', '', 'showPage("productvoorraad.html")')];
                     case 181:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubVerkoopLijst', 8, 'Voorraad', '', 'showPage("productvoorraad.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubLijst', 9, 'Vrijgegeven dagen', '', 'showPage("mnl.html")')];
                     case 182:
                         _a.sent();
                         //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 1, 'Leveranciers', '', 'showPage("leverancier.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubVerkoopLijst', 2, 'Klanten', '', 'showPage("klant.html")')];
                     case 183:
                         //
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 2, 'Klanten', '', 'showPage("klant.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubVerkoopLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")')];
                     case 184:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 5, 'Bestellingen', '', 'showPage("bestelling.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubVerkoopLijst', 8, 'Voorraad', '', 'showPage("productvoorraad.html")')];
                     case 185:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")')];
+                        //
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 1, 'Leveranciers', '', 'showPage("leverancier.html")')];
                     case 186:
+                        //
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 2, 'Klanten', '', 'showPage("klant.html")')];
+                    case 187:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 5, 'Bestellingen', '', 'showPage("bestelling.html")')];
+                    case 188:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")')];
+                    case 189:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubOrderdeskLijst', 9, 'Vrijgegeven dagen', '', 'showPage("mnl.html")')];
-                    case 187:
+                    case 190:
+                        _a.sent();
+                        //
+                        // Werkvoorbereiding
+                        //
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubWerkvoorbereiding', 3, 'Werkvoorbereiding', '', 'showPage("planning.html?sel44=Nee&action=werkvoorbereiding")')];
+                    case 191:
+                        //
+                        // Werkvoorbereiding
+                        //
                         _a.sent();
                         //
                         // Productie
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 1, 'Logistiek', '', 'showPage("logistiek.html")')];
-                    case 188:
+                    case 192:
                         //
                         // Productie
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 2, 'Overzicht', '', 'showPage("bewerking.html")')];
-                    case 189:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 3, 'Werkvoorbereiding', '', 'showPage("planning.html?sel44=Nee&action=werkvoorbereiding")')];
-                    case 190:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 4, 'Planning', '', 'showPage("planning.html?sel44=Nee&action=planning")')];
-                    case 191:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 5, 'Lijnplanning', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning")')];
-                    case 192:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 6, 'Lijnplanning2', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning2")')];
                     case 193:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 7, 'Uitleverlijst', '', 'showPage("uitlever.html?productie=1")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 4, 'Planning', '', 'showPage("planning.html?sel44=Nee&action=planning")')];
                     case 194:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 5, 'Lijnplanning', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning")')];
+                    case 195:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 6, 'Lijnplanning2', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning2")')];
+                    case 196:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductie', 7, 'Uitleverlijst', '', 'showPage("uitlever.html?productie=1")')];
+                    case 197:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubProductieProductie', 2, 'Overzicht', '', 'showPage("bewerking.html")')];
-                    case 195:
+                    case 198:
                         //
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubProductieProductie', 3, 'Werkvoorbereiding', '', 'showPage("planning.html?sel44=Nee&action=werkvoorbereiding")')];
-                    case 196:
-                        _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubProductieProductie', 4, 'Planning', '', 'showPage("planning.html?sel44=Nee&action=planning")')];
-                    case 197:
+                    case 199:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubProductieProductie', 5, 'lijnplanning', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning")')];
-                    case 198:
+                    case 200:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubProductieProductie', 6, 'lijnplanning2', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning2")')];
-                    case 199:
+                    case 201:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRenDProductie', 3, 'Werkvoorbereiding', '', 'showPage("planning.html?sel44=Nee&action=werkvoorbereiding")')];
-                    case 200:
+                    case 202:
                         //
                         _a.sent();
                         //
                         // Inkoop
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 1, 'Voorraad', '', 'showPage("productvoorraad.html")')];
-                    case 201:
+                    case 203:
                         //
                         // Inkoop
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 2, 'Voorraadbeoordeling', '', 'showPage("voorraad.html")')];
-                    case 202:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 3, 'Productgroep', '', 'showPage("bestellingproductgroep.html")')];
-                    case 203:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 5, 'Bestellijst', '', 'showPage("inkoop.html")')];
                     case 204:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 6, 'Bestellingen', '', 'showPage("bestellingkop.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 3, 'Productgroep', '', 'showPage("bestellingproductgroep.html")')];
                     case 205:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 7, 'Open bestellingen', '', 'showPage("bestelling.html?inkoop=Ja")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 5, 'Bestellijst', '', 'showPage("inkoop.html")')];
                     case 206:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 8, 'Bestellingen die te laat zijn', '', 'showPage("bestellingtelaat.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 6, 'Bestellingen', '', 'showPage("bestellingkop.html")')];
                     case 207:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 9, '44 Orders', '', 'showPage("productvraag.html?sel44=Ja")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 7, 'Open bestellingen', '', 'showPage("bestelling.html?inkoop=Ja")')];
                     case 208:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 10, 'Uitleverlijst', '', 'showPage("uitlever.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 8, 'Bestellingen die te laat zijn', '', 'showPage("bestellingtelaat.html")')];
                     case 209:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 9, '44 Orders', '', 'showPage("productvraag.html?sel44=Ja")')];
+                    case 210:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubInkoop', 10, 'Uitleverlijst', '', 'showPage("uitlever.html")')];
+                    case 211:
                         _a.sent();
                         //
                         // Order
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubOrder', 1, '44 Orders', '', 'showPage("productvraag.html?selRo=Ja&sel44=Ja&1=1")')];
-                    case 210:
+                    case 212:
                         //
                         // Order
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubOrder', 2, 'Uitleverlijst', '', 'showPage("uitlever.html")')];
-                    case 211:
+                    case 213:
                         _a.sent();
                         //
                         // Retouren
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 1, 'Overzichts rapport', '', 'showPage("retourrap.html?rap=rap11")')];
-                    case 212:
+                    case 214:
                         //
                         // Retouren
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 2, 'Overzicht R bewerkingen', '', 'showPage("bewerking.html?selR=Ja")')];
-                    case 213:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 3, 'Retouren', '', 'showPage("retour.html")')];
-                    case 214:
-                        _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 4, 'Totaal binnengekomen', '', 'showPage("retourrap.html?rap=rap8")')];
                     case 215:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 5, 'Binnengekomen', '', 'showPage("retourrap.html?rap=rap6")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 3, 'Retouren', '', 'showPage("retour.html")')];
                     case 216:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 6, 'Details binnengekomen', '', 'showPage("retourrap.html?rap=rap7")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 4, 'Totaal binnengekomen', '', 'showPage("retourrap.html?rap=rap8")')];
                     case 217:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 7, 'Totaal afgehandeld', '', 'showPage("retourrap.html?rap=rap8b")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 5, 'Binnengekomen', '', 'showPage("retourrap.html?rap=rap6")')];
                     case 218:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 8, 'Afgehandeld', '', 'showPage("retourrap.html?rap=rap5")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 6, 'Details binnengekomen', '', 'showPage("retourrap.html?rap=rap7")')];
                     case 219:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 9, 'Details afgehandeld', '', 'showPage("retourrap.html?rap=rap9")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 7, 'Totaal afgehandeld', '', 'showPage("retourrap.html?rap=rap8b")')];
                     case 220:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 10, 'Totaal open', '', 'showPage("retourrap.html?rap=rap8c")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 8, 'Afgehandeld', '', 'showPage("retourrap.html?rap=rap5")')];
                     case 221:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 11, 'Details open', '', 'showPage("retourrap.html?rap=rap10")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 9, 'Details afgehandeld', '', 'showPage("retourrap.html?rap=rap9")')];
                     case 222:
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 12, 'Alle rapporten', '', 'showPage("retourrap.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 10, 'Totaal open', '', 'showPage("retourrap.html?rap=rap8c")')];
                     case 223:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 11, 'Details open', '', 'showPage("retourrap.html?rap=rap10")')];
+                    case 224:
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubRetouren', 12, 'Alle rapporten', '', 'showPage("retourrap.html")')];
+                    case 225:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubZegwaardRetouren', 3, 'Retouren', '', 'showPage("retour.html")')];
-                    case 224:
+                    case 226:
                         //
                         _a.sent();
                         //
                         // Rapportage
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRapportage', 1, 'Medewerkers', '', 'showPage("gebruikerrap.html")')];
-                    case 225:
+                    case 227:
                         //
                         // Rapportage
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
-                    case 226:
+                    case 228:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRapportage', 3, 'Product uitval', '', 'showPage("productuitvalrap.html")')];
-                    case 227:
+                    case 229:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRapportage', 4, 'Productie uitval', '', 'showPage("bewerkinguitvalrap.html")')];
-                    case 228:
+                    case 230:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubVerkoopRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
-                    case 229:
+                    case 231:
                         //
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRenDRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
-                    case 230:
+                    case 232:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRenDRapportage', 3, 'Product uitval', '', 'showPage("productuitvalrap.html")')];
-                    case 231:
+                    case 233:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubRenDRapportage', 4, 'Productie uitval', '', 'showPage("bewerkinguitvalrap.html")')];
-                    case 232:
+                    case 234:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubPlanningRapportage', 1, 'Medewerkers', '', 'showPage("gebruikerrap.html")')];
-                    case 233:
+                    case 235:
                         //
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubPlanningRapportage', 3, 'Product uitval', '', 'showPage("productuitvalrap.html")')];
-                    case 234:
+                    case 236:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubPlanningRapportage', 4, 'Productie uitval', '', 'showPage("bewerkinguitvalrap.html")')];
-                    case 235:
+                    case 237:
                         _a.sent();
                         //
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdVerkoopRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
-                    case 236:
-                        //
-                        _a.sent();
-                        //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdInkoopRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
-                    case 237:
-                        //
-                        _a.sent();
-                        //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdOrderdeskRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
                     case 238:
                         //
                         _a.sent();
                         //
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdRenDRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdInkoopRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
                     case 239:
                         //
                         _a.sent();
-                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdRenDRapportage', 3, 'Product uitval', '', 'showPage("productuitvalrap.html")')];
+                        //
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdOrderdeskRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
                     case 240:
+                        //
+                        _a.sent();
+                        //
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdRenDRapportage', 2, 'Producten', '', 'showPage("productbewerkingrap.html")')];
+                    case 241:
+                        //
+                        _a.sent();
+                        return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdRenDRapportage', 3, 'Product uitval', '', 'showPage("productuitvalrap.html")')];
+                    case 242:
                         _a.sent();
                         return [4 /*yield*/, this.addOption(req, res, next, 'SubHoofdRenDRapportage', 4, 'Productie uitval', '', 'showPage("bewerkinguitvalrap.html")')];
-                    case 241:
+                    case 243:
                         _a.sent();
                         //
                         // bb
                         //
+                        logger_1.Logger.info("DoMenu bb ...");
                         return [4 /*yield*/, this.addBb(req, res, next, 'Home', 'Home')];
-                    case 242:
-                        //
-                        // bb
-                        //
+                    case 244:
                         _a.sent();
                         return [4 /*yield*/, this.addBb(req, res, next, 'Log', 'Log')];
-                    case 243:
+                    case 245:
                         _a.sent();
                         //
                         res.crudResult.messages.push({ field: "Menu", message: "Menu uitgevoerd ..." });
@@ -1335,6 +1368,8 @@ var Patch = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        //
+                        logger_1.Logger.info("DoView ...");
                         query = db_1.default.fixQuery(req.query);
                         sql = '';
                         sql = "\ndrop view if exists uitvalsoort";
@@ -1359,6 +1394,8 @@ var Patch = /** @class */ (function (_super) {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        //
+                        logger_1.Logger.info("DoProcedure ...");
                         query = db_1.default.fixQuery(req.query);
                         _a = res;
                         return [4 /*yield*/, db_1.default.waitConnection()];

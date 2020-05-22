@@ -186,6 +186,7 @@ values (
 
     protected async doInit(req: Request, res: Response, next: NextFunction) {
         //
+        Logger.info("Init ...");
         let query = db.fixQuery(req.query);
         //
         res.crudResult.messages.push({ field: "Init", message: "Init is niet van toepassing" });
@@ -195,6 +196,7 @@ values (
 
     protected async doUtf(req: Request, res: Response, next: NextFunction) {
         //
+        Logger.info("DoUtf ...");
         let query = db.fixQuery(req.query);
         //
         let sql = '';
@@ -226,6 +228,7 @@ ${row.REORGANIZE}`;
 
     protected async doP1(req: Request, res: Response, next: NextFunction) {
         //
+        Logger.info("DoP1 ...");
         let query = db.fixQuery(req.query);
         //
         let sql = '';
@@ -266,6 +269,7 @@ set productieaantal =  '${row.MAXAANTAL}'`;
 
     protected async doAlter(req: Request, res: Response, next: NextFunction) {
         //
+        Logger.info("DoAlter ...");
         let query = db.fixQuery(req.query);
         //
         let sql = ``;
@@ -276,6 +280,7 @@ set productieaantal =  '${row.MAXAANTAL}'`;
         let thisVersion = await this.getVersion(req, res, next);
         // 2016.1
         if (thisVersion == '2016.1') {
+            Logger.info("DoAlter 2016.1 ...");
             sql = `
             select *, 
             upper(table_name) as new_name 
@@ -312,6 +317,7 @@ set productieaantal =  '${row.MAXAANTAL}'`;
         }
         // 2020.1
         if (thisVersion == '2020.1') {
+            Logger.info("DoAlter 2020.1 ...");
             sql = `
 insert into PARAM 
 (inhoud,naam) 
@@ -327,13 +333,22 @@ where naam = 'EXACTSTART')`;
         }
         // 2020.2
         if (thisVersion == '2020.2') {
+            Logger.info("DoAlter 2020.2 ...");
             //thisVersion = await this.setVersion(req,res,next, '2020.3');
             sql = `
 drop table menu`;
-            await db.waitQuery(res.crudConnection, sql);
+            try {
+                await db.waitQuery(res.crudConnection, sql);
+            } catch (error) {
+                //
+            }
             sql = `
 drop table menuregel`;
-            await db.waitQuery(res.crudConnection, sql);
+            try {
+                await db.waitQuery(res.crudConnection, sql);
+            } catch (error) {
+                //
+            }
         }
         //
         res.crudResult.messages.push({ field: "Patch", message: `database upgraded to version ${thisVersion} ...` });
@@ -343,12 +358,14 @@ drop table menuregel`;
 
     protected async doMenu(req: Request, res: Response, next: NextFunction) {
         //
+        Logger.info("DoMenu ...");
         let query = db.fixQuery(req.query);
         res.crudResult.success = true;
         let sql = '';
         //
         // default gebruikers
         //
+        Logger.info("DoMenu default gebruikers ...");
         await this.addUser(req, res, next, 'Gast', 'Gast', 'Gast', '');
         await this.addUser(req, res, next, 'Admin', 'Admin', 'Admin', '');
         await this.addUser(req, res, next, 'Super', 'Super', 'Super', 'super');
@@ -377,6 +394,7 @@ drop table menuregel`;
         //
         // Menus
         //
+        Logger.info("DoMenu menu's ...");
         await this.addMenu(req, res, next, 'Gast');
         await this.addMenu(req, res, next, 'Admin');
         await this.addMenu(req, res, next, 'Super');
@@ -395,6 +413,7 @@ drop table menuregel`;
         await this.addMenu(req, res, next, 'Zegwaard');
         await this.addMenu(req, res, next, 'User');
         //
+        Logger.info("DoMenu options ...");
         await this.addOption(req, res, next, 'Gast', 1, 'Home', 'SubGastAfmelden', '');
         //
         await this.addOption(req, res, next, 'Admin', 1, 'Home', 'SubAdminAfmelden', '');
@@ -414,7 +433,7 @@ drop table menuregel`;
         await this.addOption(req, res, next, 'Super', 3, 'Klok', 'SubKlok', '');
         await this.addOption(req, res, next, 'Super', 4, 'Importeren', 'SubImport', '');
         await this.addOption(req, res, next, 'Super', 5, 'Overzichten', 'SubLijst', '');
-        await this.addOption(req, res, next, 'Admin', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '');
+        await this.addOption(req, res, next, 'Super', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '');
         await this.addOption(req, res, next, 'Super', 7, 'Productie', 'SubProductie', '');
         await this.addOption(req, res, next, 'Super', 8, 'Inkoop', 'SubInkoop', '');
         await this.addOption(req, res, next, 'Super', 9, 'Orderadministratie', 'SubOrder', '');
@@ -672,6 +691,7 @@ drop table menuregel`;
         //
         // bb
         //
+        Logger.info("DoMenu bb ...");
         await this.addBb(req, res, next, 'Home', 'Home');
         await this.addBb(req, res, next, 'Log', 'Log');
         //
@@ -682,6 +702,7 @@ drop table menuregel`;
 
     protected async doView(req: Request, res: Response, next: NextFunction) {
         //
+        Logger.info("DoView ...");
         let query = db.fixQuery(req.query);
         //
         let sql = ''
@@ -704,6 +725,7 @@ select 'Overig') base;`;
 
     protected async doProcedure(req: Request, res: Response, next: NextFunction) {
         //
+        Logger.info("DoProcedure ...");
         let query = db.fixQuery(req.query);
         res.crudConnection = await db.waitConnection();
         //
