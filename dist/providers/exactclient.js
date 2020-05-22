@@ -383,6 +383,7 @@ var Exactclient = /** @class */ (function (_super) {
                             logger_1.Logger.error(req, JSON.stringify(error));
                         }
                         if (res.crudData.refresh == "") {
+                            logger_1.Logger.error("401 Unauthorized: Herstel Exact verbinding");
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
                         }
@@ -409,10 +410,12 @@ var Exactclient = /** @class */ (function (_super) {
                         return [3 /*break*/, 14];
                     case 14:
                         if (res.crudData.access == "") {
+                            logger_1.Logger.error("401 Unauthorized: Herstel Exact verbinding");
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
                         }
                         if (res.crudData.refresh == "") {
+                            logger_1.Logger.error("401 Unauthorized: Herstel Exact verbinding");
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
                         }
@@ -424,6 +427,7 @@ var Exactclient = /** @class */ (function (_super) {
                             logger_1.Logger.error(req, JSON.stringify(error));
                         }
                         if (res.crudData.refresh == "") {
+                            logger_1.Logger.error("401 Unauthorized: Herstel Exact verbinding");
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
                         }
@@ -431,7 +435,7 @@ var Exactclient = /** @class */ (function (_super) {
                             fs.writeFileSync(outfile, "");
                         }
                         catch (error) {
-                            logger_1.Logger.error(req, JSON.stringify(error));
+                            logger_1.Logger.error("401 Unauthorized: Herstel Exact verbinding");
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
                         }
@@ -503,7 +507,8 @@ var Exactclient = /** @class */ (function (_super) {
                         result = _f.sent();
                         if (!(result == "")) return [3 /*break*/, 18];
                         if (tlblok == -1) {
-                            res.status(401).send("HTTP/1.0 401 Unauthorized : Empty response, wrong division? [" + config_1.Config.exactdivision + "]");
+                            logger_1.Logger.error("401 Unauthorized: Empty response, wrong division? [" + config_1.Config.exactdivision + "]");
+                            res.status(401).send("401 Unauthorized : Empty response, wrong division? [" + config_1.Config.exactdivision + "]");
                             return [2 /*return*/];
                         }
                         else {

@@ -40,12 +40,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var db_1 = __importDefault(require("./db"));
+var http_1 = __importDefault(require("http"));
+var config_1 = require("./config");
 var logger_1 = require("./logger");
 var Util = /** @class */ (function () {
     function Util() {
     }
     Util.isRunning = function (req, res, next) {
         res.status(200).send("Ak2 is listening ...");
+    };
+    Util.sleep = function (seconds) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve();
+            }, 1000 * seconds);
+        });
+    };
+    Util.milisleep = function (milis) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve();
+            }, milis);
+        });
     };
     Util.getLast = function (obj) {
         var result = obj;
@@ -214,6 +230,94 @@ var Util = /** @class */ (function () {
         FileName = FileName.replace(/</g, "_");
         FileName = FileName.replace(/>/g, "_");
         return FileName;
+    };
+    Util.postInfo = function (url, body) {
+        return new Promise(function (resolve, reject) {
+            var thisLength = 0;
+            var headers = {};
+            var thisBody = '';
+            if (body) {
+                thisBody = JSON.stringify(body);
+                thisLength = thisBody.length;
+                headers = {
+                    "Content-Type": "application/json",
+                    "Content-Length": thisLength,
+                    "Accept": '*/*',
+                };
+            }
+            var result = {};
+            var ak2req = http_1.default.request({
+                host: config_1.Config.server,
+                path: url,
+                method: 'POST',
+                port: config_1.Config.serverPort,
+                headers: headers,
+                protocol: 'http:'
+            }, function (ak2res) {
+                var responseString = "";
+                ak2res.on("data", function (data) {
+                    responseString += data;
+                });
+                ak2res.on("end", function () {
+                    try {
+                        result = JSON.parse(responseString);
+                    }
+                    catch (error) {
+                        result = responseString;
+                    }
+                    resolve(result);
+                });
+                ak2res.on("error", function (error) {
+                    logger_1.Logger.error(JSON.stringify(error));
+                    reject(error);
+                });
+            });
+            ak2req.on("error", function (error) {
+                logger_1.Logger.error(JSON.stringify(error));
+                reject(false);
+            });
+            if (body) {
+                ak2req.write(thisBody);
+            }
+            ak2req.end();
+        });
+    };
+    Util.getInfo = function (url) {
+        return new Promise(function (resolve, reject) {
+            var headers = {};
+            var result;
+            var ak2req = http_1.default.request({
+                host: config_1.Config.server,
+                path: url,
+                method: 'GET',
+                port: config_1.Config.serverPort,
+                headers: headers,
+                protocol: 'http:'
+            }, function (ak2res) {
+                var responseString = "";
+                ak2res.on("data", function (data) {
+                    responseString += data;
+                });
+                ak2res.on("end", function () {
+                    try {
+                        result = JSON.parse(responseString);
+                    }
+                    catch (error) {
+                        result = responseString;
+                    }
+                    resolve(result);
+                });
+                ak2res.on("error", function (error) {
+                    logger_1.Logger.error(JSON.stringify(error));
+                    reject(error);
+                });
+            });
+            ak2req.on("error", function (error) {
+                logger_1.Logger.error(JSON.stringify(error));
+                reject(false);
+            });
+            ak2req.end();
+        });
     };
     return Util;
 }());

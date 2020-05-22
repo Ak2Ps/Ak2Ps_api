@@ -66,105 +66,187 @@ var logger_1 = require("../logger");
 var config_1 = require("../config");
 var child = __importStar(require("child_process"));
 var fs = __importStar(require("fs"));
-var http_1 = __importDefault(require("http"));
 //
 var Schedule = /** @class */ (function (_super) {
     __extends(Schedule, _super);
     function Schedule() {
         var _this = _super.call(this, "Schedule") || this;
+        _this.isRunning = false;
+        _this.isRunning = false;
         _this.runTimer();
         return _this;
     }
+    Schedule.prototype.addMessage = function (message, res) {
+        logger_1.Logger.info(message);
+        if (res) {
+            res.write(message + "<br>");
+        }
+        return message + "<br>";
+    };
     Schedule.prototype.runTimer = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
+            var result, message;
             return __generator(this, function (_a) {
-                this.timer = setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
-                    var result;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                result = {};
-                                logger_1.Logger.info("Schedule alive " + util_1.Util.Date2Screentime(new Date()));
-                                return [4 /*yield*/, this.waitBackup()];
-                            case 1:
-                                result = _a.sent();
-                                logger_1.Logger.info(result.message);
-                                return [4 /*yield*/, this.waitImport("")];
-                            case 2:
-                                result = _a.sent();
-                                logger_1.Logger.info(result.message);
-                                this.runTimer();
-                                return [2 /*return*/];
-                        }
-                    });
-                }); }, config_1.Config.scheduleinterval * 1000);
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        if (!true) return [3 /*break*/, 7];
+                        return [4 /*yield*/, util_1.Util.sleep(config_1.Config.scheduleinterval)];
+                    case 1:
+                        _a.sent();
+                        if (!(this.isRunning == true)) return [3 /*break*/, 2];
+                        return [3 /*break*/, 6];
+                    case 2:
+                        this.addMessage("Schedule loopt " + util_1.Util.Date2Screentime(new Date()) + " ...");
+                        result = {};
+                        message = '';
+                        return [4 /*yield*/, this.waitDbBackup("")];
+                    case 3:
+                        result = _a.sent();
+                        message += this.addMessage(result.message);
+                        return [4 /*yield*/, this.waitDataBackup("")];
+                    case 4:
+                        result = _a.sent();
+                        message += this.addMessage(result.message);
+                        return [4 /*yield*/, this.waitImport("")];
+                    case 5:
+                        result = _a.sent();
+                        message += this.addMessage(result.message);
+                        _a.label = 6;
+                    case 6: return [3 /*break*/, 0];
+                    case 7: return [2 /*return*/];
+                }
             });
         });
     };
-    Schedule.prototype.waitBackup = function () {
+    Schedule.prototype.waitDbBackup = function (action) {
         return __awaiter(this, void 0, void 0, function () {
-            var message, result, curdir, thisDate, thisDbBackup, thisDataBackup, thisTime, cmd, shellresult, cmd, shellresult;
+            var message, result, Auto, curdir, thisDate, thisDbBackup, thisTime, cmd, shellresult;
+            var _this = this;
             return __generator(this, function (_a) {
                 message = '';
                 result = {};
+                Auto = 0;
                 curdir = config_1.Config.appDir + "/backup";
                 thisDate = util_1.Util.Date2Screendate(new Date());
                 thisDbBackup = config_1.Config.dbschema + "_" + thisDate + ".sql";
-                thisDataBackup = config_1.Config.dbschema + "_" + thisDate + ".7z";
                 thisTime = util_1.Util.Date2Screentime(new Date());
                 //
-                if (thisTime < config_1.Config.backuptime) {
-                    message += "Too early for backup " + thisDbBackup + " (" + config_1.Config.backuptime + ") ...<br>\n";
+                if (action = "") {
+                    Auto = 1;
                 }
-                else {
-                    if (fs.existsSync(curdir + "/" + thisDbBackup)) {
-                        message += "Db backup " + thisDbBackup + " already made ...<br>\n";
-                        //
-                        if (fs.existsSync(curdir + "/" + thisDataBackup)) {
-                            message += "Data backup " + thisDataBackup + " already made ...<br>\n";
-                        }
-                        else {
-                            cmd = "\"\\program files\\7-zip\\7z\" a -tzip backup/" + thisDataBackup + " -x!backup .";
-                            logger_1.Logger.info(cmd);
-                            try {
-                                shellresult = child.execSync(cmd, {
-                                    cwd: config_1.Config.appDir,
-                                });
-                            }
-                            catch (error) {
-                                //Logger.error(JSON.stringify(error));
-                            }
-                            message += "Data backup " + thisDataBackup + " done ...<br>\n";
-                        }
+                if (Auto == 1) {
+                    if (thisTime < config_1.Config.backuptime) {
+                        message += this.addMessage("Wachten om backups te maken tot " + config_1.Config.backuptime + " ...");
+                        result = {
+                            backup: "" + thisDbBackup,
+                            success: "true",
+                            message: message
+                        };
+                        return [2 /*return*/, result];
                     }
-                    else {
-                        cmd = "mysqldump --databases " + config_1.Config.dbschema + " --user=" + config_1.Config.dbuser + " --password=" + config_1.Config.dbpassword + " >" + thisDbBackup;
-                        try {
-                            shellresult = child.execSync(cmd, {
-                                cwd: curdir,
-                            });
-                        }
-                        catch (error) {
-                            //Logger.error(req, JSON.stringify(error));
-                        }
-                        message += "Db backup " + thisDbBackup + " done ...<br>\n";
-                    }
+                    fs.exists(curdir + "/" + thisDbBackup, function (exists) {
+                        message += _this.addMessage("Databasebackup " + thisDbBackup + " is vandaag al gemaakt ...");
+                        result = {
+                            backup: "" + thisDbBackup,
+                            success: "true",
+                            message: message
+                        };
+                        return result;
+                    });
                 }
+                //
+                this.isRunning = true;
+                cmd = "mysqldump --databases " + config_1.Config.dbschema + " --user=" + config_1.Config.dbuser + " --password=" + config_1.Config.dbpassword + " >" + thisDbBackup;
+                try {
+                    shellresult = child.execSync(cmd, {
+                        cwd: curdir,
+                    });
+                }
+                catch (error) {
+                    //Logger.error(req, JSON.stringify(error));
+                }
+                message += this.addMessage("Database backup " + thisDbBackup + " is gemaakt ...");
                 result = {
-                    db: "" + thisDbBackup,
-                    data: "" + thisDataBackup,
+                    backup: "" + thisDbBackup,
                     success: "true",
                     message: message
                 };
+                //
+                this.isRunning = false;
+                //
                 return [2 /*return*/, result];
             });
         });
     };
-    Schedule.prototype.waitImport = function (action) {
+    Schedule.prototype.waitDataBackup = function (action) {
         return __awaiter(this, void 0, void 0, function () {
-            var message, result, data, thisPath, All, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, Start, tlcycle;
+            var message, result, Auto, curdir, thisDate, thisDataBackup, thisTime, cmd, shellresult;
+            return __generator(this, function (_a) {
+                message = '';
+                result = {};
+                Auto = 0;
+                curdir = config_1.Config.appDir + "/backup";
+                thisDate = util_1.Util.Date2Screendate(new Date());
+                thisDataBackup = config_1.Config.dbschema + "_" + thisDate + ".7z";
+                thisTime = util_1.Util.Date2Screentime(new Date());
+                //
+                if (action = "") {
+                    Auto = 1;
+                }
+                if (Auto == 1) {
+                    if (thisTime < config_1.Config.backuptime) {
+                        message += this.addMessage("Wachten om backups te maken tot " + config_1.Config.backuptime + " ...");
+                        result = {
+                            backup: "" + thisDataBackup,
+                            success: "true",
+                            message: message
+                        };
+                        return [2 /*return*/, result];
+                    }
+                    if (fs.existsSync(curdir + "/" + thisDataBackup)) {
+                        message += this.addMessage("Databackup " + thisDataBackup + " is vandaag al gemaakt ...");
+                        result = {
+                            backup: "" + thisDataBackup,
+                            success: "true",
+                            message: message
+                        };
+                        return [2 /*return*/, result];
+                    }
+                }
+                //
+                this.isRunning = true;
+                //
+                if (fs.existsSync(curdir + "/" + thisDataBackup)) {
+                    message += this.addMessage("Databackup " + thisDataBackup + " is vandaag al gemaakt ...");
+                }
+                else {
+                    cmd = "\"\\program files\\7-zip\\7z\" a -tzip backup/" + thisDataBackup + " -x!backup .";
+                    message += this.addMessage(cmd);
+                    try {
+                        shellresult = child.execSync(cmd, {
+                            cwd: config_1.Config.appDir,
+                        });
+                    }
+                    catch (error) {
+                        //Logger.error(JSON.stringify(error));
+                    }
+                    message += this.addMessage("Data backup " + thisDataBackup + " is gemaakt ...");
+                }
+                result = {
+                    backup: "" + thisDataBackup,
+                    success: "true",
+                    message: message
+                };
+                //
+                this.isRunning = false;
+                //
+                return [2 /*return*/, result];
+            });
+        });
+    };
+    Schedule.prototype.waitImport = function (action, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var message, result, data, thisPath, retry, All, Auto, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, tlcycle, bericht;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -174,7 +256,9 @@ var Schedule = /** @class */ (function (_super) {
                             message: message
                         };
                         thisPath = '';
+                        retry = 0;
                         All = 0;
+                        Auto = 0;
                         OperationalOnly = 0;
                         BestellingOnly = 0;
                         BewerkingOnly = 0;
@@ -184,734 +268,723 @@ var Schedule = /** @class */ (function (_super) {
                         thisDate = util_1.Util.Date2Screendate(new Date());
                         thisFilename = config_1.Config.dbschema + "_" + thisDate + ".log";
                         thisTime = util_1.Util.Date2Screentime(new Date());
-                        if (!(thisTime < config_1.Config.backuptime)) return [3 /*break*/, 1];
-                        result = {
-                            backup: '',
-                            success: "true",
-                            message: "Too early for import (" + config_1.Config.exacttime + ") ..."
-                        };
-                        return [3 /*break*/, 59];
-                    case 1:
-                        if (!fs.existsSync(curdir + "/" + thisFilename)) return [3 /*break*/, 2];
-                        result = {
-                            backup: thisFilename,
-                            success: "true",
-                            message: "Import " + thisFilename + " already made ..."
-                        };
-                        return [3 /*break*/, 59];
-                    case 2:
-                        Start = 1;
-                        switch (Number(action)) {
-                            case 0:
+                        //
+                        switch ((action).toLowerCase()) {
+                            case "all":
                                 All = 1;
                                 break;
-                            case 1:
+                            case "operational":
                                 OperationalOnly = 1;
                                 break;
-                            case 2:
+                            case "bestelling":
                                 BestellingOnly = 1;
                                 break;
-                            case 3:
+                            case "bewerking":
                                 BewerkingOnly = 1;
                                 break;
-                            case 4:
+                            case "order":
                                 OrderOnly = 1;
                                 break;
-                            case 11:
+                            case "calc":
                                 CalcOnly = 1;
                                 break;
                             default:
-                                Start = 0;
+                                Auto = 1;
+                                All = 1;
                         }
-                        if (!(Start == 1)) return [3 /*break*/, 58];
+                        //
+                        if (Auto == 1) {
+                            if (thisTime < config_1.Config.backuptime) {
+                                result = {
+                                    backup: '',
+                                    success: "true",
+                                    message: "Wacht to " + config_1.Config.exacttime + " voor de import ..."
+                                };
+                                return [2 /*return*/, result];
+                            }
+                            if (fs.existsSync(curdir + "/" + thisFilename)) {
+                                result = {
+                                    backup: thisFilename,
+                                    success: "true",
+                                    message: "Import " + thisFilename + " is vandaag al uitgevoerd ..."
+                                };
+                                return [2 /*return*/, result];
+                            }
+                        }
+                        //
+                        this.isRunning = true;
                         //
                         // cleanLog
                         //
+                        message += this.addMessage("Logboodschappen ouder dan 5 dagen verwijderen.", res);
                         thisPath = "/toolbox.php?app=" + config_1.Config.app
                             + "&action=cleanlog";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
-                    case 3:
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
+                    case 1:
                         data = _a.sent();
                         try {
                             if (data.items[0].MSG == '') {
-                                message += "Logboodschappen ouder dan 5 dagen verwijderd. <br><br>";
                             }
                             else {
-                                message += data.items[0].MSG;
+                                message += this.addMessage(data.items[0].MSG, res);
                             }
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        //
-                        //
-                        //
-                        if (OperationalOnly == 1) {
-                            //me.getBESTELLING();
-                        }
-                        else if (BestellingOnly == 1) {
-                            //me.getBESTELLING();
-                        }
-                        else if (BewerkingOnly == 1) {
-                            //me.getBEWERK();
-                        }
-                        else if (OrderOnly == 1) {
-                            //me.getORDER();
-                        }
-                        else if (CalcOnly == 1) {
-                            //me.fase0();
-                        }
-                        else {
-                        }
-                        if (!(All == 1)) return [3 /*break*/, 6];
+                        if (!(All == 1)) return [3 /*break*/, 4];
                         //
                         // getLEVERANCIER
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen leveranciers.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=Accounts"
                             + "&outfile=import/exactaccounts.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 4:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 2:
                         data = _a.sent();
                         try {
-                            message += "\nLeverancier: " + data.msg + "<br>\n";
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Leveranciers inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactleverancier"
                             + "&file=import/exactaccounts.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 5:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 3:
                         data = _a.sent();
                         try {
-                            message += "\nFase 0: " + data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 6;
-                    case 6:
-                        if (!(All == 1)) return [3 /*break*/, 9];
+                        _a.label = 4;
+                    case 4:
+                        if (!(All == 1)) return [3 /*break*/, 7];
                         //
                         // getKLANT
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen klanten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=Accounts"
                             + "&outfile=import/exactaccounts.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 7:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 5:
                         data = _a.sent();
                         try {
-                            message += "\nKlant: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Klanten inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactklant"
                             + "&file=import/exactaccounts.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 8:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 6:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 9;
-                    case 9:
-                        if (!(All == 1)) return [3 /*break*/, 12];
+                        _a.label = 7;
+                    case 7:
+                        if (!(All == 1)) return [3 /*break*/, 10];
                         //
                         // getPRODUCT
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen producten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=Items"
                             + "&outfile=import/exactitems.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 10:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 8:
                         data = _a.sent();
                         try {
-                            message += "\nProduct: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Producten inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactproduct"
                             + "&file=import/exactitems.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 11:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 9:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 12;
-                    case 12:
-                        if (!(All == 1)) return [3 /*break*/, 15];
+                        _a.label = 10;
+                    case 10:
+                        if (!(All == 1)) return [3 /*break*/, 13];
                         //
                         // getSTUKLIJST
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen stuklijsten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=ManufacturedBillofMaterials"
                             + "&Params_Status=30,20,10"
                             + "&outfile=import/exactmbom.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 13:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 11:
                         data = _a.sent();
                         try {
-                            message += "\nStuklijst: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Stuklijsten inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactproduct"
                             + "&file=import/exactmbom.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 14:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 12:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 15;
-                    case 15:
-                        if (!(All == 1)) return [3 /*break*/, 18];
+                        _a.label = 13;
+                    case 13:
+                        if (!(All == 1)) return [3 /*break*/, 16];
                         //
                         // getLEVERANCIERPRODUCT
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen leverancierproductnummers.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=PurchaseOrders"
                             + "&Params_Status=10,20"
                             + "&outfile=import/exactpurchase.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 16:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 14:
                         data = _a.sent();
                         try {
-                            message += "\nLeverancierproduct: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Leverancierproductnummers inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactleverancierproduct"
                             + "&file=import/exactpurchase.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 17:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 15:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 18;
-                    case 18:
-                        if (!(All == 1)) return [3 /*break*/, 21];
+                        _a.label = 16;
+                    case 16:
+                        if (!(All == 1)) return [3 /*break*/, 19];
                         //
                         // getVOORRAAD
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen voorraad.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=StockPositions"
                             + "&outfile=import/exactstock.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 19:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 17:
                         data = _a.sent();
                         try {
-                            message += "\nVoorraad: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Voorraad inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactvoorraad"
                             + "&file=import/exactstock.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 20:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 18:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.
-                                stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 21;
-                    case 21:
-                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 24];
+                        _a.label = 19;
+                    case 19:
+                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 22];
                         //
                         // getBESTELLING
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen bestellingen.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=PurchaseOrders"
                             + "&Params_Status=10,20"
                             + "&outfile=import/exactpurchase.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 22:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 20:
                         data = _a.sent();
                         try {
-                            message += "\nBestelling: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Bestellingen inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactbestelling"
                             + "&file=import/exactpurchase.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 23:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 21:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 24;
-                    case 24:
-                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 27];
+                        _a.label = 22;
+                    case 22:
+                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 25];
                         //
                         // getRECEIPT
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen ontvangsten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=Receipts"
                             + "&outfile=import/exactreceipt.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 25:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 23:
                         data = _a.sent();
                         try {
-                            message += "\nOntvangsten: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Ontvangsten inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactreceipt"
                             + "&file=import/exactreceipt.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 26:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 24:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 27;
-                    case 27:
-                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 30];
+                        _a.label = 25;
+                    case 25:
+                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 28];
                         //
                         // getORDER
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen orders.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=SalesOrders"
                             + "&Params_Status=12,20"
                             + "&outfile=import/exactsales.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 28:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 26:
                         data = _a.sent();
                         try {
-                            message += "\nOrders: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Orders inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactorder"
                             + "&file=import/exactsales.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 29:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 27:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 30;
-                    case 30:
-                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 33];
+                        _a.label = 28;
+                    case 28:
+                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 31];
                         //
                         // getDELIVERY
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen afleveringen.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=Deliveries"
                             + "&outfile=import/exactdeliveries.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 31:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 29:
                         data = _a.sent();
                         try {
-                            message += "\nAfleveringen: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Afleveringen inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactdelivery"
                             + "&file=import/exactdeliveries.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 32:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 30:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 33;
-                    case 33:
-                        if (!(All == 1 || OperationalOnly == 1)) return [3 /*break*/, 36];
+                        _a.label = 31;
+                    case 31:
+                        if (!(All == 1 || OperationalOnly == 1 || BewerkingOnly == 1)) return [3 /*break*/, 34];
                         //
                         // getBEWERK
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen bewerkingen.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=ShopOrders"
                             + "&Params_Status=20,10"
                             + "&outfile=import/exactshoporders.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 34:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 32:
                         data = _a.sent();
                         try {
-                            message += "\nBewerkingen: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Bewerkingen inladen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactbewerk"
                             + "&file=import/exactshoporders.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 35:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 33:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 36;
-                    case 36:
-                        if (!(All == 1 || OperationalOnly == 1)) return [3 /*break*/, 39];
+                        _a.label = 34;
+                    case 34:
+                        if (!(All == 1 || OperationalOnly == 1 || BewerkingOnly == 1)) return [3 /*break*/, 37];
                         //
                         // getBEWERKONTVANGST
                         //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Ophalen bewerkingontvangsten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
                             + "&topic=ShopOrderStockReceipts"
                             + "&outfile=import/exactshoporderreceipts.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
-                    case 37:
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 35:
                         data = _a.sent();
                         try {
-                            message += "\nBewerkinggereedregels: " + data.msg + "<br>\n";
-                            ;
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
+                        message += this.addMessage("Bewerkingontvangsten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactbewerkontvangst"
                             + "&file=import/exactshoporderreceipts.dat";
-                        return [4 /*yield*/, this.getInfo(thisPath)];
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 36:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.items[0].msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 37;
+                    case 37:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 39];
+                        //
+                        // addlogistiek
+                        //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Default bewerkingen toevoegen.", res);
+                        thisPath = "/toolbox.php?app=" + config_1.Config.app
+                            + "&action=addlogistiek";
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 38:
                         data = _a.sent();
                         try {
-                            message += data.items[0].msg + "\n";
+                            message += this.addMessage(data.items[0].MSG, res);
                         }
                         catch (error) {
-                            message += JSON.stringify(error);
+                            message += this.addMessage(data, res);
                         }
                         _a.label = 39;
                     case 39:
                         if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 41];
                         //
-                        // fases 0
+                        // fase0: Oude voorraadstand opschonen
                         //
-                        thisPath = "/toolbox.php?app=" + config_1.Config.app
-                            + "&action=addlogistiek";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
+                        message += this.addMessage("Oude voorraadstand opschonen.", res);
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase0";
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 40:
                         data = _a.sent();
                         try {
-                            message += "\nDefault bewerkingen toevoegen: " + data.items[0].MSG + "<br>";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += "\nFase 0: " + data + "<br>";
+                            message += this.addMessage(data, res);
                         }
                         _a.label = 41;
                     case 41:
                         if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 43];
                         //
-                        // prefase
+                        // fase1: Startvoorraad, orders, bestellingen en bewerkingen doorrekenen
                         //
+                        message += this.addMessage("Startvoorraad, orders, bestellingen en bewerkingen doorrekenen.", res);
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
-                            + "&action=fase0";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
+                            + "&action=fase1";
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 42:
                         data = _a.sent();
                         try {
-                            message += "\nOude voorraadstand opschonen: " + data.items[0].msg + "<br>";
+                            message += this.addMessage(data.items[0].msg, res);
                         }
                         catch (error) {
-                            message += "\nPrefase: " + data + "<br>";
+                            message += this.addMessage(data, res);
                         }
                         _a.label = 43;
                     case 43:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 45];
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 49];
                         //
-                        // fase1
+                        // Fase2: Voorraad afboeken van onderdelen van producten waar tekorten van zijn
                         //
+                        message += this.addMessage("Voorraad afboeken van onderdelen van producten waar tekorten van zijn.", res);
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
-                            + "&action=fase1";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
+                            + "&action=fase2";
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 44:
                         data = _a.sent();
+                        retry = 0;
                         try {
-                            message += "\nStartvoorraad, orders, bestellingen en bewerkingen doorrekenen: " + data.items[0].msg + "<br>";
+                            if (Number(data.items[0].regelsbesteld) > 0) {
+                                // is het goede type antwoord gegeven
+                                retry = 1;
+                            }
                         }
                         catch (error) {
-                            message += "\nFase 1: " + data + "<br>";
+                            message += this.addMessage(data, res);
                         }
+                        tlcycle = 0;
                         _a.label = 45;
                     case 45:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 47];
-                        //
-                        // Eerste keer fase2
-                        //
+                        if (!(retry > 0)) return [3 /*break*/, 49];
+                        message += this.addMessage(data.items[0].regelsbesteld + " regels afgeboekt, nog een keer ...", res);
+                        tlcycle++;
+                        retry = 0;
+                        if (!(tlcycle > 6)) return [3 /*break*/, 46];
+                        message += this.addMessage("Onderdeel is Onderdeel probleem, toch maar opbouwen lijst ...", res);
+                        return [3 /*break*/, 48];
+                    case 46:
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase2";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
-                    case 46:
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
+                    case 47:
                         data = _a.sent();
                         try {
-                            message += "\nVoorraad afboeken van onderdelen van producten waar tekorten van zijn ...<br>";
+                            if (Number(data.items[0].regelsbesteld) > 0) {
+                                // is het goede type antwoord gegeven
+                                retry = 1;
+                            }
                         }
                         catch (error) {
-                            message += "\nEerste fase 2: " + data + "<br>";
+                            message += this.addMessage(data, res);
                         }
-                        _a.label = 47;
-                    case 47:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 52];
-                        tlcycle = 0;
-                        message += "\n" + data.items[0].regelsbesteld + " regels afgeboekt <br>";
                         _a.label = 48;
-                    case 48:
-                        if (!(Number(data.items[0].regelsbesteld) > 0)) return [3 /*break*/, 52];
-                        tlcycle++;
-                        if (!(tlcycle > 6)) return [3 /*break*/, 49];
-                        message += "\nOnderdeel is Onderdeel probleem, toch maar opbouwen lijst ..." + "<br>";
-                        return [3 /*break*/, 52];
+                    case 48: return [3 /*break*/, 45];
                     case 49:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 51];
+                        //
+                        // fase3: Voorraadstand vastleggen
+                        //
+                        message += this.addMessage("Voorraadstand vastleggen ...", res);
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
-                            + "&action=fase2";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
+                            + "&action=fase3";
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 50:
                         data = _a.sent();
-                        try {
-                            message += "\n" + data.items[0].regelsbesteld + " regels afgeboekt <br>";
-                        }
-                        catch (error) {
-                            message += "\nVolgende fase 2: " + data + "<br>";
-                        }
                         _a.label = 51;
-                    case 51: return [3 /*break*/, 48];
+                    case 51:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 55];
+                        //
+                        // Eerste fase4: Beperkende faktoren bijwerken (Zoek de kurk)
+                        //
+                        message += this.addMessage("Beperkende faktoren bijwerken (Zoek de kurk) ...", res);
+                        thisPath = "/voorraad.php?app=" + config_1.Config.app
+                            + "&action=fase4";
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 52:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 54];
-                        //
-                        // Eerste fase 4
-                        //
-                        thisPath = "/voorraad.php?app=" + config_1.Config.app
-                            + "&action=fase4";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
+                        data = _a.sent();
+                        retry = 0;
+                        try {
+                            if (data.items[0].regels > 0) {
+                                retry = 1;
+                            }
+                        }
+                        catch (error) {
+                            message += this.addMessage(data, res);
+                        }
+                        _a.label = 53;
                     case 53:
-                        data = _a.sent();
-                        try {
-                            message += "\nBeperkende faktoren bijwerken (Zoek de kurk) ...<br>";
-                        }
-                        catch (error) {
-                            message += "\nFase 4: " + data + "<br>";
-                        }
-                        _a.label = 54;
-                    case 54:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 57];
-                        //
-                        // Volgende fase 4
-                        //
-                        message += "\n" + data.items[0].regels + " regels doorgezocht <br>";
-                        _a.label = 55;
-                    case 55:
-                        if (!(Number(data.items[0].regels) > 0)) return [3 /*break*/, 57];
+                        if (!(retry > 0)) return [3 /*break*/, 55];
+                        message += this.addMessage(data.items[0].regels + " regels doorzocht, nog een keer ...", res);
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase4";
-                        return [4 /*yield*/, this.postInfo(thisPath)];
-                    case 56:
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
+                    case 54:
                         data = _a.sent();
+                        retry = 0;
                         try {
-                            message += "\n" + data.items[0].regels + " regels doorgezocht <br>";
+                            if (Number(data.items[0].regels) > 0) {
+                                retry = 1;
+                            }
                         }
                         catch (error) {
-                            message += "\nVolgende ase 4: " + data + "<br>";
+                            message += this.addMessage(data, res);
                         }
-                        return [3 /*break*/, 55];
-                    case 57:
+                        return [3 /*break*/, 53];
+                    case 55:
                         if (All == 1 || CalcOnly == 1) {
                             //
                             // Alles is bijgewerkt
                             //
-                            message += "\nAlles is bijgewerkt, gereed ...</b><br>";
-                            //
-                            // insert message
-                            //
+                            message += this.addMessage("Alles is bijgewerkt.", res);
                         }
-                        _a.label = 58;
-                    case 58:
+                        //
+                        // Gereed
+                        //
+                        message += this.addMessage("", res);
+                        message += this.addMessage("Gereed ...", res);
+                        bericht = {};
+                        bericht.datum = util_1.Util.Date2Screendatetime(new Date());
+                        bericht.author = config_1.Config.appDir;
+                        bericht.email = "";
+                        bericht.header = util_1.Util.Date2Screentime(new Date()) + ": Importeren en/of doorrekenen";
+                        bericht.inhoud = encodeURIComponent(message);
+                        bericht.moderated = 1;
+                        thisPath = "/bb.php?app=" + config_1.Config.app
+                            + "&action=addmsg"
+                            + "&bb=Log";
+                        return [4 /*yield*/, util_1.Util.postInfo(thisPath, bericht)];
+                    case 56:
+                        data = _a.sent();
                         //
                         fs.appendFileSync(curdir + "/" + thisFilename, message);
                         result = {
                             success: "true",
                             message: message
                         };
-                        _a.label = 59;
-                    case 59: return [2 /*return*/, result];
+                        //
+                        this.isRunning = false;
+                        //
+                        return [2 /*return*/, result];
                 }
             });
         });
     };
-    Schedule.prototype.postInfo = function (url) {
-        return new Promise(function (resolve, reject) {
-            var headers = {};
-            var result = {};
-            var ak2req = http_1.default.request({
-                host: config_1.Config.server,
-                path: url,
-                method: 'POST',
-                port: config_1.Config.serverPort,
-                headers: headers,
-                protocol: 'http:'
-            }, function (ak2res) {
-                var responseString = "";
-                ak2res.on("data", function (data) {
-                    responseString += data;
-                });
-                ak2res.on("end", function () {
-                    try {
-                        result = JSON.parse(responseString);
-                    }
-                    catch (error) {
-                        result = responseString;
-                    }
-                    resolve(result);
-                });
-                ak2res.on("error", function (error) {
-                    logger_1.Logger.error(JSON.stringify(error));
-                    reject(error);
-                });
-            });
-            ak2req.on("error", function (error) {
-                logger_1.Logger.error(JSON.stringify(error));
-                reject(false);
-            });
-            ak2req.end();
-        });
-    };
-    Schedule.prototype.getInfo = function (url) {
-        return new Promise(function (resolve, reject) {
-            var headers = {};
-            var result;
-            var ak2req = http_1.default.request({
-                host: config_1.Config.server,
-                path: url,
-                method: 'GET',
-                port: config_1.Config.serverPort,
-                headers: headers,
-                protocol: 'http:'
-            }, function (ak2res) {
-                var responseString = "";
-                ak2res.on("data", function (data) {
-                    responseString += data;
-                });
-                ak2res.on("end", function () {
-                    try {
-                        result = JSON.parse(responseString);
-                    }
-                    catch (error) {
-                        result = responseString;
-                    }
-                    resolve(result);
-                });
-                ak2res.on("error", function (error) {
-                    logger_1.Logger.error(JSON.stringify(error));
-                    reject(error);
-                });
-            });
-            ak2req.on("error", function (error) {
-                logger_1.Logger.error(JSON.stringify(error));
-                reject(false);
-            });
-            ak2req.end();
-        });
-    };
-    Schedule.prototype.doBackup = function (req, res, next) {
+    Schedule.prototype.doDbBackup = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var query, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         query = db_1.default.fixQuery(req.query);
-                        return [4 /*yield*/, this.waitBackup()];
+                        return [4 /*yield*/, this.waitDbBackup(query.type)];
+                    case 1:
+                        result = _a.sent();
+                        res.status(200).send(result);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Schedule.prototype.doDataBackup = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        query = db_1.default.fixQuery(req.query);
+                        return [4 /*yield*/, this.waitDataBackup(query.type)];
                     case 1:
                         result = _a.sent();
                         res.status(200).send(result);
@@ -927,10 +1000,10 @@ var Schedule = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         query = db_1.default.fixQuery(req.query);
-                        return [4 /*yield*/, this.waitImport("")];
+                        return [4 /*yield*/, this.waitImport(query.type, res)];
                     case 1:
                         result = _a.sent();
-                        res.status(200).send(result);
+                        res.end();
                         return [2 /*return*/];
                 }
             });
@@ -945,10 +1018,17 @@ var Schedule = /** @class */ (function (_super) {
                 //
                 logger_1.Logger.request(req);
                 //
-                if (action == "backup") {
-                    this.doBackup(req, res, next);
+                if (action == "dbbackup" || action == "get,dbbackup") {
+                    this.doDbBackup(req, res, next);
                 }
-                else if (action == "import") {
+                else if (action == "databackup" || action == "get,databackup") {
+                    this.doDataBackup(req, res, next);
+                }
+                else if (action == "import" || action == "get,import") {
+                    //
+                    res.setHeader("Content-Type", "text/event-stream");
+                    res.setHeader("Cache-Control", "no-cache");
+                    //
                     this.doImport(req, res, next);
                 }
                 else {

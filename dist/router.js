@@ -192,6 +192,7 @@ var Router = /** @class */ (function () {
         //
         this.app.route('/').all(util_1.Util.isRunning);
         this.app.route('/schedule').all(function (req, res, next) { return _this.schedule.routes(req, res, next); });
+        this.app.route('/schedule.php').all(function (req, res, next) { return _this.schedule.routes(req, res, next); });
         //
         // Extra's
         //

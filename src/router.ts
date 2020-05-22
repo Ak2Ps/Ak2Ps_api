@@ -276,6 +276,7 @@ export class Router {
     //
     this.app.route('/').all(Util.isRunning);
     this.app.route('/schedule').all((req, res, next) => this.schedule.routes(req, res, next));
+    this.app.route('/schedule.php').all((req, res, next) => this.schedule.routes(req, res, next));
     //
     // Extra's
     //

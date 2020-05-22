@@ -319,6 +319,7 @@ export class Exactclient extends Crud {
                 Logger.error(req, JSON.stringify(error));
             }
             if (res.crudData.refresh == "") {
+                Logger.error("401 Unauthorized: Herstel Exact verbinding");
                 res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                 return;
             }
@@ -338,10 +339,12 @@ export class Exactclient extends Crud {
                 res.crudData.refresh = '';
             }
             if (res.crudData.access == "") {
+                Logger.error("401 Unauthorized: Herstel Exact verbinding");
                 res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                 return;
             }
             if (res.crudData.refresh == "") {
+                Logger.error("401 Unauthorized: Herstel Exact verbinding");
                 res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                 return;
             }
@@ -352,13 +355,14 @@ export class Exactclient extends Crud {
                 Logger.error(req, JSON.stringify(error));
             }
             if (res.crudData.refresh == "") {
+                Logger.error("401 Unauthorized: Herstel Exact verbinding");
                 res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                 return;
             }
             try {
                 fs.writeFileSync(outfile, ``);
             } catch (error) {
-                Logger.error(req, JSON.stringify(error));
+                Logger.error("401 Unauthorized: Herstel Exact verbinding");
                 res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                 return;
             }
@@ -429,7 +433,8 @@ export class Exactclient extends Crud {
                 result = await this.getData(req, res, next, options);
                 if (result == "") {
                     if (tlblok == -1) {
-                        res.status(401).send(`HTTP/1.0 401 Unauthorized : Empty response, wrong division? [${Config.exactdivision}]`);
+                        Logger.error(`401 Unauthorized: Empty response, wrong division? [${Config.exactdivision}]`);
+                        res.status(401).send(`401 Unauthorized : Empty response, wrong division? [${Config.exactdivision}]`);
                         return;
                     } else {
                         retry = 0;

@@ -8,85 +8,165 @@ import { Logger } from "../logger";
 import { Config } from '../config';
 import * as child from 'child_process';
 import * as fs from 'fs';
-import http from "http";
 //
 
 export class Schedule extends Action {
     private timer: any;
+    protected isRunning = false;
     constructor() {
         super(
             "Schedule"
         )
+        this.isRunning = false;
         this.runTimer();
     }
 
-    protected async runTimer() {
-        this.timer = setTimeout(async () => {
-            let result: any = {};
-            Logger.info("Schedule alive " + Util.Date2Screentime(new Date()));
-            result = await this.waitBackup();
-            Logger.info(result.message);
-            result = await this.waitImport("");
-            Logger.info(result.message);
-            this.runTimer();
-        }, Config.scheduleinterval * 1000);
+    protected addMessage(message: string, res?: Response): string {
+        Logger.info(message);
+        if (res) {
+            res.write(message + "<br>");
+        }
+        return message + "<br>";
     }
 
-    protected async waitBackup() {
+    protected async runTimer() {
+        while (true) {
+            await Util.sleep(Config.scheduleinterval);
+            if (this.isRunning == true) {
+            } else {
+                this.addMessage("Schedule loopt " + Util.Date2Screentime(new Date()) + " ...");
+                let result: any = {};
+                let message = '';
+                result = await this.waitDbBackup("");
+                message += this.addMessage(result.message);
+                result = await this.waitDataBackup("");
+                message += this.addMessage(result.message);
+                result = await this.waitImport("");
+                message += this.addMessage(result.message);
+            }
+        }
+    }
+
+    protected async waitDbBackup(action: string) {
         let message = '';
         let result: any = {};
+        let Auto = 0;
         //
         let curdir = Config.appDir + "/backup";
         let thisDate = Util.Date2Screendate(new Date());
         let thisDbBackup = `${Config.dbschema}_${thisDate}.sql`;
-        let thisDataBackup = `${Config.dbschema}_${thisDate}.7z`;
         let thisTime = Util.Date2Screentime(new Date());
         //
-        if (thisTime < Config.backuptime) {
-            message += `Too early for backup ${thisDbBackup} (${Config.backuptime}) ...<br>\n`;
-        } else {
-            if (fs.existsSync(`${curdir}/${thisDbBackup}`)) {
-                message += `Db backup ${thisDbBackup} already made ...<br>\n`;
-                //
-                if (fs.existsSync(`${curdir}/${thisDataBackup}`)) {
-                    message += `Data backup ${thisDataBackup} already made ...<br>\n`;
-                } else {
-                    let cmd = `"\\program files\\7-zip\\7z" a -tzip backup/${thisDataBackup} -x!backup .`;
-                    Logger.info(cmd);
-                    try {
-                        let shellresult = child.execSync(cmd,
-                            {
-                                cwd: Config.appDir,
-                            });
-                    } catch (error) {
-                        //Logger.error(JSON.stringify(error));
-                    }
-                    message += `Data backup ${thisDataBackup} done ...<br>\n`
-                }
-            } else {
-                let cmd = `mysqldump --databases ${Config.dbschema} --user=${Config.dbuser} --password=${Config.dbpassword} >${thisDbBackup}`;
-                try {
-                    let shellresult = child.execSync(cmd,
-                        {
-                            cwd: curdir,
-                        });
-                } catch (error) {
-                    //Logger.error(req, JSON.stringify(error));
-                }
-                message += `Db backup ${thisDbBackup} done ...<br>\n`
-            }
+        if (action = "") {
+            Auto = 1;
         }
+        if (Auto == 1) {
+            if (thisTime < Config.backuptime) {
+                message += this.addMessage(`Wachten om backups te maken tot ${Config.backuptime} ...`);
+                result = {
+                    backup: `${thisDbBackup}`,
+                    success: "true",
+                    message: message
+                };
+                return result;
+            }
+            fs.exists(`${curdir}/${thisDbBackup}`, (exists: boolean) => {
+                message += this.addMessage(`Databasebackup ${thisDbBackup} is vandaag al gemaakt ...`);
+                result = {
+                    backup: `${thisDbBackup}`,
+                    success: "true",
+                    message: message
+                };
+                return result;
+            })
+        }
+        //
+        this.isRunning = true;
+        //
+        let cmd = `mysqldump --databases ${Config.dbschema} --user=${Config.dbuser} --password=${Config.dbpassword} >${thisDbBackup}`;
+        try {
+            let shellresult = child.execSync(cmd,
+                {
+                    cwd: curdir,
+                });
+        } catch (error) {
+            //Logger.error(req, JSON.stringify(error));
+        }
+        message += this.addMessage(`Database backup ${thisDbBackup} is gemaakt ...`);
         result = {
-            db: `${thisDbBackup}`,
-            data: `${thisDataBackup}`,
+            backup: `${thisDbBackup}`,
             success: "true",
             message: message
         };
-
+        //
+        this.isRunning = false;
+        //
         return result;
     }
 
-    protected async waitImport(action: string) {
+    protected async waitDataBackup(action: string) {
+        let message = '';
+        let result: any = {};
+        let Auto = 0;
+        //
+        let curdir = Config.appDir + "/backup";
+        let thisDate = Util.Date2Screendate(new Date());
+        let thisDataBackup = `${Config.dbschema}_${thisDate}.7z`;
+        let thisTime = Util.Date2Screentime(new Date());
+        //
+        if (action = "") {
+            Auto = 1;
+        }
+        if (Auto == 1) {
+            if (thisTime < Config.backuptime) {
+                message += this.addMessage(`Wachten om backups te maken tot ${Config.backuptime} ...`);
+                result = {
+                    backup: `${thisDataBackup}`,
+                    success: "true",
+                    message: message
+                };
+                return result;
+            }
+            if (fs.existsSync(`${curdir}/${thisDataBackup}`)) {
+                message += this.addMessage(`Databackup ${thisDataBackup} is vandaag al gemaakt ...`);
+                result = {
+                    backup: `${thisDataBackup}`,
+                    success: "true",
+                    message: message
+                };
+                return result;
+            }
+        }
+        //
+        this.isRunning = true;
+        //
+        if (fs.existsSync(`${curdir}/${thisDataBackup}`)) {
+            message += this.addMessage(`Databackup ${thisDataBackup} is vandaag al gemaakt ...`);
+        } else {
+            let cmd = `"\\program files\\7-zip\\7z" a -tzip backup/${thisDataBackup} -x!backup .`;
+            message += this.addMessage(cmd);
+            try {
+                let shellresult = child.execSync(cmd,
+                    {
+                        cwd: Config.appDir,
+                    });
+            } catch (error) {
+                //Logger.error(JSON.stringify(error));
+            }
+            message += this.addMessage(`Data backup ${thisDataBackup} is gemaakt ...`);
+        }
+        result = {
+            backup: `${thisDataBackup}`,
+            success: "true",
+            message: message
+        };
+        //
+        this.isRunning = false;
+        //
+        return result;
+    }
+
+    protected async waitImport(action: string, res?: Response) {
         let message = '';
         let result: any = {
             success: "true",
@@ -94,7 +174,9 @@ export class Schedule extends Action {
         };
         let data: any;
         let thisPath = '';
+        let retry = 0;
         let All = 0;
+        let Auto = 0;
         let OperationalOnly = 0;
         let BestellingOnly = 0;
         let BewerkingOnly = 0;
@@ -106,601 +188,591 @@ export class Schedule extends Action {
         let thisFilename = `${Config.dbschema}_${thisDate}.log`;
         let thisTime = Util.Date2Screentime(new Date());
         //
-        if (thisTime < Config.backuptime) {
-            result = {
-                backup: '',
-                success: "true",
-                message: `Too early for import (${Config.exacttime}) ...`
+        switch ((action).toLowerCase()) {
+            case "all":
+                All = 1;
+                break;
+            case "operational":
+                OperationalOnly = 1;
+                break;
+            case "bestelling":
+                BestellingOnly = 1;
+                break;
+            case "bewerking":
+                BewerkingOnly = 1;
+                break;
+            case "order":
+                OrderOnly = 1;
+                break;
+            case "calc":
+                CalcOnly = 1;
+                break;
+            default:
+                Auto = 1;
+                All = 1;
+        }
+        //
+        if (Auto == 1) {
+            if (thisTime < Config.backuptime) {
+                result = {
+                    backup: '',
+                    success: "true",
+                    message: `Wacht to ${Config.exacttime} voor de import ...`
+                }
+                return result;
             }
-        } else {
             if (fs.existsSync(`${curdir}/${thisFilename}`)) {
                 result = {
                     backup: thisFilename,
                     success: "true",
-                    message: `Import ${thisFilename} already made ...`
+                    message: `Import ${thisFilename} is vandaag al uitgevoerd ...`
                 };
-            } else {
-                //
-                let Start = 1;
-                switch (Number(action)) {
-                    case 0:
-                        All = 1;
-                        break;
-                    case 1:
-                        OperationalOnly = 1;
-                        break;
-                    case 2:
-                        BestellingOnly = 1;
-                        break;
-                    case 3:
-                        BewerkingOnly = 1;
-                        break;
-                    case 4:
-                        OrderOnly = 1;
-                        break;
-                    case 11:
-                        CalcOnly = 1;
-                        break;
-                    default:
-                        Start = 0;
-                }
-                if (Start == 1) {
-                    //
-                    // cleanLog
-                    //
-                    thisPath = `/toolbox.php?app=${Config.app}`
-                        + "&action=cleanlog";
-                    data = await this.postInfo(thisPath);
-                    try {
-                        if (data.items[0].MSG == '') {
-                            message += "Logboodschappen ouder dan 5 dagen verwijderd. <br><br>"
-                        } else {
-                            message += data.items[0].MSG;
-                        }
-                    } catch (error) {
-                        message += JSON.stringify(error);
-                    }
-                    //
-                    //
-                    //
-                    if (OperationalOnly == 1) {
-                        //me.getBESTELLING();
-                    } else if (BestellingOnly == 1) {
-                        //me.getBESTELLING();
-                    } else if (BewerkingOnly == 1) {
-                        //me.getBEWERK();
-                    } else if (OrderOnly == 1) {
-                        //me.getORDER();
-                    } else if (CalcOnly == 1) {
-                        //me.fase0();
-                    } else {
-                    }
-                    if (All == 1) {
-                        //
-                        // getLEVERANCIER
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=Accounts"
-                            + "&outfile=import/exactaccounts.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nLeverancier: " + data.msg + "<br>\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactleverancier"
-                            + "&file=import/exactaccounts.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nFase 0: " + data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1) {
-                        //
-                        // getKLANT
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=Accounts"
-                            + "&outfile=import/exactaccounts.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nKlant: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactklant"
-                            + "&file=import/exactaccounts.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1) {
-                        //
-                        // getPRODUCT
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=Items"
-                            + "&outfile=import/exactitems.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nProduct: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactproduct"
-                            + "&file=import/exactitems.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1) {
-                        //
-                        // getSTUKLIJST
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=ManufacturedBillofMaterials"
-                            + "&Params_Status=30,20,10"
-                            + "&outfile=import/exactmbom.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nStuklijst: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactproduct"
-                            + "&file=import/exactmbom.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1) {
-                        //
-                        // getLEVERANCIERPRODUCT
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=PurchaseOrders"
-                            + "&Params_Status=10,20"
-                            + "&outfile=import/exactpurchase.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nLeverancierproduct: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactleverancierproduct"
-                            + "&file=import/exactpurchase.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1) {
-                        //
-                        // getVOORRAAD
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=StockPositions"
-                            + "&outfile=import/exactstock.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nVoorraad: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactvoorraad"
-                            + "&file=import/exactstock.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.
-                                stringify(error);
-                        }
-                    }
-                    if (All == 1 || OperationalOnly == 1 || BestellingOnly == 1) {
-                        //
-                        // getBESTELLING
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=PurchaseOrders"
-                            + "&Params_Status=10,20"
-                            + "&outfile=import/exactpurchase.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nBestelling: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactbestelling"
-                            + "&file=import/exactpurchase.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1 || OperationalOnly == 1 || BestellingOnly == 1) {
-                        //
-                        // getRECEIPT
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=Receipts"
-                            + "&outfile=import/exactreceipt.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nOntvangsten: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactreceipt"
-                            + "&file=import/exactreceipt.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1 || OperationalOnly == 1 || OrderOnly == 1) {
-                        //
-                        // getORDER
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=SalesOrders"
-                            + "&Params_Status=12,20"
-                            + "&outfile=import/exactsales.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nOrders: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactorder"
-                            + "&file=import/exactsales.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1 || OperationalOnly == 1 || OrderOnly == 1) {
-                        //
-                        // getDELIVERY
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=Deliveries"
-                            + "&outfile=import/exactdeliveries.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nAfleveringen: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactdelivery"
-                            + "&file=import/exactdeliveries.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1 || OperationalOnly == 1) {
-                        //
-                        // getBEWERK
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=ShopOrders"
-                            + "&Params_Status=20,10"
-                            + "&outfile=import/exactshoporders.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nBewerkingen: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactbewerk"
-                            + "&file=import/exactshoporders.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1 || OperationalOnly == 1) {
-                        //
-                        // getBEWERKONTVANGST
-                        //
-                        thisPath = `/exactclient.php?app=${Config.app}`
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=ShopOrderStockReceipts"
-                            + "&outfile=import/exactshoporderreceipts.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += "\nBewerkinggereedregels: " + data.msg + "<br>\n";;
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                        //
-                        thisPath = `/upload.php?app=${Config.app}`
-                            + "&action=get,exactbewerkontvangst"
-                            + "&file=import/exactshoporderreceipts.dat";
-                        data = await this.getInfo(thisPath);
-                        try {
-                            message += data.items[0].msg + "\n";
-                        } catch (error) {
-                            message += JSON.stringify(error);
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // fases 0
-                        //
-                        thisPath = `/toolbox.php?app=${Config.app}`
-                            + "&action=addlogistiek";
-                        data = await this.postInfo(thisPath);
-                        try {
-                            message += "\nDefault bewerkingen toevoegen: " + data.items[0].MSG + "<br>";
-                        } catch (error) {
-                            message += "\nFase 0: " + data + "<br>";
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // prefase
-                        //
-                        thisPath = `/voorraad.php?app=${Config.app}`
-                            + "&action=fase0";
-                        data = await this.postInfo(thisPath);
-                        try {
-                            message += "\nOude voorraadstand opschonen: " + data.items[0].msg + "<br>";
-                        } catch (error) {
-                            message += "\nPrefase: " + data + "<br>";
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // fase1
-                        //
-                        thisPath = `/voorraad.php?app=${Config.app}`
-                            + "&action=fase1";
-                        data = await this.postInfo(thisPath);
-                        try {
-                            message += "\nStartvoorraad, orders, bestellingen en bewerkingen doorrekenen: " + data.items[0].msg + "<br>";
-                        } catch (error) {
-                            message += "\nFase 1: " + data + "<br>";
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // Eerste keer fase2
-                        //
-                        thisPath = `/voorraad.php?app=${Config.app}`
-                            + "&action=fase2";
-                        data = await this.postInfo(thisPath);
-                        try {
-                            message += "\nVoorraad afboeken van onderdelen van producten waar tekorten van zijn ...<br>";
-                        } catch (error) {
-                            message += "\nEerste fase 2: " + data + "<br>";
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // Volgende keren fase2
-                        //
-                        let tlcycle = 0;
-                        message += "\n" + data.items[0].regelsbesteld + " regels afgeboekt <br>";
-                        while (Number(data.items[0].regelsbesteld) > 0) {
-                            tlcycle++;
-                            if (tlcycle > 6) {
-                                message += "\nOnderdeel is Onderdeel probleem, toch maar opbouwen lijst ..." + "<br>";
-                                break;
-                            } else {
-                                thisPath = `/voorraad.php?app=${Config.app}`
-                                    + "&action=fase2";
-                                data = await this.postInfo(thisPath);
-                                try {
-                                    message += "\n" + data.items[0].regelsbesteld + " regels afgeboekt <br>";
-                                } catch (error) {
-                                    message += "\nVolgende fase 2: " + data + "<br>";
-                                }
-                            }
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // Eerste fase 4
-                        //
-                        thisPath = `/voorraad.php?app=${Config.app}`
-                            + "&action=fase4";
-                        data = await this.postInfo(thisPath);
-                        try {
-                            message += "\nBeperkende faktoren bijwerken (Zoek de kurk) ...<br>";
-                        } catch (error) {
-                            message += "\nFase 4: " + data + "<br>";
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // Volgende fase 4
-                        //
-                        message += "\n" + data.items[0].regels + " regels doorgezocht <br>";
-                        while (Number(data.items[0].regels) > 0) {
-                            thisPath = `/voorraad.php?app=${Config.app}`
-                                + "&action=fase4";
-                            data = await this.postInfo(thisPath);
-                            try {
-                                message += "\n" + data.items[0].regels + " regels doorgezocht <br>";
-                            } catch (error) {
-                                message += "\nVolgende ase 4: " + data + "<br>";
-                            }
-                        }
-                    }
-                    if (All == 1 || CalcOnly == 1) {
-                        //
-                        // Alles is bijgewerkt
-                        //
-                        message += "\nAlles is bijgewerkt, gereed ...</b><br>";
-                        //
-                        // insert message
-                        //
-                    }
-                }
-                //
-                fs.appendFileSync(`${curdir}/${thisFilename}`, message);
-                result = {
-                    success: "true",
-                    message: message
-                };
+                return result;
             }
         }
+        //
+        this.isRunning = true;
+        //
+        // cleanLog
+        //
+        message += this.addMessage("Logboodschappen ouder dan 5 dagen verwijderen.", res);
+        thisPath = `/toolbox.php?app=${Config.app}`
+            + "&action=cleanlog";
+        data = await Util.postInfo(thisPath);
+        try {
+            if (data.items[0].MSG == '') {
+            } else {
+                message += this.addMessage(data.items[0].MSG, res);
+            }
+        } catch (error) {
+            message += this.addMessage(JSON.stringify(error), res);
+        }
+        //
+        if (All == 1) {
+            //
+            // getLEVERANCIER
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen leveranciers.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=Accounts"
+                + "&outfile=import/exactaccounts.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Leveranciers inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactleverancier"
+                + "&file=import/exactaccounts.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1) {
+            //
+            // getKLANT
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen klanten.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=Accounts"
+                + "&outfile=import/exactaccounts.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Klanten inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactklant"
+                + "&file=import/exactaccounts.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1) {
+            //
+            // getPRODUCT
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen producten.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=Items"
+                + "&outfile=import/exactitems.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Producten inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactproduct"
+                + "&file=import/exactitems.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1) {
+            //
+            // getSTUKLIJST
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen stuklijsten.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=ManufacturedBillofMaterials"
+                + "&Params_Status=30,20,10"
+                + "&outfile=import/exactmbom.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Stuklijsten inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactproduct"
+                + "&file=import/exactmbom.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1) {
+            //
+            // getLEVERANCIERPRODUCT
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen leverancierproductnummers.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=PurchaseOrders"
+                + "&Params_Status=10,20"
+                + "&outfile=import/exactpurchase.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Leverancierproductnummers inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactleverancierproduct"
+                + "&file=import/exactpurchase.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1) {
+            //
+            // getVOORRAAD
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen voorraad.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=StockPositions"
+                + "&outfile=import/exactstock.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Voorraad inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactvoorraad"
+                + "&file=import/exactstock.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1 || OperationalOnly == 1 || BestellingOnly == 1) {
+            //
+            // getBESTELLING
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen bestellingen.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=PurchaseOrders"
+                + "&Params_Status=10,20"
+                + "&outfile=import/exactpurchase.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Bestellingen inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactbestelling"
+                + "&file=import/exactpurchase.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1 || OperationalOnly == 1 || BestellingOnly == 1) {
+            //
+            // getRECEIPT
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen ontvangsten.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=Receipts"
+                + "&outfile=import/exactreceipt.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Ontvangsten inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactreceipt"
+                + "&file=import/exactreceipt.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1 || OperationalOnly == 1 || OrderOnly == 1) {
+            //
+            // getORDER
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen orders.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=SalesOrders"
+                + "&Params_Status=12,20"
+                + "&outfile=import/exactsales.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Orders inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactorder"
+                + "&file=import/exactsales.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1 || OperationalOnly == 1 || OrderOnly == 1) {
+            //
+            // getDELIVERY
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen afleveringen.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=Deliveries"
+                + "&outfile=import/exactdeliveries.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Afleveringen inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactdelivery"
+                + "&file=import/exactdeliveries.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1 || OperationalOnly == 1 || BewerkingOnly == 1) {
+            //
+            // getBEWERK
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen bewerkingen.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=ShopOrders"
+                + "&Params_Status=20,10"
+                + "&outfile=import/exactshoporders.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Bewerkingen inladen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactbewerk"
+                + "&file=import/exactshoporders.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1 || OperationalOnly == 1 || BewerkingOnly == 1) {
+            //
+            // getBEWERKONTVANGST
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Ophalen bewerkingontvangsten.", res);
+            thisPath = `/exactclient.php?app=${Config.app}`
+                + "&action=GET"
+                + "&type=XML"
+                + "&topic=ShopOrderStockReceipts"
+                + "&outfile=import/exactshoporderreceipts.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+            //
+            message += this.addMessage("Bewerkingontvangsten inlezen.", res);
+            thisPath = `/upload.php?app=${Config.app}`
+                + "&action=get,exactbewerkontvangst"
+                + "&file=import/exactshoporderreceipts.dat";
+            data = await Util.getInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(JSON.stringify(error), res);
+            }
+        }
+        if (All == 1 || CalcOnly == 1) {
+            //
+            // addlogistiek
+            //
+            message += this.addMessage("", res);
+            message += this.addMessage("Default bewerkingen toevoegen.", res);
+            thisPath = `/toolbox.php?app=${Config.app}`
+                + "&action=addlogistiek";
+            data = await Util.postInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].MSG, res);
+            } catch (error) {
+                message += this.addMessage(data, res);
+            }
+        }
+        if (All == 1 || CalcOnly == 1) {
+            //
+            // fase0: Oude voorraadstand opschonen
+            //
+            message += this.addMessage("Oude voorraadstand opschonen.", res);
+            thisPath = `/voorraad.php?app=${Config.app}`
+                + "&action=fase0";
+            data = await Util.postInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(data, res);
+            }
+        }
+        if (All == 1 || CalcOnly == 1) {
+            //
+            // fase1: Startvoorraad, orders, bestellingen en bewerkingen doorrekenen
+            //
+            message += this.addMessage("Startvoorraad, orders, bestellingen en bewerkingen doorrekenen.", res);
+            thisPath = `/voorraad.php?app=${Config.app}`
+                + "&action=fase1";
+            data = await Util.postInfo(thisPath);
+            try {
+                message += this.addMessage(data.items[0].msg, res);
+            } catch (error) {
+                message += this.addMessage(data, res);
+            }
+        }
+        if (All == 1 || CalcOnly == 1) {
+            //
+            // Fase2: Voorraad afboeken van onderdelen van producten waar tekorten van zijn
+            //
+            message += this.addMessage("Voorraad afboeken van onderdelen van producten waar tekorten van zijn.", res);
+            thisPath = `/voorraad.php?app=${Config.app}`
+                + "&action=fase2";
+            data = await Util.postInfo(thisPath);
+            retry = 0;
+            try {
+                if (Number(data.items[0].regelsbesteld) > 0) {
+                    // is het goede type antwoord gegeven
+                    retry = 1;
+                }
+            } catch (error) {
+                message += this.addMessage(data, res);
+            }
+            //
+            // Volgende keren fase2
+            //
+            let tlcycle = 0;
+            while (retry > 0) {
+                message += this.addMessage(data.items[0].regelsbesteld + " regels afgeboekt, nog een keer ...", res);
+                tlcycle++;
+                retry = 0;
+                if (tlcycle > 6) {
+                    message += this.addMessage("Onderdeel is Onderdeel probleem, toch maar opbouwen lijst ...", res);
+                } else {
+                    thisPath = `/voorraad.php?app=${Config.app}`
+                        + "&action=fase2";
+                    data = await Util.postInfo(thisPath);
+                    try {
+                        if (Number(data.items[0].regelsbesteld) > 0) {
+                            // is het goede type antwoord gegeven
+                            retry = 1;
+                        }
+                    } catch (error) {
+                        message += this.addMessage(data, res);
+                    }
+                }
+            }
+        }
+        if (All == 1 || CalcOnly == 1) {
+            //
+            // fase3: Voorraadstand vastleggen
+            //
+            message += this.addMessage("Voorraadstand vastleggen ...", res);
+            thisPath = `/voorraad.php?app=${Config.app}`
+                + "&action=fase3";
+            data = await Util.postInfo(thisPath);
+        }
+        if (All == 1 || CalcOnly == 1) {
+            //
+            // Eerste fase4: Beperkende faktoren bijwerken (Zoek de kurk)
+            //
+            message += this.addMessage("Beperkende faktoren bijwerken (Zoek de kurk) ...", res);
+            thisPath = `/voorraad.php?app=${Config.app}`
+                + "&action=fase4";
+            data = await Util.postInfo(thisPath);
+            retry = 0;
+            try {
+                if (data.items[0].regels > 0) {
+                    retry = 1;
+                }
+            } catch (error) {
+                message += this.addMessage(data, res);
+            }
+            //
+            // Volgende fase4: 
+            //
+            while (retry > 0) {
+                message += this.addMessage(data.items[0].regels + " regels doorzocht, nog een keer ...", res);
+                thisPath = `/voorraad.php?app=${Config.app}`
+                    + "&action=fase4";
+                data = await Util.postInfo(thisPath);
+                retry = 0;
+                try {
+                    if (Number(data.items[0].regels) > 0) {
+                        retry = 1;
+                    }
+                } catch (error) {
+                    message += this.addMessage(data, res);
+                }
+            }
+        }
+        if (All == 1 || CalcOnly == 1) {
+            //
+            // Alles is bijgewerkt
+            //
+            message += this.addMessage("Alles is bijgewerkt.", res);
+        }
+        //
+        // Gereed
+        //
+        message += this.addMessage("", res);
+        message += this.addMessage("Gereed ...", res);
+        let bericht: any = {};
+        bericht.datum = Util.Date2Screendatetime(new Date());
+        bericht.author = Config.appDir;
+        bericht.email = "";
+        bericht.header = Util.Date2Screentime(new Date()) + ": Importeren en/of doorrekenen";
+        bericht.inhoud = encodeURIComponent(message);
+        bericht.moderated = 1;
+        thisPath = `/bb.php?app=${Config.app}`
+            + "&action=addmsg"
+            + "&bb=Log";
+        data = await Util.postInfo(thisPath, bericht);
+        //
+        fs.appendFileSync(`${curdir}/${thisFilename}`, message);
+        result = {
+            success: "true",
+            message: message
+        };
+        //
+        this.isRunning = false;
+        //
         return result;
     }
 
-    protected postInfo(url: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            let headers = {};
-            let result: any = {};
-            let ak2req = http.request(
-                {
-                    host: Config.server,
-                    path: url,
-                    method: 'POST',
-                    port: Config.serverPort,
-                    headers: headers,
-                    protocol: 'http:'
-                },
-                ak2res => {
-                    let responseString = "";
-                    ak2res.on("data", (data) => {
-                        responseString += data;
-                    });
-                    ak2res.on("end", () => {
-                        try {
-                            result = JSON.parse(responseString);
-                        } catch (error) {
-                            result = responseString;
-                        }
-                        resolve(result);
-                    });
-                    ak2res.on("error", (error) => {
-                        Logger.error(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
-            );
-            ak2req.on("error", (error) => {
-                Logger.error(JSON.stringify(error));
-                reject(false);
-            })
-            ak2req.end();
-        })
-    }
-
-    protected getInfo(url: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            let headers = {};
-            let result: any;
-            let ak2req = http.request(
-                {
-                    host: Config.server,
-                    path: url,
-                    method: 'GET',
-                    port: Config.serverPort,
-                    headers: headers,
-                    protocol: 'http:'
-                },
-                ak2res => {
-                    let responseString = "";
-                    ak2res.on("data", (data) => {
-                        responseString += data;
-                    });
-                    ak2res.on("end", () => {
-                        try {
-                            result = JSON.parse(responseString);
-                        } catch (error) {
-                            result = responseString;
-                        }
-                        resolve(result);
-                    });
-                    ak2res.on("error", (error) => {
-                        Logger.error(JSON.stringify(error));
-                        reject(error);
-                    });
-                }
-            );
-            ak2req.on("error", (error) => {
-                Logger.error(JSON.stringify(error));
-                reject(false);
-            })
-            ak2req.end();
-        })
-    }
-
-    protected async doBackup(req: Request, res: Response, next: NextFunction) {
+    protected async doDbBackup(req: Request, res: Response, next: NextFunction) {
         let query = db.fixQuery(req.query);
-        let result = await this.waitBackup();
+        let result = await this.waitDbBackup(query.type);
+        res.status(200).send(result);
+        return;
+    }
+
+    protected async doDataBackup(req: Request, res: Response, next: NextFunction) {
+        let query = db.fixQuery(req.query);
+        let result = await this.waitDataBackup(query.type);
         res.status(200).send(result);
         return;
     }
@@ -708,8 +780,8 @@ export class Schedule extends Action {
     protected async doImport(req: Request, res: Response, next: NextFunction, options?: Dict) {
         //
         let query = db.fixQuery(req.query);
-        let result = await this.waitImport("");
-        res.status(200).send(result);
+        let result = await this.waitImport(query.type, res);
+        res.end();
         return;
     }
 
@@ -720,9 +792,15 @@ export class Schedule extends Action {
         //
         Logger.request(req);
         //
-        if (action == "backup") {
-            this.doBackup(req, res, next);
-        } else if (action == "import") {
+        if (action == "dbbackup" || action == "get,dbbackup") {
+            this.doDbBackup(req, res, next);
+        } else if (action == "databackup" || action == "get,databackup") {
+            this.doDataBackup(req, res, next);
+        } else if (action == "import" || action == "get,import") {
+            //
+            res.setHeader("Content-Type", "text/event-stream");
+            res.setHeader("Cache-Control", "no-cache");
+            //
             this.doImport(req, res, next);
         } else {
             Util.unknownOperation(req, res, next);

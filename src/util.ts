@@ -11,6 +11,24 @@ export class Util {
     res.status(200).send("Ak2 is listening ...");
   }
 
+  public static sleep(seconds: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      },
+        1000 * seconds);
+    })
+  }
+
+  public static milisleep(milis: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      },
+        milis);
+    })
+  }
+
   public static getLast(obj: any): string {
     let result: any = obj;
     if (typeof obj == "object") {
@@ -176,6 +194,101 @@ where NAAM = '${naam}'`;
     FileName = FileName.replace(/</g, "_");
     FileName = FileName.replace(/>/g, "_");
     return FileName;
+  }
+
+
+  public static postInfo(url: string, body?: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let thisLength = 0;
+      let headers: any = {};
+      let thisBody = '';
+      if (body) {
+        thisBody = JSON.stringify(body);
+        thisLength = thisBody.length;
+        headers = {
+          "Content-Type": "application/json",
+          "Content-Length": thisLength,
+          "Accept": '*/*',
+        }
+      }
+      let result: any = {};
+      let ak2req = http.request(
+        {
+          host: Config.server,
+          path: url,
+          method: 'POST',
+          port: Config.serverPort,
+          headers: headers,
+          protocol: 'http:'
+        },
+        ak2res => {
+          let responseString = "";
+          ak2res.on("data", (data) => {
+            responseString += data;
+          });
+          ak2res.on("end", () => {
+            try {
+              result = JSON.parse(responseString);
+            } catch (error) {
+              result = responseString;
+            }
+            resolve(result);
+          });
+          ak2res.on("error", (error) => {
+            Logger.error(JSON.stringify(error));
+            reject(error);
+          });
+        }
+      );
+      ak2req.on("error", (error) => {
+        Logger.error(JSON.stringify(error));
+        reject(false);
+      })
+      if (body) {
+        ak2req.write(thisBody);
+      }
+      ak2req.end();
+    })
+  }
+
+  public static getInfo(url: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let headers = {};
+      let result: any;
+      let ak2req = http.request(
+        {
+          host: Config.server,
+          path: url,
+          method: 'GET',
+          port: Config.serverPort,
+          headers: headers,
+          protocol: 'http:'
+        },
+        ak2res => {
+          let responseString = "";
+          ak2res.on("data", (data) => {
+            responseString += data;
+          });
+          ak2res.on("end", () => {
+            try {
+              result = JSON.parse(responseString);
+            } catch (error) {
+              result = responseString;
+            }
+            resolve(result);
+          });
+          ak2res.on("error", (error) => {
+            Logger.error(JSON.stringify(error));
+            reject(error);
+          });
+        }
+      );
+      ak2req.on("error", (error) => {
+        Logger.error(JSON.stringify(error));
+        reject(false);
+      })
+      ak2req.end();
+    })
   }
 
 
