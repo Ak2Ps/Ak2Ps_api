@@ -81,7 +81,7 @@ var Schedule = /** @class */ (function (_super) {
         if (res) {
             res.write(message + "<br>");
         }
-        return message + "<br>";
+        return message + "\n";
     };
     Schedule.prototype.runTimer = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -102,15 +102,14 @@ var Schedule = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.waitDbBackup("")];
                     case 3:
                         result = _a.sent();
-                        message += this.addMessage(result.message);
                         return [4 /*yield*/, this.waitDataBackup("")];
                     case 4:
+                        //message += this.addMessage(result.message);
                         result = _a.sent();
-                        message += this.addMessage(result.message);
                         return [4 /*yield*/, this.waitImport("")];
                     case 5:
+                        //message += this.addMessage(result.message);
                         result = _a.sent();
-                        message += this.addMessage(result.message);
                         _a.label = 6;
                     case 6: return [3 /*break*/, 0];
                     case 7: return [2 /*return*/];
@@ -121,7 +120,6 @@ var Schedule = /** @class */ (function (_super) {
     Schedule.prototype.waitDbBackup = function (action) {
         return __awaiter(this, void 0, void 0, function () {
             var message, result, Auto, curdir, thisDate, thisDbBackup, thisTime, cmd, shellresult;
-            var _this = this;
             return __generator(this, function (_a) {
                 message = '';
                 result = {};
@@ -131,7 +129,7 @@ var Schedule = /** @class */ (function (_super) {
                 thisDbBackup = config_1.Config.dbschema + "_" + thisDate + ".sql";
                 thisTime = util_1.Util.Date2Screentime(new Date());
                 //
-                if (action = "") {
+                if (action == "") {
                     Auto = 1;
                 }
                 if (Auto == 1) {
@@ -144,15 +142,15 @@ var Schedule = /** @class */ (function (_super) {
                         };
                         return [2 /*return*/, result];
                     }
-                    fs.exists(curdir + "/" + thisDbBackup, function (exists) {
-                        message += _this.addMessage("Databasebackup " + thisDbBackup + " is vandaag al gemaakt ...");
+                    if (fs.existsSync(curdir + "/" + thisDbBackup)) {
+                        message += this.addMessage("Database backup " + thisDbBackup + " is vandaag al gemaakt ...");
                         result = {
                             backup: "" + thisDbBackup,
                             success: "true",
                             message: message
                         };
-                        return result;
-                    });
+                        return [2 /*return*/, result];
+                    }
                 }
                 //
                 this.isRunning = true;
@@ -190,7 +188,7 @@ var Schedule = /** @class */ (function (_super) {
                 thisDataBackup = config_1.Config.dbschema + "_" + thisDate + ".7z";
                 thisTime = util_1.Util.Date2Screentime(new Date());
                 //
-                if (action = "") {
+                if (action == "") {
                     Auto = 1;
                 }
                 if (Auto == 1) {
@@ -215,23 +213,17 @@ var Schedule = /** @class */ (function (_super) {
                 }
                 //
                 this.isRunning = true;
-                //
-                if (fs.existsSync(curdir + "/" + thisDataBackup)) {
-                    message += this.addMessage("Databackup " + thisDataBackup + " is vandaag al gemaakt ...");
+                cmd = "\"\\program files\\7-zip\\7z\" a -tzip backup/" + thisDataBackup + " -x!backup .";
+                message += this.addMessage(cmd);
+                try {
+                    shellresult = child.execSync(cmd, {
+                        cwd: config_1.Config.appDir,
+                    });
                 }
-                else {
-                    cmd = "\"\\program files\\7-zip\\7z\" a -tzip backup/" + thisDataBackup + " -x!backup .";
-                    message += this.addMessage(cmd);
-                    try {
-                        shellresult = child.execSync(cmd, {
-                            cwd: config_1.Config.appDir,
-                        });
-                    }
-                    catch (error) {
-                        //Logger.error(JSON.stringify(error));
-                    }
-                    message += this.addMessage("Data backup " + thisDataBackup + " is gemaakt ...");
+                catch (error) {
+                    //Logger.error(JSON.stringify(error));
                 }
+                message += this.addMessage("Data backup " + thisDataBackup + " is gemaakt ...");
                 result = {
                     backup: "" + thisDataBackup,
                     success: "true",
@@ -295,18 +287,20 @@ var Schedule = /** @class */ (function (_super) {
                         //
                         if (Auto == 1) {
                             if (thisTime < config_1.Config.backuptime) {
+                                message += this.addMessage("Wacht to " + config_1.Config.exacttime + " voor de import ...");
                                 result = {
                                     backup: '',
                                     success: "true",
-                                    message: "Wacht to " + config_1.Config.exacttime + " voor de import ..."
+                                    message: message
                                 };
                                 return [2 /*return*/, result];
                             }
                             if (fs.existsSync(curdir + "/" + thisFilename)) {
+                                message += this.addMessage("Import " + thisFilename + " is vandaag al uitgevoerd ...");
                                 result = {
                                     backup: thisFilename,
                                     success: "true",
-                                    message: "Import " + thisFilename + " is vandaag al uitgevoerd ..."
+                                    message: message
                                 };
                                 return [2 /*return*/, result];
                             }
@@ -353,7 +347,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Leveranciers inladen.", res);
+                        message += this.addMessage("Leveranciers inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactleverancier"
                             + "&file=import/exactaccounts.dat";
@@ -389,7 +383,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Klanten inladen.", res);
+                        message += this.addMessage("Klanten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactklant"
                             + "&file=import/exactaccounts.dat";
@@ -425,7 +419,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Producten inladen.", res);
+                        message += this.addMessage("Producten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactproduct"
                             + "&file=import/exactitems.dat";
@@ -462,7 +456,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Stuklijsten inladen.", res);
+                        message += this.addMessage("Stuklijsten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactproduct"
                             + "&file=import/exactmbom.dat";
@@ -499,7 +493,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Leverancierproductnummers inladen.", res);
+                        message += this.addMessage("Leverancierproductnummers inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactleverancierproduct"
                             + "&file=import/exactpurchase.dat";
@@ -535,7 +529,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Voorraad inladen.", res);
+                        message += this.addMessage("Voorraad inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactvoorraad"
                             + "&file=import/exactstock.dat";
@@ -572,7 +566,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Bestellingen inladen.", res);
+                        message += this.addMessage("Bestellingen inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactbestelling"
                             + "&file=import/exactpurchase.dat";
@@ -608,7 +602,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Ontvangsten inladen.", res);
+                        message += this.addMessage("Ontvangsten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactreceipt"
                             + "&file=import/exactreceipt.dat";
@@ -645,7 +639,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Orders inladen.", res);
+                        message += this.addMessage("Orders inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactorder"
                             + "&file=import/exactsales.dat";
@@ -681,7 +675,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Afleveringen inladen.", res);
+                        message += this.addMessage("Afleveringen inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactdelivery"
                             + "&file=import/exactdeliveries.dat";
@@ -718,7 +712,7 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         //
-                        message += this.addMessage("Bewerkingen inladen.", res);
+                        message += this.addMessage("Bewerkingen inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactbewerk"
                             + "&file=import/exactshoporders.dat";
@@ -938,7 +932,7 @@ var Schedule = /** @class */ (function (_super) {
                         bericht.datum = util_1.Util.Date2Screendatetime(new Date());
                         bericht.author = config_1.Config.appDir;
                         bericht.email = "";
-                        bericht.header = util_1.Util.Date2Screentime(new Date()) + ": Importeren en/of doorrekenen";
+                        bericht.header = util_1.Util.Date2Screendatetime(new Date()) + ": Importeren en/of doorrekenen";
                         bericht.inhoud = encodeURIComponent(message);
                         bericht.moderated = 1;
                         thisPath = "/bb.php?app=" + config_1.Config.app
@@ -948,7 +942,9 @@ var Schedule = /** @class */ (function (_super) {
                     case 56:
                         data = _a.sent();
                         //
-                        fs.appendFileSync(curdir + "/" + thisFilename, message);
+                        // Logging
+                        //
+                        fs.appendFileSync(curdir + "/" + thisFilename, message.replace(/<br>/gi, ''));
                         result = {
                             success: "true",
                             message: message

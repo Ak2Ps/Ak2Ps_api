@@ -10,9 +10,8 @@ import { Klok } from "../klok"
 import * as child from 'child_process';
 
 export class Toolbox {
-  mailer: Mailer;
+  mailer: Mailer = new Mailer();
   constructor() {
-    this.mailer = new Mailer();
     Logger.info("Creating Toolbox");
   }
 

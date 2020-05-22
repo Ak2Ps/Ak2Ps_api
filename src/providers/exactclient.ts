@@ -478,7 +478,7 @@ export class Exactclient extends Crud {
             }
             Logger.info(`    ${query.topic}: ready ...`);
             result = {
-                msg: `Aantal blokken ingelezen: ${tlblok + 1}`
+                msg: `Aantal blokken opgehaald: ${tlblok + 1}`
             };
 
         }

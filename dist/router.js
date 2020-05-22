@@ -315,17 +315,7 @@ var Router = /** @class */ (function () {
 exports.Router = Router;
 /*
 todo:
-exactclient.php
-frmUpload.php
-//
-totest:
-relatieve verwijzingen (inclusief assets)
 mail
 ecm
-exact
-pdf's en rapporten
-tekeningen
-//
-tokens exact
 */
 //# sourceMappingURL=router.js.map

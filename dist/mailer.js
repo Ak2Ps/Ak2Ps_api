@@ -94,13 +94,15 @@ var Mailer = /** @class */ (function () {
                                         host: this.host,
                                         port: this.port,
                                     });
+                                    /*
                                     this.gmailtransporter = nodemailer.createTransport({
-                                        service: 'gmail',
-                                        auth: {
-                                            user: 'antoon.kragten@gmail.com',
-                                            pass: 'AK2PS_aug12'
-                                        }
+                                      service: 'gmail',
+                                      auth: {
+                                        user: 'antoon.kragten@gmail.com',
+                                        pass: '..............'
+                                      }
                                     });
+                                    */
                                     resolve();
                                     return [2 /*return*/];
                             }
@@ -120,8 +122,10 @@ var Mailer = /** @class */ (function () {
                     subject: subject,
                     html: html
                 };
-                transporter = this.gmailtransporter;
-                //
+                transporter = this.smtptransporter;
+                /*
+                let transporter = this.gmailtransporter;
+                */
                 transporter.sendMail(options, function (error, info) {
                     if (error) {
                         logger_1.Logger.error(undefined, error);

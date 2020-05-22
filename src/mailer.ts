@@ -45,13 +45,15 @@ where NAAM = 'BBADMIN'`;
         host: this.host,
         port: this.port,
       });
+      /*
       this.gmailtransporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: 'antoon.kragten@gmail.com',
-          pass: 'AK2PS_aug12'
+          pass: '..............'
         }
       });
+      */
       resolve();
     });
   }
@@ -67,9 +69,11 @@ where NAAM = 'BBADMIN'`;
       //
       // TODO
       //
+      let transporter = this.smtptransporter;
+      /*
       let transporter = this.gmailtransporter;
-      //
-      transporter.sendMail(options, function (error: any, info: any) {
+      */
+     transporter.sendMail(options, function (error: any, info: any) {
         if (error) {
           Logger.error(<Request><unknown>undefined,error);
           resolve(false);

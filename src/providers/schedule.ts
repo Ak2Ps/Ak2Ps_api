@@ -26,7 +26,7 @@ export class Schedule extends Action {
         if (res) {
             res.write(message + "<br>");
         }
-        return message + "<br>";
+        return message + "\n";
     }
 
     protected async runTimer() {
@@ -38,11 +38,11 @@ export class Schedule extends Action {
                 let result: any = {};
                 let message = '';
                 result = await this.waitDbBackup("");
-                message += this.addMessage(result.message);
+                //message += this.addMessage(result.message);
                 result = await this.waitDataBackup("");
-                message += this.addMessage(result.message);
+                //message += this.addMessage(result.message);
                 result = await this.waitImport("");
-                message += this.addMessage(result.message);
+                //message += this.addMessage(result.message);
             }
         }
     }
@@ -57,7 +57,7 @@ export class Schedule extends Action {
         let thisDbBackup = `${Config.dbschema}_${thisDate}.sql`;
         let thisTime = Util.Date2Screentime(new Date());
         //
-        if (action = "") {
+        if (action == "") {
             Auto = 1;
         }
         if (Auto == 1) {
@@ -70,15 +70,15 @@ export class Schedule extends Action {
                 };
                 return result;
             }
-            fs.exists(`${curdir}/${thisDbBackup}`, (exists: boolean) => {
-                message += this.addMessage(`Databasebackup ${thisDbBackup} is vandaag al gemaakt ...`);
+            if (fs.existsSync(`${curdir}/${thisDbBackup}`)) {
+                message += this.addMessage(`Database backup ${thisDbBackup} is vandaag al gemaakt ...`);
                 result = {
                     backup: `${thisDbBackup}`,
                     success: "true",
                     message: message
                 };
                 return result;
-            })
+            }
         }
         //
         this.isRunning = true;
@@ -114,7 +114,7 @@ export class Schedule extends Action {
         let thisDataBackup = `${Config.dbschema}_${thisDate}.7z`;
         let thisTime = Util.Date2Screentime(new Date());
         //
-        if (action = "") {
+        if (action == "") {
             Auto = 1;
         }
         if (Auto == 1) {
@@ -140,21 +140,17 @@ export class Schedule extends Action {
         //
         this.isRunning = true;
         //
-        if (fs.existsSync(`${curdir}/${thisDataBackup}`)) {
-            message += this.addMessage(`Databackup ${thisDataBackup} is vandaag al gemaakt ...`);
-        } else {
-            let cmd = `"\\program files\\7-zip\\7z" a -tzip backup/${thisDataBackup} -x!backup .`;
-            message += this.addMessage(cmd);
-            try {
-                let shellresult = child.execSync(cmd,
-                    {
-                        cwd: Config.appDir,
-                    });
-            } catch (error) {
-                //Logger.error(JSON.stringify(error));
-            }
-            message += this.addMessage(`Data backup ${thisDataBackup} is gemaakt ...`);
+        let cmd = `"\\program files\\7-zip\\7z" a -tzip backup/${thisDataBackup} -x!backup .`;
+        message += this.addMessage(cmd);
+        try {
+            let shellresult = child.execSync(cmd,
+                {
+                    cwd: Config.appDir,
+                });
+        } catch (error) {
+            //Logger.error(JSON.stringify(error));
         }
+        message += this.addMessage(`Data backup ${thisDataBackup} is gemaakt ...`);
         result = {
             backup: `${thisDataBackup}`,
             success: "true",
@@ -214,18 +210,20 @@ export class Schedule extends Action {
         //
         if (Auto == 1) {
             if (thisTime < Config.backuptime) {
+                message += this.addMessage(`Wacht to ${Config.exacttime} voor de import ...`);
                 result = {
                     backup: '',
                     success: "true",
-                    message: `Wacht to ${Config.exacttime} voor de import ...`
+                    message: message
                 }
                 return result;
             }
             if (fs.existsSync(`${curdir}/${thisFilename}`)) {
+                message += this.addMessage(`Import ${thisFilename} is vandaag al uitgevoerd ...`);
                 result = {
                     backup: thisFilename,
                     success: "true",
-                    message: `Import ${thisFilename} is vandaag al uitgevoerd ...`
+                    message: message
                 };
                 return result;
             }
@@ -266,7 +264,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Leveranciers inladen.", res);
+            message += this.addMessage("Leveranciers inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactleverancier"
                 + "&file=import/exactaccounts.dat";
@@ -295,7 +293,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Klanten inladen.", res);
+            message += this.addMessage("Klanten inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactklant"
                 + "&file=import/exactaccounts.dat";
@@ -324,7 +322,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Producten inladen.", res);
+            message += this.addMessage("Producten inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactproduct"
                 + "&file=import/exactitems.dat";
@@ -354,7 +352,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Stuklijsten inladen.", res);
+            message += this.addMessage("Stuklijsten inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactproduct"
                 + "&file=import/exactmbom.dat";
@@ -384,7 +382,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Leverancierproductnummers inladen.", res);
+            message += this.addMessage("Leverancierproductnummers inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactleverancierproduct"
                 + "&file=import/exactpurchase.dat";
@@ -413,7 +411,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Voorraad inladen.", res);
+            message += this.addMessage("Voorraad inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactvoorraad"
                 + "&file=import/exactstock.dat";
@@ -443,7 +441,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Bestellingen inladen.", res);
+            message += this.addMessage("Bestellingen inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactbestelling"
                 + "&file=import/exactpurchase.dat";
@@ -472,7 +470,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Ontvangsten inladen.", res);
+            message += this.addMessage("Ontvangsten inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactreceipt"
                 + "&file=import/exactreceipt.dat";
@@ -502,7 +500,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Orders inladen.", res);
+            message += this.addMessage("Orders inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactorder"
                 + "&file=import/exactsales.dat";
@@ -531,7 +529,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Afleveringen inladen.", res);
+            message += this.addMessage("Afleveringen inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactdelivery"
                 + "&file=import/exactdeliveries.dat";
@@ -561,7 +559,7 @@ export class Schedule extends Action {
                 message += this.addMessage(JSON.stringify(error), res);
             }
             //
-            message += this.addMessage("Bewerkingen inladen.", res);
+            message += this.addMessage("Bewerkingen inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
                 + "&action=get,exactbewerk"
                 + "&file=import/exactshoporders.dat";
@@ -744,7 +742,7 @@ export class Schedule extends Action {
         bericht.datum = Util.Date2Screendatetime(new Date());
         bericht.author = Config.appDir;
         bericht.email = "";
-        bericht.header = Util.Date2Screentime(new Date()) + ": Importeren en/of doorrekenen";
+        bericht.header = Util.Date2Screendatetime(new Date()) + ": Importeren en/of doorrekenen";
         bericht.inhoud = encodeURIComponent(message);
         bericht.moderated = 1;
         thisPath = `/bb.php?app=${Config.app}`
@@ -752,7 +750,9 @@ export class Schedule extends Action {
             + "&bb=Log";
         data = await Util.postInfo(thisPath, bericht);
         //
-        fs.appendFileSync(`${curdir}/${thisFilename}`, message);
+        // Logging
+        //
+        fs.appendFileSync(`${curdir}/${thisFilename}`, message.replace(/<br>/gi, ''));
         result = {
             success: "true",
             message: message

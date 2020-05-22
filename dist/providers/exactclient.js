@@ -558,7 +558,7 @@ var Exactclient = /** @class */ (function (_super) {
                         }
                         logger_1.Logger.info("    " + query.topic + ": ready ...");
                         result = {
-                            msg: "Aantal blokken ingelezen: " + (tlblok + 1)
+                            msg: "Aantal blokken opgehaald: " + (tlblok + 1)
                         };
                         _f.label = 22;
                     case 22:
