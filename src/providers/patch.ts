@@ -384,6 +384,7 @@ drop table menuregel`;
         await this.addMenu(req, res, next, 'Inkoop');
         await this.addMenu(req, res, next, 'Orderdesk');
         await this.addMenu(req, res, next, 'Magazijn');
+        await this.addMenu(req, res, next, 'Werkvoorbereiding');
         await this.addMenu(req, res, next, 'Productie');
         await this.addMenu(req, res, next, 'RenD');
         await this.addMenu(req, res, next, 'Planning');
@@ -401,17 +402,19 @@ drop table menuregel`;
         await this.addOption(req, res, next, 'Admin', 3, 'Klok', 'SubKlok', '');
         await this.addOption(req, res, next, 'Admin', 4, 'Importeren', 'SubImport', '');
         await this.addOption(req, res, next, 'Admin', 5, 'Overzichten', 'SubLijst', '');
-        await this.addOption(req, res, next, 'Admin', 6, 'Productie', 'SubProductie', '');
-        await this.addOption(req, res, next, 'Admin', 7, 'Inkoop', 'SubInkoop', '');
-        await this.addOption(req, res, next, 'Admin', 8, 'Orderadministratie', 'SubOrder', '');
-        await this.addOption(req, res, next, 'Admin', 9, 'Retouren', 'SubRetouren', '');
-        await this.addOption(req, res, next, 'Admin', 10, 'Rapportage', 'SubRapportage', '');
+        await this.addOption(req, res, next, 'Admin', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '');
+        await this.addOption(req, res, next, 'Admin', 7, 'Productie', 'SubProductie', '');
+        await this.addOption(req, res, next, 'Admin', 8, 'Inkoop', 'SubInkoop', '');
+        await this.addOption(req, res, next, 'Admin', 9, 'Orderadministratie', 'SubOrder', '');
+        await this.addOption(req, res, next, 'Admin', 10, 'Retouren', 'SubRetouren', '');
+        await this.addOption(req, res, next, 'Admin', 11, 'Rapportage', 'SubRapportage', '');
         //
         await this.addOption(req, res, next, 'Super', 1, 'Home', 'SubAfmelden', '');
         await this.addOption(req, res, next, 'Super', 2, 'Beheer', 'SubSuperBeheer', '');
         await this.addOption(req, res, next, 'Super', 3, 'Klok', 'SubKlok', '');
         await this.addOption(req, res, next, 'Super', 4, 'Importeren', 'SubImport', '');
-        await this.addOption(req, res, next, 'Super', 6, 'Overzichten', 'SubLijst', '');
+        await this.addOption(req, res, next, 'Super', 5, 'Overzichten', 'SubLijst', '');
+        await this.addOption(req, res, next, 'Admin', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '');
         await this.addOption(req, res, next, 'Super', 7, 'Productie', 'SubProductie', '');
         await this.addOption(req, res, next, 'Super', 8, 'Inkoop', 'SubInkoop', '');
         await this.addOption(req, res, next, 'Super', 9, 'Orderadministratie', 'SubOrder', '');
@@ -586,18 +589,20 @@ drop table menuregel`;
         await this.addOption(req, res, next, 'SubOrderdeskLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")');
         await this.addOption(req, res, next, 'SubOrderdeskLijst', 9, 'Vrijgegeven dagen', '', 'showPage("mnl.html")');
         //
+        // Werkvoorbereiding
+        //
+        await this.addOption(req, res, next, 'SubWerkvoorbereiding', 3, 'Werkvoorbereiding', '', 'showPage("planning.html?sel44=Nee&action=werkvoorbereiding")');
+        //
         // Productie
         //
         await this.addOption(req, res, next, 'SubProductie', 1, 'Logistiek', '', 'showPage("logistiek.html")');
         await this.addOption(req, res, next, 'SubProductie', 2, 'Overzicht', '', 'showPage("bewerking.html")');
-        await this.addOption(req, res, next, 'SubProductie', 3, 'Werkvoorbereiding', '', 'showPage("planning.html?sel44=Nee&action=werkvoorbereiding")');
         await this.addOption(req, res, next, 'SubProductie', 4, 'Planning', '', 'showPage("planning.html?sel44=Nee&action=planning")');
         await this.addOption(req, res, next, 'SubProductie', 5, 'Lijnplanning', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning")');
         await this.addOption(req, res, next, 'SubProductie', 6, 'Lijnplanning2', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning2")');
         await this.addOption(req, res, next, 'SubProductie', 7, 'Uitleverlijst', '', 'showPage("uitlever.html?productie=1")');
         //
         await this.addOption(req, res, next, 'SubProductieProductie', 2, 'Overzicht', '', 'showPage("bewerking.html")');
-        await this.addOption(req, res, next, 'SubProductieProductie', 3, 'Werkvoorbereiding', '', 'showPage("planning.html?sel44=Nee&action=werkvoorbereiding")');
         await this.addOption(req, res, next, 'SubProductieProductie', 4, 'Planning', '', 'showPage("planning.html?sel44=Nee&action=planning")');
         await this.addOption(req, res, next, 'SubProductieProductie', 5, 'lijnplanning', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning")');
         await this.addOption(req, res, next, 'SubProductieProductie', 6, 'lijnplanning2', '', 'showPage("planning.html?sel44=Nee&action=lijnplanning2")');
