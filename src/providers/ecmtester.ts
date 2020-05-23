@@ -45,8 +45,13 @@ export class Ecmtester extends Crud {
 <Batch>
 <Number>12345</Number>
 <ErrorCode>0</ErrorCode>
-<ErrorDescription> </ErrorDescription>
+<ErrorDescription>OK</ErrorDescription>
 </Batch>`;
+        //
+        // live testdata
+        //
+        result = '<?xml version="1.0" encoding="UTF-8"?><Batch><Number>12766</Number><ErrorCode>0</ErrorCode><ErrorDescription>OK</ErrorDescription></Batch>';
+        //
         res.status(200).send(result);
         return;
     }
@@ -56,7 +61,7 @@ export class Ecmtester extends Crud {
     public async routes(req: Request, res: Response, next: NextFunction) {
         //
         let method = req.method;
-        let action = db.fix(req.query.action||'');
+        let action = db.fix(req.query.action || '');
         //
         Logger.request(req);
         //

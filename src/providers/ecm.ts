@@ -22,12 +22,12 @@ export class Ecm {
         + "&Bewerking=" + options.Bewerking;
 
       // dit moet een xml-response zijn
-      //<?xml version="1.0" encoding="UTF-8" ..
-      //<Batch>
-      //<Number> </Number>
-      //<ErrorCode></ErrorCode>
-      //<ErrorDescription> </ErrorDesciption>
-      //</Batch>
+      // <?xml version="1.0" encoding="UTF-8" ?>
+      // <Batch>
+      // <Number>12345</Number>
+      // <ErrorCode>0</ErrorCode>
+      // <ErrorDescription>OK</ErrorDesciption>
+      // </Batch>
 
       let thisEcmRequest: http.ClientRequest = http.request(
         {
