@@ -236,7 +236,6 @@ export class Config {
       Config.ecmserver = "192.168.43.14";
       Config.ecmport = 8080;
       Config.ecmpath = "/ecm/CreateBatch.php";
-      Config.ecmpath = "/ecm/CreateBatch.php";
       Config.bestellingendir = "f:/data/ak2/bestellingen/sensors";
       Config.retourendir = "f:/data/ak2/retouren";
       Config.appUrl = "/Ak2/CONTROLS";
@@ -273,7 +272,13 @@ export class Config {
       Config.ecmserver = "192.168.43.14";
       Config.ecmport = 8080;
       Config.ecmpath = "/ecm/CreateBatch.php";
-      Config.ecmpath = "/ecm/CreateBatch.php";
+      //
+      // settings tbv test
+      //
+      // Config.ecmserver = "localhost";
+      // Config.ecmport = 9001;
+      // Config.ecmpath = "/ecmtester.php";
+      //
       Config.bestellingendir = "f:/data/ak2/bestellingen/sensors";
       Config.retourendir = "f:/data/ak2/retouren";
       Config.appUrl = "/Ak2/TAS";

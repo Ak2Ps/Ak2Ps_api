@@ -85,7 +85,12 @@ var Ecmtester = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
-                result = "\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<Batch>\n<Number>12345</Number>\n<ErrorCode>0</ErrorCode>\n<ErrorDescription> </ErrorDescription>\n</Batch>";
+                result = "\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<Batch>\n<Number>12345</Number>\n<ErrorCode>0</ErrorCode>\n<ErrorDescription>OK</ErrorDescription>\n</Batch>";
+                //
+                // live testdata
+                //
+                result = '<?xml version="1.0" encoding="UTF-8"?><Batch><Number>12766</Number><ErrorCode>0</ErrorCode><ErrorDescription>OK</ErrorDescription></Batch>';
+                //
                 res.status(200).send(result);
                 return [2 /*return*/];
             });
