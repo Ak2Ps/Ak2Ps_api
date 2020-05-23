@@ -69,8 +69,6 @@ var Config = /** @class */ (function () {
             Config.exactdivision = "1751534";
             Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
             //
-            Config.bbsmtp = "192.168.43.7";
-            //
         }
         else {
             //
@@ -108,8 +106,6 @@ var Config = /** @class */ (function () {
             Config.exactinterfaceapp = "nodeapi2tasseron";
             Config.exactdivision = "1665922";
             Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
-            //
-            Config.bbsmtp = "192.168.43.7";
             //
         }
         //
@@ -152,8 +148,6 @@ var Config = /** @class */ (function () {
         // Config.gatePort = json.gatePort || Config.gatePort;
         //
         Config.exactdir = json.exactdir || Config.exactdir;
-        //
-        Config.bbsmtp = json.bbsmtp;
         //
         // exact interface naar localhost 9001
         //
@@ -226,8 +220,6 @@ var Config = /** @class */ (function () {
             //
             exactinterfaceapp: Config.exactinterfaceapp,
             exactdir: Config.exactdir,
-            //
-            bbsmtp: Config.bbsmtp,
         };
         try {
             fs.writeFileSync(this.ConfigFile, JSON.stringify(json, null, 2));

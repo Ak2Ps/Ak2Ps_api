@@ -192,8 +192,6 @@ export class Config {
       exactinterfaceapp: Config.exactinterfaceapp,
       exactdir: Config.exactdir,
       //
-      bbsmtp: Config.bbsmtp,
-      //
     };
     try {
       fs.writeFileSync(this.ConfigFile, JSON.stringify(json, null, 2));
@@ -259,8 +257,6 @@ export class Config {
       Config.exactdivision = "1751534";
       Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
       //
-      Config.bbsmtp = "192.168.43.7";
-      //
     } else {
       //
       Config.server = "localhost";
@@ -297,8 +293,6 @@ export class Config {
       Config.exactinterfaceapp = "nodeapi2tasseron";
       Config.exactdivision = "1665922";
       Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
-      //
-      Config.bbsmtp = "192.168.43.7";
       //
     }
     //
@@ -341,8 +335,6 @@ export class Config {
     // Config.gatePort = json.gatePort || Config.gatePort;
     //
     Config.exactdir = json.exactdir || Config.exactdir;
-    //
-    Config.bbsmtp = json.bbsmtp;
     //
     // exact interface naar localhost 9001
     //
