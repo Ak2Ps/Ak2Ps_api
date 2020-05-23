@@ -247,7 +247,7 @@ var Exactclient = /** @class */ (function (_super) {
     };
     Exactclient.prototype.doQuery = function (req, res, next, xoptions) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, options, json, xml, tlblok, query, _a, exactserver, exactstart, outfile, thisUrl, thisResponse, _b, _c, error_1, thisResponse, _d, _e, error_2, sep, thisPathFirst, thisPathGet, retry, thisTs_d, thisData, firstproperty, thisSingleTopic, property;
+            var result, options, json, xml, tlblok, query, _a, exactstart, outfile, thisUrl, thisResponse, _b, _c, error_1, thisResponse, _d, _e, error_2, sep, thisPathFirst, thisPathGet, retry, thisTs_d, thisData, firstproperty, thisSingleTopic, property;
             return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
@@ -260,11 +260,8 @@ var Exactclient = /** @class */ (function (_super) {
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
                         _a.crudConnection = _f.sent();
-                        return [4 /*yield*/, util_1.Util.waitParam(req, res, next, 'EXACTSERVER')];
-                    case 2:
-                        exactserver = _f.sent();
                         return [4 /*yield*/, util_1.Util.waitParam(req, res, next, 'EXACTSTART')];
-                    case 3:
+                    case 2:
                         exactstart = _f.sent();
                         res.crudConnection.release();
                         if (exactstart == '') {
@@ -290,9 +287,9 @@ var Exactclient = /** @class */ (function (_super) {
                         if (query.outfile != '') {
                             outfile = config_1.Config.appDir + "/" + query.outfile;
                         }
-                        if (!(query.action == 'GETCODE')) return [3 /*break*/, 5];
+                        if (!(query.action == 'GETCODE')) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.checkRunningInterface(req, res, next)];
-                    case 4:
+                    case 3:
                         if ((_f.sent()) == false) {
                             res.send("Server 9001 moet lopen om het antwoord van Exact af te kunnen handelen (redirectUrl van de ExactApi)");
                             return [2 /*return*/];
@@ -308,8 +305,8 @@ var Exactclient = /** @class */ (function (_super) {
                         });
                         res.status(302).send();
                         return [2 /*return*/];
-                    case 5:
-                        if (!(query.action == 'GETFIRSTREFRESH')) return [3 /*break*/, 10];
+                    case 4:
+                        if (!(query.action == 'GETFIRSTREFRESH')) return [3 /*break*/, 9];
                         //
                         // get refresh
                         //
@@ -335,21 +332,21 @@ var Exactclient = /** @class */ (function (_super) {
                                 + "&client_secret=" + config_1.Config.exactclientsecret
                                 + "&redirect_uri=" + config_1.Config.urlRedirect
                         };
-                        _f.label = 6;
-                    case 6:
-                        _f.trys.push([6, 8, , 9]);
+                        _f.label = 5;
+                    case 5:
+                        _f.trys.push([5, 7, , 8]);
                         _c = (_b = JSON).parse;
                         return [4 /*yield*/, this.getAuth(req, res, next, options)];
-                    case 7:
+                    case 6:
                         thisResponse = _c.apply(_b, [_f.sent()]);
                         res.crudData.refresh = thisResponse.refresh_token;
-                        return [3 /*break*/, 9];
-                    case 8:
+                        return [3 /*break*/, 8];
+                    case 7:
                         error_1 = _f.sent();
                         logger_1.Logger.error(JSON.stringify(error_1));
                         res.crudData.refresh = '';
-                        return [3 /*break*/, 9];
-                    case 9:
+                        return [3 /*break*/, 8];
+                    case 8:
                         if (res.crudData.refresh == "") {
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
@@ -370,8 +367,8 @@ var Exactclient = /** @class */ (function (_super) {
                         result += '</p>';
                         res.status(200).send(result);
                         return [2 /*return*/];
-                    case 10:
-                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 15];
+                    case 9:
+                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 14];
                         res.crudData.refresh = '';
                         res.crudData.access = '';
                         thisResponse = void 0;
@@ -393,22 +390,22 @@ var Exactclient = /** @class */ (function (_super) {
                                 + "&grant_type=refresh_token"
                                 + "&client_secret=" + config_1.Config.exactclientsecret
                         };
-                        _f.label = 11;
-                    case 11:
-                        _f.trys.push([11, 13, , 14]);
+                        _f.label = 10;
+                    case 10:
+                        _f.trys.push([10, 12, , 13]);
                         _e = (_d = JSON).parse;
                         return [4 /*yield*/, this.getAuth(req, res, next, options)];
-                    case 12:
+                    case 11:
                         thisResponse = _e.apply(_d, [_f.sent()]);
                         res.crudData.access = thisResponse.access_token;
                         res.crudData.refresh = thisResponse.refresh_token;
-                        return [3 /*break*/, 14];
-                    case 13:
+                        return [3 /*break*/, 13];
+                    case 12:
                         error_2 = _f.sent();
                         logger_1.Logger.error(JSON.stringify(error_2));
                         res.crudData.refresh = '';
-                        return [3 /*break*/, 14];
-                    case 14:
+                        return [3 /*break*/, 13];
+                    case 13:
                         if (res.crudData.access == "") {
                             logger_1.Logger.error("401 Unauthorized: Herstel Exact verbinding");
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
@@ -439,9 +436,9 @@ var Exactclient = /** @class */ (function (_super) {
                             res.status(401).send("401 Unauthorized: Herstel Exact verbinding");
                             return [2 /*return*/];
                         }
-                        _f.label = 15;
-                    case 15:
-                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 22];
+                        _f.label = 14;
+                    case 14:
+                        if (!(query.action.indexOf('GET') >= 0)) return [3 /*break*/, 21];
                         sep = "?";
                         thisPathFirst = '';
                         thisPathGet = '';
@@ -496,16 +493,16 @@ var Exactclient = /** @class */ (function (_super) {
                         thisPathGet = thisPathFirst;
                         logger_1.Logger.info("    exactclient getting: " + query.topic);
                         retry = 1;
-                        _f.label = 16;
-                    case 16:
-                        if (!(retry == 1)) return [3 /*break*/, 21];
+                        _f.label = 15;
+                    case 15:
+                        if (!(retry == 1)) return [3 /*break*/, 20];
                         options = {
                             path: thisPathGet
                         };
                         return [4 /*yield*/, this.getData(req, res, next, options)];
-                    case 17:
+                    case 16:
                         result = _f.sent();
-                        if (!(result == "")) return [3 /*break*/, 18];
+                        if (!(result == "")) return [3 /*break*/, 17];
                         if (tlblok == -1) {
                             logger_1.Logger.error("401 Unauthorized: Empty response, wrong division? [" + config_1.Config.exactdivision + "]");
                             res.status(401).send("401 Unauthorized : Empty response, wrong division? [" + config_1.Config.exactdivision + "]");
@@ -514,9 +511,9 @@ var Exactclient = /** @class */ (function (_super) {
                         else {
                             retry = 0;
                         }
-                        return [3 /*break*/, 20];
-                    case 18: return [4 /*yield*/, this.getJson(result)];
-                    case 19:
+                        return [3 /*break*/, 19];
+                    case 17: return [4 /*yield*/, this.getJson(result)];
+                    case 18:
                         json = _f.sent();
                         thisTs_d = this.getField(json.eExact, 'Topics', 'Topic', '$', 'ts_d');
                         thisData = '';
@@ -550,9 +547,9 @@ var Exactclient = /** @class */ (function (_super) {
                         else {
                             thisPathGet = thisPathFirst + "&TSPaging=" + thisTs_d;
                         }
-                        _f.label = 20;
-                    case 20: return [3 /*break*/, 16];
-                    case 21:
+                        _f.label = 19;
+                    case 19: return [3 /*break*/, 15];
+                    case 20:
                         if (tlblok >= 0) {
                             fs.appendFileSync(outfile, "]}");
                         }
@@ -560,8 +557,8 @@ var Exactclient = /** @class */ (function (_super) {
                         result = {
                             msg: "Aantal blokken opgehaald: " + (tlblok + 1)
                         };
-                        _f.label = 22;
-                    case 22:
+                        _f.label = 21;
+                    case 21:
                         res.status(200).send(result);
                         return [2 /*return*/];
                 }

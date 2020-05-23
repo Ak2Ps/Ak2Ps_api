@@ -48,6 +48,23 @@ var Db = /** @class */ (function () {
             });
         });
     };
+    Db.prototype.waitDDL = function (connection, sql) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            logger_1.Logger.sql(sql);
+            connection.query(sql, function (err, rows) {
+                if (err) {
+                    logger_1.Logger.error(JSON.stringify(err));
+                    logger_1.Logger.error(sql);
+                    resolve(err);
+                }
+                if (Array.isArray(rows)) {
+                    rows = _this.fixRows(rows);
+                }
+                resolve(rows);
+            });
+        });
+    };
     Db.prototype.waitQuerySilent = function (connection, sql) {
         var _this = this;
         return new Promise(function (resolve, reject) {

@@ -133,14 +133,18 @@ export class Config {
   public static dbpassword: string;
   public static dbschema: string;
   //
+  public static bbadmin: string;
+  public static bbmod: string;
+  public static bbsmtp: string;
+  public static bbgmailuser: string;
+  public static bbgmailpassword: string;
+  //
   public static exactinterfaceapp: string;
   public static exactclientid: string;
   public static exactclientsecret: string;
   public static urlRedirect: string;
   public static exactdivision: string;
   public static exactdir: string;
-  //
-  public static bbsmtp: string;
   //
   public static loadConfig(): any {
     let buffer: Buffer;
@@ -179,6 +183,12 @@ export class Config {
       dbpassword: Config.dbpassword,
       dbschema: Config.dbschema,
       //
+      bbadmin: Config.bbadmin,
+      bbmod: Config.bbmod,
+      bbstmtp: Config.bbsmtp,
+      bbgmailuser: Config.bbgmailuser,
+      bbgmailpassword: Config.bbgmailpassword,
+          //
       exactinterfaceapp: Config.exactinterfaceapp,
       exactdir: Config.exactdir,
       //
@@ -239,6 +249,12 @@ export class Config {
       Config.dbpassword = "antoon_ak2";
       Config.dbschema = "controlsdata";
       //
+      Config.bbadmin = "ak2@tasseron.nl";
+      Config.bbmod = "tkragten@tasseron.nl";
+      Config.bbsmtp = "192.168.43.7";
+      Config.bbgmailuser = '';
+      Config.bbgmailpassword = '';
+      //
       Config.exactinterfaceapp = "nodeapi2tasseron";
       Config.exactdivision = "1751534";
       Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
@@ -272,6 +288,12 @@ export class Config {
       Config.dbpassword = "antoon_ak2";
       Config.dbschema = "ak2";
       //
+      Config.bbadmin = "ak2@tasseron.nl";
+      Config.bbmod = "tkragten@tasseron.nl";
+      Config.bbsmtp = "192.168.43.7";
+      Config.bbgmailuser = '';
+      Config.bbgmailpassword = '';
+      //
       Config.exactinterfaceapp = "nodeapi2tasseron";
       Config.exactdivision = "1665922";
       Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
@@ -304,6 +326,12 @@ export class Config {
     Config.dbuser = json.dbuser || Config.dbuser;
     Config.dbpassword = json.dbpassword || Config.dbpassword;
     Config.dbschema = json.dbschema || Config.dbschema;
+    //
+    Config.bbadmin = json.bbadmin || Config.bbadmin;
+    Config.bbmod = json.bbmod || Config.bbmod;
+    Config.bbsmtp = json.bbsmtp || Config.bbsmtp;
+    Config.bbgmailuser = json.bbgmailuser || Config.bbgmailuser;
+    Config.bbgmailpassword = json.bbgmailpassword || Config.bbgmailpassword;
     //
     // Config.exactinterfaceapp = json.exactinterfaceapp || Config.exactinterfaceapp;
     // Config.exactdivision = json.exactdivision || Config.exactdivision;

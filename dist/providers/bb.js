@@ -43,6 +43,7 @@ var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
 var logger_1 = require("../logger");
 var mailer_1 = require("../mailer");
+var config_1 = require("../config");
 var Bb = /** @class */ (function () {
     function Bb() {
         this.mailer = new mailer_1.Mailer();
@@ -79,27 +80,25 @@ var Bb = /** @class */ (function () {
                         connection = _a.sent();
                         result = null;
                         sql = '';
-                        return [4 /*yield*/, util_1.Util.waitParam(req, res, next, "BBMOD")];
-                    case 2:
-                        bbmod = _a.sent();
-                        if (!(bbmod != '')) return [3 /*break*/, 4];
+                        bbmod = config_1.Config.bbmod;
+                        if (!(bbmod != '')) return [3 /*break*/, 3];
                         to = bbmod;
                         message = decodeURIComponent(inhoud).replace(/<br>/gi, '').replace(/\n/gi, '<br>');
                         return [4 /*yield*/, this.mailer.send(to, header, message)];
-                    case 3:
+                    case 2:
                         _a.sent();
-                        _a.label = 4;
-                    case 4:
-                        if (!(bb == "Home")) return [3 /*break*/, 6];
+                        _a.label = 3;
+                    case 3:
+                        if (!(bb == "Home")) return [3 /*break*/, 5];
                         sql = "\ndelete from BBMSG\nwhere bb='" + bb + "';";
                         return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
-                    case 5:
+                    case 4:
                         rows = _a.sent();
-                        _a.label = 6;
-                    case 6:
+                        _a.label = 5;
+                    case 5:
                         sql = "\ninsert into BBMSG (\nbb,date,\nauthor,email,header,\ninhoud,\nmoderated) \nvalues (\n'" + bb + "',screendate2date('" + datum + "'),\n'" + db_1.default.fix(author) + "',\n'" + db_1.default.fix(email) + "',\n'" + db_1.default.fix(header) + "',\n'" + db_1.default.fix(db_1.default.editorfix(inhoud)) + "',\n'" + db_1.default.fix(moderated) + "'\n);";
                         return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
-                    case 7:
+                    case 6:
                         rows = _a.sent();
                         connection.release();
                         result = {
@@ -162,76 +161,6 @@ var Bb = /** @class */ (function () {
             });
         });
     };
-    Bb.prototype.getSettings = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var msg, connection, bbsmtp, bbadmin, bbmod, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        msg = "";
-                        return [4 /*yield*/, db_1.default.waitConnection()];
-                    case 1:
-                        connection = _a.sent();
-                        return [4 /*yield*/, util_1.Util.waitParam(req, res, next, "BBSMTP")];
-                    case 2:
-                        bbsmtp = _a.sent();
-                        return [4 /*yield*/, util_1.Util.waitParam(req, res, next, "BBADMIN")];
-                    case 3:
-                        bbadmin = _a.sent();
-                        return [4 /*yield*/, util_1.Util.waitParam(req, res, next, "BBMOD")];
-                    case 4:
-                        bbmod = _a.sent();
-                        connection.release();
-                        result = {
-                            items: [
-                                {
-                                    MSG: msg,
-                                    BBADMIN: bbadmin,
-                                    BBMOD: bbmod,
-                                    BBSMTP: bbsmtp
-                                }
-                            ]
-                        };
-                        res.status(200).send(result);
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Bb.prototype.setSettings = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var bbmod, bbadmin, bbsmtp, connection, result, sql, rows;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        bbmod = String(req.query.bbmod || req.body.bbmod);
-                        bbadmin = String(req.query.bbadmin || req.body.bbadmin);
-                        bbsmtp = String(req.query.bbsmtp || req.body.bbsmtp);
-                        return [4 /*yield*/, db_1.default.waitConnection()];
-                    case 1:
-                        connection = _a.sent();
-                        result = null;
-                        sql = "\ninsert into PARAM (naam) select 'BBSMTP' from DUAL where not exists (select 1 from PARAM where naam = 'BBSMTP');\ninsert into PARAM (naam) select 'BBADMIN' from DUAL where not exists (select 1 from PARAM where naam = 'BBADMIN');\ninsert into PARAM (naam) select 'BBMOD' from DUAL where not exists (select 1 from PARAM where naam = 'BBMOD');\nupdate PARAM set inhoud = '" + db_1.default.fix(bbsmtp) + "' where naam = 'BBSMTP';\nupdate PARAM set inhoud = '" + db_1.default.fix(bbadmin) + "' where naam = 'BBADMIN';\nupdate PARAM set inhoud = '" + db_1.default.fix(bbmod) + "' where naam = 'BBMOD';\n";
-                        return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
-                    case 2:
-                        rows = _a.sent();
-                        connection.release();
-                        result = {
-                            items: [
-                                {
-                                    MSG: "",
-                                    BBADMIN: bbadmin,
-                                    BBMOD: bbmod,
-                                    BBSMTP: bbsmtp
-                                }
-                            ]
-                        };
-                        res.status(200).send(result);
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
     Bb.prototype.showBb = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var bb, connection, where, orderby, sql, result, rows;
@@ -287,13 +216,7 @@ var Bb = /** @class */ (function () {
                 //
                 logger_1.Logger.request(req);
                 //
-                if (action == "getsettings") {
-                    this.getSettings(req, res, next);
-                }
-                else if (action == "setsettings") {
-                    this.setSettings(req, res, next);
-                }
-                else if (action == "showbb") {
+                if (action == "showbb") {
                     this.showBb(req, res, next);
                 }
                 else if (action == "addmsg") {

@@ -49,13 +49,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var db_1 = __importDefault(require("./db"));
 var logger_1 = require("./logger");
 var nodemailer = __importStar(require("nodemailer"));
+var config_1 = require("./config");
 var Mailer = /** @class */ (function () {
     function Mailer() {
         this.host = '';
         this.from = '';
         this.port = 25;
-        this.smtptransporter = {};
-        this.gmailtransporter = {};
+        this.transporter = {};
         //
         logger_1.Logger.info("Creating Mailer");
         //
@@ -66,43 +66,32 @@ var Mailer = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                        var connection, sql, rows;
+                        var connection;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0: return [4 /*yield*/, db_1.default.waitConnection()];
                                 case 1:
                                     connection = _a.sent();
-                                    sql = "\nselect INHOUD \nfrom PARAM\nwhere NAAM = 'BBSMTP'";
-                                    return [4 /*yield*/, db_1.default.waitQuerySilent(connection, sql)];
-                                case 2:
-                                    rows = _a.sent();
-                                    if (rows[0]) {
-                                        this.host = rows[0].INHOUD;
-                                    }
-                                    //
-                                    sql = "\nselect INHOUD \nfrom PARAM\nwhere NAAM = 'BBADMIN'";
-                                    return [4 /*yield*/, db_1.default.waitQuerySilent(connection, sql)];
-                                case 3:
-                                    rows = _a.sent();
-                                    if (rows[0]) {
-                                        this.from = rows[0].INHOUD;
-                                    }
+                                    this.host = config_1.Config.bbsmtp;
+                                    this.from = config_1.Config.bbadmin;
                                     //
                                     connection.release();
                                     //
-                                    this.smtptransporter = nodemailer.createTransport({
-                                        host: this.host,
-                                        port: this.port,
-                                    });
-                                    /*
-                                    this.gmailtransporter = nodemailer.createTransport({
-                                      service: 'gmail',
-                                      auth: {
-                                        user: 'antoon.kragten@gmail.com',
-                                        pass: '..............'
-                                      }
-                                    });
-                                    */
+                                    if ((config_1.Config.bbgmailuser || '') != '') {
+                                        this.transporter = nodemailer.createTransport({
+                                            service: 'gmail',
+                                            auth: {
+                                                user: config_1.Config.bbgmailuser,
+                                                pass: config_1.Config.bbgmailpassword
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        this.transporter = nodemailer.createTransport({
+                                            host: this.host,
+                                            port: this.port,
+                                        });
+                                    }
                                     resolve();
                                     return [2 /*return*/];
                             }
@@ -122,10 +111,7 @@ var Mailer = /** @class */ (function () {
                     subject: subject,
                     html: html
                 };
-                transporter = this.smtptransporter;
-                /*
-                let transporter = this.gmailtransporter;
-                */
+                transporter = this.transporter;
                 transporter.sendMail(options, function (error, info) {
                     if (error) {
                         logger_1.Logger.error(undefined, error);

@@ -1,16 +1,14 @@
 import db from "./db";
 import { Request, Response, NextFunction } from "express";
-import { Util } from "./util";
 import { Logger } from "./logger";
 import * as nodemailer from 'nodemailer'
-import Mail from "nodemailer/lib/mailer";
+import { Config } from "./config";
 
 export class Mailer {
   host = '';
   from = '';
   port = 25;
-  smtptransporter: any = {};
-  gmailtransporter: any = {}
+  transporter: any = {};
   constructor() {
     //
     Logger.info("Creating Mailer");
@@ -21,39 +19,25 @@ export class Mailer {
   async init(): Promise<void> {
     return new Promise(async (resolve, reject) => {
       let connection = await db.waitConnection();
-      let sql = `
-select INHOUD 
-from PARAM
-where NAAM = 'BBSMTP'`;
-      let rows = await db.waitQuerySilent(connection, sql);
-      if (rows[0]) {
-        this.host = rows[0].INHOUD;
-      }
-      //
-      sql = `
-select INHOUD 
-from PARAM
-where NAAM = 'BBADMIN'`;
-      rows = await db.waitQuerySilent(connection, sql);
-      if (rows[0]) {
-        this.from = rows[0].INHOUD;
-      }
+      this.host = Config.bbsmtp;
+      this.from = Config.bbadmin;
       //
       connection.release();
       //
-      this.smtptransporter = nodemailer.createTransport({
-        host: this.host,
-        port: this.port,
-      });
-      /*
-      this.gmailtransporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'antoon.kragten@gmail.com',
-          pass: '..............'
-        }
-      });
-      */
+      if ((Config.bbgmailuser || '') != '') {
+        this.transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: Config.bbgmailuser,
+            pass: Config.bbgmailpassword
+          }
+        });
+        } else {
+        this.transporter = nodemailer.createTransport({
+          host: this.host,
+          port: this.port,
+        });
+      }
       resolve();
     });
   }
@@ -67,15 +51,10 @@ where NAAM = 'BBADMIN'`;
         html: html
       }
       //
-      // TODO
-      //
-      let transporter = this.smtptransporter;
-      /*
-      let transporter = this.gmailtransporter;
-      */
-     transporter.sendMail(options, function (error: any, info: any) {
+      let transporter = this.transporter;
+      transporter.sendMail(options, function (error: any, info: any) {
         if (error) {
-          Logger.error(<Request><unknown>undefined,error);
+          Logger.error(<Request><unknown>undefined, error);
           resolve(false);
         } else {
           Logger.info('Email sent: ' + info.response);

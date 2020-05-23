@@ -209,7 +209,6 @@ export class Exactclient extends Crud {
         let tlblok = -1;
         let query = db.fixQuery(req.query);
         res.crudConnection = await db.waitConnection();
-        let exactserver = await Util.waitParam(req, res, next, 'EXACTSERVER');
         let exactstart = await Util.waitParam(req, res, next, 'EXACTSTART');
         res.crudConnection.release();
         if (exactstart == '') {

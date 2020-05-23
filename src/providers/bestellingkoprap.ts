@@ -136,12 +136,7 @@ where leveranciernummer = '${row.LEVERANCIERNUMMER}'`;
 
         }
         let filename = '';
-        let targetdir = 'f:/data/ak2/bestellingen';
-        let sqlparam = `select inhoud from param where naam = 'BESTELLINGENDIR'`;
-        let rowsparam = await db.waitQuery(res.crudConnection, sqlparam);
-        if (rowsparam[0]) {
-            targetdir = rowsparam[0].INHOUD;
-        }
+        let targetdir = Config.bestellingendir;
         let targeturl = "toolbox.php?action=showpdf&filename=" + targetdir;
         try {
             fs.mkdirSync(targetdir);

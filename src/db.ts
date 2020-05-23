@@ -51,6 +51,23 @@ class Db {
     });
   }
 
+  public waitDDL(connection: mysql.PoolConnection, sql: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      Logger.sql(sql);
+      connection.query(sql, (err, rows) => {
+        if (err) {
+          Logger.error(JSON.stringify(err));
+          Logger.error(sql);
+          resolve(err);
+        }
+        if (Array.isArray(rows)) {
+          rows = this.fixRows(rows);
+        }
+        resolve(rows);
+      });
+    });
+  }
+
   public waitQuerySilent(connection: mysql.PoolConnection, sql: string): Promise<any> {
     return new Promise((resolve, reject) => {
       connection.query(sql, (err, rows) => {

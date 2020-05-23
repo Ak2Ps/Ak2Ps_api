@@ -48,6 +48,10 @@ const dict: Dict = {
             {
                 query: "inhoud",
                 sql: "ucase(INHOUD) like ucase('?%')",
+            },
+            {
+                query: "opmerking",
+                sql: "ucase(OPMERKING) like ucase('?%')",
             }
         ],
         fields: [
@@ -62,6 +66,10 @@ const dict: Dict = {
             {
                 row: "INHOUD",
                 sql: "ifnull(INHOUD,'') as INHOUD",
+            },
+            {
+                row: "OPMERKING",
+                sql: "ifnull(OPMERKING,'') as OPMERKING",
             }
         ],
     },
@@ -79,6 +87,13 @@ const dict: Dict = {
                 sql: "INHOUD",
                 required: false,
                 maxLength: 255,
+                default: "",
+            },
+            {
+                body: "OPMERKING",
+                sql: "OPMERKING",
+                required: false,
+                maxLength: 1024,
                 default: "",
             }
         ],

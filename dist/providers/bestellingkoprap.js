@@ -125,7 +125,7 @@ var Bestellingkoprap = /** @class */ (function (_super) {
     }
     Bestellingkoprap.prototype.doQuery = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var bestelnummer, row, rowlev, rowreg, rowproduct, swfound, sqlupdate, sql, _a, rows, sqllev, rowslev, filename, targetdir, sqlparam, rowsparam, targeturl, sqlreg, rowsreg, irowreg, sqlproduct, rowsproduct, sqlcommentaar, rowscommentaar, icommentaar, rowcommentaar, sqlpick, rowspick, irowpick, rowpick, sqlonderdeel, rowsonderdeel, irowonderdeel, rowonderdeel, irowpick, rowpick, sqlproduct, rowsproduct, thisHandtekening;
+            var bestelnummer, row, rowlev, rowreg, rowproduct, swfound, sqlupdate, sql, _a, rows, sqllev, rowslev, filename, targetdir, targeturl, sqlreg, rowsreg, irowreg, sqlproduct, rowsproduct, sqlcommentaar, rowscommentaar, icommentaar, rowcommentaar, sqlpick, rowspick, irowpick, rowpick, sqlonderdeel, rowsonderdeel, irowonderdeel, rowonderdeel, irowpick, rowpick, sqlproduct, rowsproduct, thisHandtekening;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -155,14 +155,7 @@ var Bestellingkoprap = /** @class */ (function (_super) {
                         _b.label = 4;
                     case 4:
                         filename = '';
-                        targetdir = 'f:/data/ak2/bestellingen';
-                        sqlparam = "select inhoud from param where naam = 'BESTELLINGENDIR'";
-                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlparam)];
-                    case 5:
-                        rowsparam = _b.sent();
-                        if (rowsparam[0]) {
-                            targetdir = rowsparam[0].INHOUD;
-                        }
+                        targetdir = config_1.Config.bestellingendir;
                         targeturl = "toolbox.php?action=showpdf&filename=" + targetdir;
                         try {
                             fs.mkdirSync(targetdir);
@@ -307,16 +300,16 @@ var Bestellingkoprap = /** @class */ (function (_super) {
                         this.html += ('<tr><td></td><td><hr></td><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr>');
                         sqlreg = " \n            select *,\ndate2screendate(besteldatumtijd) as BESTELDATUM\nfrom BESTELLING\nwhere bestelnummer = '" + bestelnummer + "'\norder by besteldatumtijd, productnummer";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlreg)];
-                    case 6:
+                    case 5:
                         rowsreg = _b.sent();
                         irowreg = 0;
-                        _b.label = 7;
-                    case 7:
-                        if (!(irowreg < rowsreg.length)) return [3 /*break*/, 11];
+                        _b.label = 6;
+                    case 6:
+                        if (!(irowreg < rowsreg.length)) return [3 /*break*/, 10];
                         rowreg = rowsreg[irowreg];
                         sqlproduct = " \nselect *\nfrom PRODUCT\nwhere productnummer = '" + rowreg.PRODUCTNUMMER + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlproduct)];
-                    case 8:
+                    case 7:
                         rowsproduct = _b.sent();
                         if (!rowsproduct[0]) {
                             rowproduct = {};
@@ -335,7 +328,7 @@ var Bestellingkoprap = /** @class */ (function (_super) {
                         this.html += ('</tr>');
                         sqlcommentaar = "\nselect *\nfrom BESTELLINGCOMMENTAAR\nwhere bestellingid = '" + rowreg.ID + "'\norder by regelnummer";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlcommentaar)];
-                    case 9:
+                    case 8:
                         rowscommentaar = _b.sent();
                         for (icommentaar = 0; icommentaar < rowscommentaar.length; icommentaar++) {
                             rowcommentaar = rowscommentaar[icommentaar];
@@ -348,67 +341,67 @@ var Bestellingkoprap = /** @class */ (function (_super) {
                             this.html += ('<td></td>');
                             this.html += ('</tr>');
                         }
-                        _b.label = 10;
-                    case 10:
+                        _b.label = 9;
+                    case 9:
                         irowreg++;
-                        return [3 /*break*/, 7];
-                    case 11:
+                        return [3 /*break*/, 6];
+                    case 10:
                         this.html += ('</table>');
                         this.html += ('</div>');
                         this.html += ('<div>');
                         //Picklijst
                         sqlupdate = "\nupdate BESTELLINGPICK \nset status = 'OLD' \nwhere bestelnummer = '" + bestelnummer + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlupdate)];
-                    case 12:
+                    case 11:
                         _b.sent();
                         sqlpick = "\nselect\nbestelnummer,\nsum(bestelling) as BESTELLING,\nproductnummer\nfrom BESTELLING\nwhere bestelnummer = '" + bestelnummer + "'\ngroup by productnummer\norder by productnummer";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlpick)];
-                    case 13:
+                    case 12:
                         rowspick = _b.sent();
                         irowpick = 0;
-                        _b.label = 14;
-                    case 14:
-                        if (!(irowpick < rowspick.length)) return [3 /*break*/, 21];
+                        _b.label = 13;
+                    case 13:
+                        if (!(irowpick < rowspick.length)) return [3 /*break*/, 20];
                         rowpick = rowspick[irowpick];
                         sqlonderdeel = "\nselect *\nfrom ONDERDEEL\nwhere productnummer = '" + rowpick.PRODUCTNUMMER + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlonderdeel)];
-                    case 15:
+                    case 14:
                         rowsonderdeel = _b.sent();
                         irowonderdeel = 0;
-                        _b.label = 16;
-                    case 16:
-                        if (!(irowonderdeel < rowsonderdeel.length)) return [3 /*break*/, 20];
+                        _b.label = 15;
+                    case 15:
+                        if (!(irowonderdeel < rowsonderdeel.length)) return [3 /*break*/, 19];
                         rowonderdeel = rowsonderdeel[irowonderdeel];
                         sqlupdate = "\ninsert into BESTELLINGPICK (status,bestelnummer,productnummer,onderdeelnummer) \nselect\n'NEW',\n'" + rowpick.BESTELNUMMER + "',\n'" + rowpick.PRODUCTNUMMER + "',\n'" + rowonderdeel.ONDERDEELNUMMER + "'\nfrom DUAL\nwhere not exists (select 1 from BESTELLINGPICK\nwhere bestelnummer =  '" + rowpick.BESTELNUMMER + "'\nand productnummer = '" + rowpick.PRODUCTNUMMER + "'\nand onderdeelnummer = '" + rowonderdeel.ONDERDEELNUMMER + "')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlupdate)];
-                    case 17:
+                    case 16:
                         _b.sent();
                         //
                         sqlupdate = "\nupdate BESTELLINGPICK set\nstatus = 'NEW',\nbestelling = '" + rowpick.BESTELLING + "',\nfaktor = '" + rowonderdeel.FAKTOR + "'\nwhere bestelnummer =  '" + rowpick.BESTELNUMMER + "'\nand productnummer = '" + rowpick.PRODUCTNUMMER + "'\nand onderdeelnummer = '" + rowonderdeel.ONDERDEELNUMMER + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlupdate)];
-                    case 18:
+                    case 17:
                         _b.sent();
-                        _b.label = 19;
-                    case 19:
+                        _b.label = 18;
+                    case 18:
                         irowonderdeel++;
-                        return [3 /*break*/, 16];
-                    case 20:
+                        return [3 /*break*/, 15];
+                    case 19:
                         irowpick++;
-                        return [3 /*break*/, 14];
-                    case 21:
+                        return [3 /*break*/, 13];
+                    case 20:
                         swfound = 0;
                         sqlupdate = "\ndelete from  BESTELLINGPICK \nwhere status = 'OLD'\nand bestelnummer = '" + bestelnummer + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlupdate)];
-                    case 22:
+                    case 21:
                         _b.sent();
                         sqlpick = "\nselect \nround(sum(faktor * bestelling)) as aantal,\nonderdeelnummer\nfrom BESTELLINGPICK\nwhere bestelnummer = '" + bestelnummer + "'\ngroup by onderdeelnummer\nhaving round(sum(faktor * bestelling)) > 0\norder by onderdeelnummer";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlpick)];
-                    case 23:
+                    case 22:
                         rowspick = _b.sent();
                         irowpick = 0;
-                        _b.label = 24;
-                    case 24:
-                        if (!(irowpick < rowspick.length)) return [3 /*break*/, 27];
+                        _b.label = 23;
+                    case 23:
+                        if (!(irowpick < rowspick.length)) return [3 /*break*/, 26];
                         rowpick = rowspick[irowpick];
                         if (swfound == 0) {
                             swfound = 1;
@@ -441,7 +434,7 @@ var Bestellingkoprap = /** @class */ (function (_super) {
                         }
                         sqlproduct = "\nselect *\nfrom PRODUCT\nwhere productnummer = '" + rowpick.ONDERDEELNUMMER + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlproduct)];
-                    case 25:
+                    case 24:
                         rowsproduct = _b.sent();
                         if (rowsproduct[0]) {
                             rowproduct = rowsproduct[0];
@@ -457,11 +450,11 @@ var Bestellingkoprap = /** @class */ (function (_super) {
                         this.html += ('<td style="text-align:right;"></td>');
                         this.html += ('<td style="text-align:right;"></td>');
                         this.html += ('</tr>');
-                        _b.label = 26;
-                    case 26:
+                        _b.label = 25;
+                    case 25:
                         irowpick++;
-                        return [3 /*break*/, 24];
-                    case 27:
+                        return [3 /*break*/, 23];
+                    case 26:
                         if (swfound == 1) {
                             this.html += ('</table>');
                         }

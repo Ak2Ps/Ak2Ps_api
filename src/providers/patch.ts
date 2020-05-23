@@ -47,7 +47,7 @@ export class Patch extends Crud {
         let result = '2016.1';
         //
         let sql = `select inhoud from PARAM where naam = 'VERSIE'`;
-        let rows = await db.waitQuery(res.crudConnection, sql);
+        let rows = await db.waitDDL(res.crudConnection, sql);
         if (rows[0]) {
             result = rows[0].INHOUD;
         }
@@ -70,13 +70,13 @@ from DUAL
 where not exists (
 select 1 from PARAM
 where NAAM= 'VERSIE')`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         sql = `
 update PARAM set 
 INHOUD = '${version}'
 where NAAM = 'VERSIE'`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         return version;
     }
@@ -96,7 +96,7 @@ where not exists (
 select 1 from BB 
 where Bb = '${db.fix(bb)}')`;
         //
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         return;
     }
@@ -118,7 +118,7 @@ from DUAL where not exists
 (select 1 from GEBRUIKER 
 where gebruiker = '${db.fix(gebruiker)}') `;
         //
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         return;
     }
@@ -135,7 +135,7 @@ values
 '${db.fix(menu)}'
 )`;
         //
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         return;
     }
@@ -155,7 +155,7 @@ values (
 '${db.fix(link)}'
 )`;
         //
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         return;
     }
@@ -211,13 +211,13 @@ as reorganize
 FROM information_schema.tables
 WHERE table_schema='${Config.dbschema}'
 AND table_collation != 'utf8_bin'`;
-        rows = await db.waitQuery(res.crudConnection, sql);
+        rows = await db.waitDDL(res.crudConnection, sql);
         for (let irow = 0; irow < rows.length; irow++) {
             row = rows[irow];
             sqldetail = `
 ${row.REORGANIZE}`;
             Logger.info(sqldetail);
-            await db.waitQuery(res.crudConnection, sqldetail);
+            await db.waitDDL(res.crudConnection, sqldetail);
             res.crudResult.messages.push({ field: row.TABLE_NAME, message: sqldetail });
         }
         //
@@ -253,13 +253,13 @@ ${row.REORGANIZE}`;
 		having (productieaantal < min(bewerkingaantal) or productieaantal > max(bewerkingaantal))
 		and productieaantal < 0
 		order by einddatumtijd,bewerkingsnummer`;
-        rows = await db.waitQuery(res.crudConnection, sql);
+        rows = await db.waitDDL(res.crudConnection, sql);
         for (let irow = 0; irow < rows.length; irow++) {
             row = rows[irow];
             sqldetail = `
 update bewerking 
 set productieaantal =  '${row.MAXAANTAL}'`;
-            await db.waitQuery(res.crudConnection, sqldetail);
+            await db.waitDDL(res.crudConnection, sqldetail);
         }
         //
         res.crudResult.messages.push({ field: "P1", message: "P1 uitgevoerd ..." });
@@ -286,7 +286,7 @@ set productieaantal =  '${row.MAXAANTAL}'`;
             upper(table_name) as new_name 
             from information_schema.tables
             where table_schema = '${Config.dbschema}'`;
-            rows = db.waitQuery(res.crudConnection, sql);
+            rows = db.waitDDL(res.crudConnection, sql);
             for (let irow = 0; irow < rows.length; irow++) {
                 row = rows[irow];
                 if (row.TABLE_NAME != row.NEW_NAME) {
@@ -294,24 +294,24 @@ set productieaantal =  '${row.MAXAANTAL}'`;
                         + row.TABLE_NAME
                         + ' rename '
                         + row.NEW_NAME + ' ';
-                    await db.waitQuery(res.crudConnection, sqldetail);
+                    await db.waitDDL(res.crudConnection, sqldetail);
                 }
                 if (String(row.ENGINE).toUpperCase() != 'INNODB') {
                     sqldetail = 'alter table '
                         + row.TABLE_NAME
                         + ' engine = InnoDB ';
-                    await db.waitQuery(res.crudConnection, sqldetail);
+                    await db.waitDDL(res.crudConnection, sqldetail);
                 }
                 if (String(row.TABLE_COLLATION).toUpperCase() != 'utf8_general_ci'.toUpperCase()) {
                     sqldetail = 'alter table '
                         + row.TABLE_NAME
                         + ' CHARACTER SET utf8 ';
-                    await db.waitQuery(res.crudConnection, sqldetail);
+                    await db.waitDDL(res.crudConnection, sqldetail);
                 }
                 sqldetail = 'alter table '
                     + row.TABLE_NAME
                     + ' convert to CHARACTER SET utf8 ';
-                await db.waitQuery(res.crudConnection, sqldetail);
+                await db.waitDDL(res.crudConnection, sqldetail);
             }
             thisVersion = await this.setVersion(req, res, next, '2020.1');
         }
@@ -328,7 +328,7 @@ from dual
 where not exists (
 select 1 from PARAM 
 where naam = 'EXACTSTART')`;
-            await db.waitQuery(res.crudConnection, sql);
+            await db.waitDDL(res.crudConnection, sql);
             thisVersion = await this.setVersion(req, res, next, '2020.2');
         }
         // 2020.2
@@ -337,18 +337,27 @@ where naam = 'EXACTSTART')`;
             //thisVersion = await this.setVersion(req,res,next, '2020.3');
             sql = `
 drop table menu`;
-            try {
-                await db.waitQuery(res.crudConnection, sql);
-            } catch (error) {
-                //
-            }
+            await db.waitDDL(res.crudConnection, sql);
             sql = `
 drop table menuregel`;
-            try {
-                await db.waitQuery(res.crudConnection, sql);
-            } catch (error) {
-                //
-            }
+            await db.waitDDL(res.crudConnection, sql);
+            sql = `
+alter table param
+ADD COLUMN Opmerking LONGTEXT NULL DEFAULT NULL AFTER Inhoud
+`;
+            await db.waitDDL(res.crudConnection, sql);
+            sql = `
+delete from param 
+where NAAM in (
+'BBADMIN','BBMOD','BBSMTP',
+'RETOURENDIR','BESTELLINGENDIR',
+'ECMURL',
+'EXACTSERVER','EXACT','DIVISION'
+)`;
+            await db.waitDDL(res.crudConnection, sql);
+            sql = `
+update param set opmerking = '' where opmerking is null`
+            await db.waitDDL(res.crudConnection, sql);
         }
         //
         res.crudResult.messages.push({ field: "Patch", message: `database upgraded to version ${thisVersion} ...` });
@@ -388,9 +397,9 @@ drop table menuregel`;
         // Menu inhoud
         //
         sql = `delete from MENU_2015`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `delete from MENUREGEL_2015`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // Menus
         //
@@ -531,7 +540,6 @@ drop table menuregel`;
         // Beheer
         //
         await this.addOption(req, res, next, 'SubBeheer', 1, 'Gebruikers', '', 'showPage("gebruiker.html")');
-        await this.addOption(req, res, next, 'SubBeheer', 2, 'Berichtinstellingen', '', 'showPage("bbsettings.html")');
         await this.addOption(req, res, next, 'SubBeheer', 3, 'Menuregels', '', 'showPage("menuregel.html")');
         await this.addOption(req, res, next, 'SubBeheer', 4, 'Parameters', '', 'showPage("param.html")');
         await this.addOption(req, res, next, 'SubBeheer', 6, 'Log Info', '', 'showPage("loginfo.html")');
@@ -708,7 +716,7 @@ drop table menuregel`;
         let sql = ''
         sql = `
 drop view if exists uitvalsoort`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `create view uitvalsoort as
 select * from 
 (select 'Electrisch' as VALUE
@@ -716,7 +724,7 @@ union
 select 'Mechanisch'
 union
 select 'Overig') base;`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         res.crudResult.messages.push({ field: "View", message: "View uitgevoerd ..." });
         //
@@ -735,7 +743,7 @@ select 'Overig') base;`;
         // date2screendate: DD-MM-YYYY
         //
         sql = `drop function if exists date2screendate`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION date2screendate( parDate datetime )
     RETURNS varchar(10)
@@ -748,12 +756,12 @@ BEGIN
     end;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // date2screentime HH24:MI
         //
         sql = `drop function if exists date2screentime`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION date2screentime( parDate datetime )
     RETURNS varchar(5)
@@ -766,12 +774,12 @@ BEGIN
     end;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // date2screendatetime DD-MM-YYYY HH24:MI
         //
         sql = `drop function if exists date2screendatetime`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION date2screendatetime( parDate datetime )
     RETURNS varchar(16)
@@ -788,7 +796,7 @@ END
         // date2jsondate YYYY-MM-DD HH24:MI:SS
         //
         sql = `drop function if exists date2jsondate`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION date2jsondate( parDate datetime )
     RETURNS varchar(19)
@@ -801,12 +809,12 @@ BEGIN
     end;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // screendate2date
         //
         sql = `drop function if exists screendate2date`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION screendate2date( parDate varchar(10) )
     RETURNS datetime
@@ -819,12 +827,12 @@ BEGIN
     end;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // screentime2date
         //
         sql = `drop function if exists screentime2date`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION screentime2date( parDate varchar(5) )
     RETURNS datetime
@@ -837,12 +845,12 @@ BEGIN
     end;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // screendatetime2date
         //
         sql = `drop function if exists screendatetime2date`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION screendatetime2date( parDate varchar(16) )
     RETURNS datetime
@@ -855,12 +863,12 @@ BEGIN
     end;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // jsondate2date
         //
         sql = `drop function if exists jsondate2date`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         sql = `
 CREATE FUNCTION jsondate2date( parDate varchar(19) )
     RETURNS datetime
@@ -873,12 +881,12 @@ BEGIN
     end;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // getOpenStand
         //
         sql = `drop function if exists getOpenStand`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
 
         sql = `
 CREATE FUNCTION getOpenStand(
@@ -950,12 +958,12 @@ BEGIN
     RETURN ifnull(thisStand,'');
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // getStand
         //
         sql = `drop function if exists getStand`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
 
         sql = `
 CREATE FUNCTION getStand(
@@ -1009,12 +1017,12 @@ BEGIN
     RETURN ifnull(thisStand,'');
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // getLijn
         //
         sql = `drop function if exists getLijn`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
 
         sql = `
 CREATE FUNCTION getLijn(
@@ -1040,12 +1048,12 @@ BEGIN
     RETURN ifnull(thisLijn,'');
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // getKurk
         //
         sql = `drop function if exists getKurk`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
 
         sql = `
 CREATE FUNCTION getKurk(
@@ -1079,12 +1087,12 @@ BEGIN
     RETURN ifnull(thisKurk,'');
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // getOpenAantal
         //
         sql = `drop function if exists getOpenAantal`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
 
         sql = `
 CREATE FUNCTION getOpenAantal(
@@ -1129,12 +1137,12 @@ BEGIN
     RETURN ifnull(thisOpenAantal,'');
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         // getHandtekening
         //
         sql = `drop function if exists getHandtekening`;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
 
         sql = `
 CREATE FUNCTION getHandtekening(
@@ -1164,7 +1172,7 @@ BEGIN
     return @thisResult;
 END
 `;
-        await db.waitQuery(res.crudConnection, sql);
+        await db.waitDDL(res.crudConnection, sql);
         //
         res.crudResult.messages.push({ field: "Procedure", message: "Procedure uitgevoerd ..." });
         //

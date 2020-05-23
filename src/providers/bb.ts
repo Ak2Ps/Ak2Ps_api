@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { Util } from "../util";
 import { Logger } from "../logger";
 import { Mailer } from "../mailer";
+import { Config } from "../config";
 
 export class Bb {
   mailer: Mailer = new Mailer();
@@ -50,7 +51,7 @@ from BBMSG`;
     //
     // boodschap eventueel mailen
     //
-    let bbmod = await Util.waitParam(req, res, next, "BBMOD");
+    let bbmod = Config.bbmod;
     if (bbmod != '') {
       let to = bbmod;
       let message = decodeURIComponent(inhoud).replace(/<br>/gi,'').replace(/\n/gi,'<br>');
@@ -126,55 +127,6 @@ values (
     return;
   }
 
-  private async getSettings(req: Request, res: Response, next: NextFunction) {
-    let msg = "";
-    let connection = await db.waitConnection();
-    let bbsmtp = await Util.waitParam(req, res, next, "BBSMTP");
-    let bbadmin = await Util.waitParam(req, res, next, "BBADMIN");
-    let bbmod = await Util.waitParam(req, res, next, "BBMOD");
-    connection.release();
-    let result = {
-      items: [
-        {
-          MSG: msg,
-          BBADMIN: bbadmin,
-          BBMOD: bbmod,
-          BBSMTP: bbsmtp
-        }]
-    };
-    res.status(200).send(result);
-    return;
-  }
-
-  private async setSettings(req: Request, res: Response, next: NextFunction) {
-    let bbmod = String(req.query.bbmod || req.body.bbmod);
-    let bbadmin = String(req.query.bbadmin || req.body.bbadmin);
-    let bbsmtp = String(req.query.bbsmtp || req.body.bbsmtp);
-    let connection = await db.waitConnection();
-    let result: any = null;
-    let sql = `
-insert into PARAM (naam) select 'BBSMTP' from DUAL where not exists (select 1 from PARAM where naam = 'BBSMTP');
-insert into PARAM (naam) select 'BBADMIN' from DUAL where not exists (select 1 from PARAM where naam = 'BBADMIN');
-insert into PARAM (naam) select 'BBMOD' from DUAL where not exists (select 1 from PARAM where naam = 'BBMOD');
-update PARAM set inhoud = '${db.fix(bbsmtp)}' where naam = 'BBSMTP';
-update PARAM set inhoud = '${db.fix(bbadmin)}' where naam = 'BBADMIN';
-update PARAM set inhoud = '${db.fix(bbmod)}' where naam = 'BBMOD';
-`;
-    let rows = await db.waitQuery(connection, sql);
-    connection.release();
-    result = {
-      items: [
-        {
-          MSG: "",
-          BBADMIN: bbadmin,
-          BBMOD: bbmod,
-          BBSMTP: bbsmtp
-        }]
-    };
-    res.status(200).send(result);
-    return;
-  }
-
   private async showBb(req: Request, res: Response, next: NextFunction) {
     //
     let bb = String(req.query.bb || req.body.bb);
@@ -218,11 +170,7 @@ update PARAM set inhoud = '${db.fix(bbmod)}' where naam = 'BBMOD';
     //
     Logger.request(req);
     //
-    if (action == "getsettings") {
-      this.getSettings(req, res, next);
-    } else if (action == "setsettings") {
-      this.setSettings(req, res, next);
-    } else if (action == "showbb") {
+    if (action == "showbb") {
       this.showBb(req, res, next);
     } else if (action == "addmsg") {
       this.addMsg(req, res, next);
