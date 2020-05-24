@@ -238,12 +238,13 @@ var Schedule = /** @class */ (function (_super) {
     };
     Schedule.prototype.waitImport = function (action, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var titel, message, result, data, thisPath, retry, All, Auto, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, tlcycle, bericht;
+            var titel, message, msg, result, data, thisPath, retry, All, Auto, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, tlcycle, bericht;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         titel = '';
                         message = '';
+                        msg = '';
                         result = {
                             success: "true",
                             message: message
@@ -466,7 +467,7 @@ var Schedule = /** @class */ (function (_super) {
                         //
                         message += this.addMessage("Stuklijsten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactproduct"
+                            + "&action=get,exactstuklijst"
                             + "&file=import/exactmbom.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 12:
@@ -884,6 +885,15 @@ var Schedule = /** @class */ (function (_super) {
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 50:
                         data = _a.sent();
+                        msg = 'Vastgelegd.';
+                        if (data.items) {
+                            if (data.items[0]) {
+                                if (data.items[0].regelsbijgewerkt) {
+                                    msg = data.regelsbijgewerkt + " regels vastgelegd.";
+                                }
+                            }
+                        }
+                        message += this.addMessage(msg);
                         _a.label = 51;
                     case 51:
                         if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 55];

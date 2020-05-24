@@ -165,6 +165,7 @@ export class Schedule extends Action {
     protected async waitImport(action: string, res?: Response) {
         let titel = '';
         let message = '';
+        let msg = '';
         let result: any = {
             success: "true",
             message: message
@@ -362,7 +363,7 @@ export class Schedule extends Action {
             //
             message += this.addMessage("Stuklijsten inlezen.", res);
             thisPath = `/upload.php?app=${Config.app}`
-                + "&action=get,exactproduct"
+                + "&action=get,exactstuklijst"
                 + "&file=import/exactmbom.dat";
             data = await Util.getInfo(thisPath);
             try {
@@ -700,6 +701,15 @@ export class Schedule extends Action {
             thisPath = `/voorraad.php?app=${Config.app}`
                 + "&action=fase3";
             data = await Util.postInfo(thisPath);
+            msg = 'Vastgelegd.';
+            if (data.items){
+                if (data.items[0]){
+                    if (data.items[0].regelsbijgewerkt){
+                        msg = `${data.regelsbijgewerkt} regels vastgelegd.`;
+                    }
+                }
+            }
+            message += this.addMessage(msg);
         }
         if (All == 1 || CalcOnly == 1) {
             //

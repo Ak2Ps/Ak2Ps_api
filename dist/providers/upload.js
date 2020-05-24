@@ -1120,13 +1120,13 @@ var Upload = /** @class */ (function (_super) {
                             + rowopen.PRODUCTNUMMER
                             + ' is gereed in Exact, maar is nog niet gereed in AK2 (Aantal open: '
                             + rowopen.AANTALOPEN
-                            + ') ...<br>';
+                            + ') ...<br>\n';
                         _b.label = 21;
                     case 21:
                         iOpen++;
                         return [3 /*break*/, 19];
                     case 22:
-                        msg = tlupdate + ' bewerkingregels ingelezen ...<br>';
+                        msg += tlupdate + ' bewerkingregels ingelezen ...<br>';
                         return [2 /*return*/, msg];
                 }
             });

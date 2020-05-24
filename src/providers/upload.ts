@@ -1090,10 +1090,10 @@ where id = '${rowopen.ID}'`;
                     + rowopen.PRODUCTNUMMER
                     + ' is gereed in Exact, maar is nog niet gereed in AK2 (Aantal open: '
                     + rowopen.AANTALOPEN
-                    + ') ...<br>';
+                    + ') ...<br>\n';
             }
         }
-        msg = tlupdate + ' bewerkingregels ingelezen ...<br>';
+        msg += tlupdate + ' bewerkingregels ingelezen ...<br>';
         return msg;
     }
 
