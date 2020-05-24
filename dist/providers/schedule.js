@@ -238,10 +238,11 @@ var Schedule = /** @class */ (function (_super) {
     };
     Schedule.prototype.waitImport = function (action, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var message, result, data, thisPath, retry, All, Auto, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, tlcycle, bericht;
+            var titel, message, result, data, thisPath, retry, All, Auto, OperationalOnly, BestellingOnly, BewerkingOnly, OrderOnly, CalcOnly, curdir, thisDate, thisFilename, thisTime, tlcycle, bericht;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        titel = '';
                         message = '';
                         result = {
                             success: "true",
@@ -264,25 +265,32 @@ var Schedule = /** @class */ (function (_super) {
                         switch ((action).toLowerCase()) {
                             case "all":
                                 All = 1;
+                                titel = "Alles importeren en doorrekenen";
                                 break;
                             case "operational":
                                 OperationalOnly = 1;
+                                titel = "Operationele gegevens importeren";
                                 break;
                             case "bestelling":
                                 BestellingOnly = 1;
+                                titel = "Bestellingen importeren";
                                 break;
                             case "bewerking":
                                 BewerkingOnly = 1;
+                                titel = "Bewerkingen importeren";
                                 break;
                             case "order":
                                 OrderOnly = 1;
+                                titel = "Orders importeren";
                                 break;
                             case "calc":
                                 CalcOnly = 1;
+                                titel = "Doorrekenen";
                                 break;
                             default:
                                 Auto = 1;
                                 All = 1;
+                                titel = "Automatisch alles importeren en doorrekenen";
                         }
                         //
                         if (Auto == 1) {
@@ -308,11 +316,11 @@ var Schedule = /** @class */ (function (_super) {
                         //
                         this.isRunning = true;
                         //
-                        // cleanLog
+                        // clean
                         //
-                        message += this.addMessage("Logboodschappen ouder dan 5 dagen verwijderen.", res);
+                        message += this.addMessage("Logboodschappen en backups ouder dan 7 dagen verwijderen.", res);
                         thisPath = "/toolbox.php?app=" + config_1.Config.app
-                            + "&action=cleanlog";
+                            + "&action=cleanbackup";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
                     case 1:
                         data = _a.sent();
@@ -930,9 +938,9 @@ var Schedule = /** @class */ (function (_super) {
                         message += this.addMessage("Gereed ...", res);
                         bericht = {};
                         bericht.datum = util_1.Util.Date2Screendatetime(new Date());
-                        bericht.author = config_1.Config.appDir;
+                        bericht.author = config_1.Config.appnaam;
                         bericht.email = "";
-                        bericht.header = util_1.Util.Date2Screendatetime(new Date()) + ": Importeren en/of doorrekenen";
+                        bericht.header = config_1.Config.appnaam + " " + util_1.Util.Date2Screendatetime(new Date()) + ": " + titel;
                         bericht.inhoud = encodeURIComponent(message);
                         bericht.moderated = 1;
                         thisPath = "/bb.php?app=" + config_1.Config.app

@@ -163,6 +163,7 @@ export class Schedule extends Action {
     }
 
     protected async waitImport(action: string, res?: Response) {
+        let titel = '';
         let message = '';
         let result: any = {
             success: "true",
@@ -187,25 +188,32 @@ export class Schedule extends Action {
         switch ((action).toLowerCase()) {
             case "all":
                 All = 1;
+                titel = "Alles importeren en doorrekenen";
                 break;
             case "operational":
                 OperationalOnly = 1;
+                titel = "Operationele gegevens importeren";
                 break;
             case "bestelling":
                 BestellingOnly = 1;
+                titel = "Bestellingen importeren";
                 break;
             case "bewerking":
                 BewerkingOnly = 1;
+                titel = "Bewerkingen importeren";
                 break;
             case "order":
                 OrderOnly = 1;
+                titel = "Orders importeren";
                 break;
             case "calc":
                 CalcOnly = 1;
+                titel = "Doorrekenen";
                 break;
             default:
                 Auto = 1;
                 All = 1;
+                titel = "Automatisch alles importeren en doorrekenen";
         }
         //
         if (Auto == 1) {
@@ -231,11 +239,11 @@ export class Schedule extends Action {
         //
         this.isRunning = true;
         //
-        // cleanLog
+        // clean
         //
-        message += this.addMessage("Logboodschappen ouder dan 5 dagen verwijderen.", res);
+        message += this.addMessage("Logboodschappen en backups ouder dan 7 dagen verwijderen.", res);
         thisPath = `/toolbox.php?app=${Config.app}`
-            + "&action=cleanlog";
+            + "&action=cleanbackup";
         data = await Util.postInfo(thisPath);
         try {
             if (data.items[0].MSG == '') {
@@ -740,9 +748,9 @@ export class Schedule extends Action {
         message += this.addMessage("Gereed ...", res);
         let bericht: any = {};
         bericht.datum = Util.Date2Screendatetime(new Date());
-        bericht.author = Config.appDir;
+        bericht.author = Config.appnaam;
         bericht.email = "";
-        bericht.header = Util.Date2Screendatetime(new Date()) + ": Importeren en/of doorrekenen";
+        bericht.header = Config.appnaam + " " + Util.Date2Screendatetime(new Date()) + ": " + titel;
         bericht.inhoud = encodeURIComponent(message);
         bericht.moderated = 1;
         thisPath = `/bb.php?app=${Config.app}`

@@ -108,9 +108,12 @@ export class Config {
   private static ConfigFile: string;
   //
   public static app: string;
+  public static appnaam: string;
   //
   public static server: string;
   public static serverPort: number;
+  public static appUrl: string;
+  public static appDir: string;
   public static runmode: runmode;
   public static show_error: boolean;
   public static show_warning: boolean;
@@ -125,8 +128,6 @@ export class Config {
   public static ecmpath: string;
   public static bestellingendir: string;
   public static retourendir: string;
-  public static appUrl: string;
-  public static appDir: string;
   //
   public static dbhost: string;
   public static dbuser: string;
@@ -160,11 +161,14 @@ export class Config {
 
   public static saveConfig() {
     let json = {
-      appUrl: Config.appUrl,
-      appDir: Config.appDir,
+      //
+      app: Config.app,
+      appnaam: Config.appnaam,
       //
       server: Config.server,
       serverPort: Config.serverPort,
+      appUrl: Config.appUrl,
+      appDir: Config.appDir,
       runmode: Config.runmode,
       show_error: Config.show_error,
       show_warning: Config.show_warning,
@@ -202,15 +206,12 @@ export class Config {
 
   constructor() {
     //
-    let thisApp = process.argv[2] || 'Tas';
     let json: any = {};
     //
-    if (thisApp.toLowerCase() == "controls") {
+    Config.appnaam = process.argv[2] || 'Tas';
+    if (Config.appnaam.toLowerCase() == "controls") {
       Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/CONTROLS/api.json';
       Config.app = 'C';
-    } else if (thisApp.toLowerCase() == "ak2ps") {
-      Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/AK2PS/api.json';
-      Config.app = 'A';
     } else {
       Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/TAS/api.json';
       Config.app = 'T';
@@ -221,6 +222,8 @@ export class Config {
     // defaults
     //
     if (Config.app == "C") {
+      //
+      Config.appnaam = "Controls";
       //
       Config.server = "localhost";
       Config.serverPort = 9002;
@@ -257,6 +260,8 @@ export class Config {
       Config.exactdir = "/Ak2Ps/Ak2Ps_server/ak2nl/exacttasseron";
       //
     } else {
+      //
+      Config.appnaam = "Sensors";
       //
       Config.server = "localhost";
       Config.serverPort = 9001;
@@ -301,6 +306,8 @@ export class Config {
       //
     }
     //
+    Config.appnaam = json.appnaam || Config.appnaam;
+    //
     Config.appUrl = json.appUrl || Config.appUrl;
     Config.appDir = json.appDir || Config.appDir;
     //
@@ -332,13 +339,6 @@ export class Config {
     Config.bbgmailuser = json.bbgmailuser || Config.bbgmailuser;
     Config.bbgmailpassword = json.bbgmailpassword || Config.bbgmailpassword;
     //
-    // Config.exactinterfaceapp = json.exactinterfaceapp || Config.exactinterfaceapp;
-    // Config.exactdivision = json.exactdivision || Config.exactdivision;
-    // Config.exactclientid = json.exactclientid || Config.exactclientid;
-    // Config.exactclientsecret = json.exactclientsecret || Config.exactclientsecret;
-    // Config.urlRedirect = json.urlRedirect || Config.urlRedirect;
-    // Config.gatePort = json.gatePort || Config.gatePort;
-    //
     Config.exactdir = json.exactdir || Config.exactdir;
     //
     // exact interface naar localhost 9001
@@ -362,7 +362,7 @@ export class Config {
     //
     Config.saveConfig();
     //
-    Logger.info(`Setting Config for ${thisApp}...`);
+    Logger.info(`Setting Config for ${Config.appnaam}...`);
     //
   }
 }

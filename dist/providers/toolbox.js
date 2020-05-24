@@ -1210,24 +1210,77 @@ var Toolbox = /** @class */ (function () {
             });
         });
     };
-    Toolbox.prototype.cleanLog = function (req, res, next) {
+    Toolbox.prototype.cleanBackup = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var sql, rows, connection, result;
+            var sql, msg, rows, connection, saveDate, savedays, tlUnlink, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, db_1.default.waitConnection()];
+                    case 0:
+                        msg = '';
+                        return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
                         connection = _a.sent();
+                        saveDate = new Date();
+                        savedays = 7;
+                        saveDate.setTime(saveDate.getTime() - (24 * 60 * 60 * 1000 * savedays));
+                        tlUnlink = 0;
                         //
-                        sql = "\ndelete from BBMSG \nwhere bb = 'Log' \nand date <  DATE_SUB(SYSDATE(),INTERVAL 5 DAY)";
+                        // Log bbmsg
+                        //
+                        sql = "\ndelete from BBMSG \nwhere bb = 'Log' \nand date <  DATE_SUB(SYSDATE(),INTERVAL " + savedays + " DAY)";
                         return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
                     case 2:
                         rows = _a.sent();
+                        //
+                        // backup/*.sql
+                        //
+                        fs.readdirSync(config_1.Config.appDir + "/backup").map(function (filename) {
+                            if (filename.endsWith(".sql")) {
+                                var path = config_1.Config.appDir + "/backup/" + filename;
+                                var file = fs.statSync(path);
+                                if (file.mtime < saveDate) {
+                                    fs.unlinkSync(path);
+                                    tlUnlink++;
+                                    logger_1.Logger.info("Clean " + path + " ...");
+                                }
+                            }
+                        });
+                        //
+                        // backup/*.7z
+                        //
+                        fs.readdirSync(config_1.Config.appDir + "/backup").map(function (filename) {
+                            if (filename.endsWith(".7z")) {
+                                var path = config_1.Config.appDir + "/backup/" + filename;
+                                var file = fs.statSync(path);
+                                if (file.mtime < saveDate) {
+                                    fs.unlinkSync(path);
+                                    tlUnlink++;
+                                    logger_1.Logger.info("Clean " + path + " ...");
+                                }
+                            }
+                        });
+                        //
+                        // import/*.log
+                        //
+                        fs.readdirSync(config_1.Config.appDir + "/import").map(function (filename) {
+                            if (filename.endsWith(".log")) {
+                                var path = config_1.Config.appDir + "/import/" + filename;
+                                var file = fs.statSync(path);
+                                if (file.mtime < saveDate) {
+                                    fs.unlinkSync(path);
+                                    tlUnlink++;
+                                    logger_1.Logger.info("Clean " + path + " ...");
+                                }
+                            }
+                        });
+                        //
                         connection.release();
+                        //
+                        msg = tlUnlink + " bestanden opgeschoond ...";
                         result = {
                             items: [
                                 {
-                                    MSG: "",
+                                    MSG: msg,
                                 }
                             ]
                         };
@@ -1965,8 +2018,8 @@ var Toolbox = /** @class */ (function () {
                 else if (action == "addlogistiek") {
                     this.addLogistiek(req, res, next);
                 }
-                else if (action == "cleanlog") {
-                    this.cleanLog(req, res, next);
+                else if (action == "cleanbackup") {
+                    this.cleanBackup(req, res, next);
                 }
                 else if (action == "sendvrijmail") {
                     this.sendVrijMail(req, res, next);

@@ -1041,21 +1041,73 @@ where id = '${idbw}'`;
     return;
   }
 
-  private async cleanLog(req: Request, res: Response, next: NextFunction) {
+  private async cleanBackup(req: Request, res: Response, next: NextFunction) {
     let sql: string;
+    let msg = '';
     let rows: any;
     let connection = await db.waitConnection();
+    let saveDate = new Date();
+    let savedays = 7;
+    saveDate.setTime(saveDate.getTime() - (24*60*60*1000*savedays));
+    let tlUnlink = 0;
+    //
+    // Log bbmsg
     //
     sql = `
 delete from BBMSG 
 where bb = 'Log' 
-and date <  DATE_SUB(SYSDATE(),INTERVAL 5 DAY)`;
+and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     rows = await db.waitQuery(connection, sql);
+    //
+    // backup/*.sql
+    //
+    fs.readdirSync(Config.appDir + "/backup").map(filename => {
+      if (filename.endsWith(".sql")) {
+        let path = Config.appDir + "/backup/" + filename;
+        let file = fs.statSync(path);
+        if (file.mtime < saveDate) {
+          fs.unlinkSync(path);
+          tlUnlink ++;
+          Logger.info(`Clean ${path} ...`);
+        }
+      }
+    })
+    //
+    // backup/*.7z
+    //
+    fs.readdirSync(Config.appDir + "/backup").map(filename => {
+      if (filename.endsWith(".7z")) {
+        let path = Config.appDir + "/backup/" + filename;
+        let file = fs.statSync(path);
+        if (file.mtime < saveDate) {
+          fs.unlinkSync(path);
+          tlUnlink ++;
+          Logger.info(`Clean ${path} ...`);
+        }
+      }
+    })
+    //
+    // import/*.log
+    //
+    fs.readdirSync(Config.appDir + "/import").map(filename => {
+      if (filename.endsWith(".log")) {
+        let path = Config.appDir + "/import/" + filename;
+        let file = fs.statSync(path);
+        if (file.mtime < saveDate) {
+          fs.unlinkSync(path);
+          tlUnlink ++;
+          Logger.info(`Clean ${path} ...`);
+        }
+      }
+    })
+    //
     connection.release();
+    //
+    msg = `${tlUnlink} bestanden opgeschoond ...`;
     let result = {
       items: [
         {
-          MSG: "",
+          MSG: msg,
         }]
     };
     res.status(200).send(result);
@@ -1724,8 +1776,8 @@ where naam = '${bewerkingsoort}'`;
       this.setPauze(req, res, next);
     } else if (action == "addlogistiek") {
       this.addLogistiek(req, res, next);
-    } else if (action == "cleanlog") {
-      this.cleanLog(req, res, next);
+    } else if (action == "cleanbackup") {
+      this.cleanBackup(req, res, next);
     } else if (action == "sendvrijmail") {
       this.sendVrijMail(req, res, next);
     } else if (action == "makepdf") {

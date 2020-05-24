@@ -12,16 +12,12 @@ var logger_1 = require("./logger");
 var Config = /** @class */ (function () {
     function Config() {
         //
-        var thisApp = process.argv[2] || 'Tas';
         var json = {};
         //
-        if (thisApp.toLowerCase() == "controls") {
+        Config.appnaam = process.argv[2] || 'Tas';
+        if (Config.appnaam.toLowerCase() == "controls") {
             Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/CONTROLS/api.json';
             Config.app = 'C';
-        }
-        else if (thisApp.toLowerCase() == "ak2ps") {
-            Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/AK2PS/api.json';
-            Config.app = 'A';
         }
         else {
             Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/TAS/api.json';
@@ -33,6 +29,8 @@ var Config = /** @class */ (function () {
         // defaults
         //
         if (Config.app == "C") {
+            //
+            Config.appnaam = "Controls";
             //
             Config.server = "localhost";
             Config.serverPort = 9002;
@@ -70,6 +68,8 @@ var Config = /** @class */ (function () {
             //
         }
         else {
+            //
+            Config.appnaam = "Sensors";
             //
             Config.server = "localhost";
             Config.serverPort = 9001;
@@ -114,6 +114,8 @@ var Config = /** @class */ (function () {
             //
         }
         //
+        Config.appnaam = json.appnaam || Config.appnaam;
+        //
         Config.appUrl = json.appUrl || Config.appUrl;
         Config.appDir = json.appDir || Config.appDir;
         //
@@ -145,13 +147,6 @@ var Config = /** @class */ (function () {
         Config.bbgmailuser = json.bbgmailuser || Config.bbgmailuser;
         Config.bbgmailpassword = json.bbgmailpassword || Config.bbgmailpassword;
         //
-        // Config.exactinterfaceapp = json.exactinterfaceapp || Config.exactinterfaceapp;
-        // Config.exactdivision = json.exactdivision || Config.exactdivision;
-        // Config.exactclientid = json.exactclientid || Config.exactclientid;
-        // Config.exactclientsecret = json.exactclientsecret || Config.exactclientsecret;
-        // Config.urlRedirect = json.urlRedirect || Config.urlRedirect;
-        // Config.gatePort = json.gatePort || Config.gatePort;
-        //
         Config.exactdir = json.exactdir || Config.exactdir;
         //
         // exact interface naar localhost 9001
@@ -176,7 +171,7 @@ var Config = /** @class */ (function () {
         //
         Config.saveConfig();
         //
-        logger_1.Logger.info("Setting Config for " + thisApp + "...");
+        logger_1.Logger.info("Setting Config for " + Config.appnaam + "...");
         //
     }
     //
@@ -194,11 +189,14 @@ var Config = /** @class */ (function () {
     };
     Config.saveConfig = function () {
         var json = {
-            appUrl: Config.appUrl,
-            appDir: Config.appDir,
+            //
+            app: Config.app,
+            appnaam: Config.appnaam,
             //
             server: Config.server,
             serverPort: Config.serverPort,
+            appUrl: Config.appUrl,
+            appDir: Config.appDir,
             runmode: Config.runmode,
             show_error: Config.show_error,
             show_warning: Config.show_warning,
