@@ -27,7 +27,7 @@ export class Logon {
       let wachtwoord = db.fix(req.body.wachtwoord);
       let result: any = null;
       let sql = `
-select '0' as RESULT,NAAM,EMAIL,MENU,TOKEN,'' as DATAURL
+select '0' as RESULT,GEBRUIKER,NAAM,EMAIL,MENU,TOKEN,'' as DATAURL
 from GEBRUIKER
 where upper(gebruiker) = upper('${gebruiker}')
 and aktief = 1

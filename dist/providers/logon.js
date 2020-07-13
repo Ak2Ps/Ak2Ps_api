@@ -70,7 +70,7 @@ var Logon = /** @class */ (function () {
                         gebruiker = db_1.default.fix(req.body.gebruiker);
                         wachtwoord = db_1.default.fix(req.body.wachtwoord);
                         result = null;
-                        sql = "\nselect '0' as RESULT,NAAM,EMAIL,MENU,TOKEN,'' as DATAURL\nfrom GEBRUIKER\nwhere upper(gebruiker) = upper('" + gebruiker + "')\nand aktief = 1\nand ifnull(wachtwoord,'') = '" + wachtwoord + "';";
+                        sql = "\nselect '0' as RESULT,GEBRUIKER,NAAM,EMAIL,MENU,TOKEN,'' as DATAURL\nfrom GEBRUIKER\nwhere upper(gebruiker) = upper('" + gebruiker + "')\nand aktief = 1\nand ifnull(wachtwoord,'') = '" + wachtwoord + "';";
                         return [4 /*yield*/, db_1.default.waitQuerySilent(connection, sql)];
                     case 4:
                         rows = _a.sent();
