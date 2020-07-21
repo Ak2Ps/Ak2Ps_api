@@ -166,7 +166,7 @@ var Config = /** @class */ (function () {
             //
             Config.exactclientid = '{d7cc6408-fb9b-44d6-9034-817f07dcdb27}';
             Config.exactclientsecret = '516VytgFDnj2';
-            Config.urlRedirect = "http://192.168.43.43/:9001/setcode.php";
+            Config.urlRedirect = "http://192.168.43.43:9001/setcode.php";
         }
         //
         Config.saveConfig();
