@@ -73,7 +73,9 @@ var Schedule = /** @class */ (function (_super) {
         var _this = _super.call(this, "Schedule") || this;
         _this.isRunning = false;
         _this.isRunning = false;
-        _this.runTimer();
+        if (config_1.Config.scheduleinterval > 0) {
+            _this.runTimer();
+        }
         return _this;
     }
     Schedule.prototype.addMessage = function (message, res) {

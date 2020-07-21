@@ -920,7 +920,7 @@ BEGIN
     select
     group_concat(
         concat(
-            '<span style=\`white-space:nowrap;color:black;background-color:',BEWERKINGSOORT.kleur,'\`>',
+            '<span style="white-space:nowrap;color:black;background-color:',BEWERKINGSOORT.kleur,'">',
             BEWERKINGSOORT.afkorting,
             '(',
             (select SUM(case when BF.einddatumtijd is null then 0 else BF.bewerkingaantal end) 
@@ -936,8 +936,8 @@ BEGIN
             ')',
             '</span>',
             (select case when MIN(case when BF.einddatumtijd is null then 0 else 1 end) = 0 
-            then concat('<img src=\`' , parAssets , 'bewerkingopen.png\`></img>')
-            else concat('<img src=\`' , parAssets , 'bewerkingclosed.png\`>/img>')
+            then concat('<img src="' , parAssets , 'bewerkingopen.png"></img>')
+            else concat('<img src="' , parAssets , 'bewerkingclosed.png">/img>')
             end
             from BEWERKINGFLOW BF,BEWERKING BW
             where BW.bewerkingsnummer = thisBewerkingsnummer
@@ -981,7 +981,7 @@ BEGIN
     select
     group_concat(
         concat(
-            '<span style=\`white-space:nowrap;color:black;background-color:',BEWERKINGSOORT.kleur,'\`>',
+            '<span style="white-space:nowrap;color:black;background-color:',BEWERKINGSOORT.kleur,'">',
             BEWERKINGSOORT.afkorting,
             '(',
             (select SUM(case when BF.einddatumtijd is null then 0 else BF.bewerkingaantal end) 
@@ -997,8 +997,8 @@ BEGIN
             ')',
             '</span>',
             (select case when MIN(case when BF.einddatumtijd is null then 0 else 1 end) = 0 
-            then concat('<img src=\`' , parAssets , 'bewerkingopen.png\`></img>')
-            else concat('<img src=\`' , parAssets , 'bewerkingclosed.png\`>/img>')
+            then concat('<img src="' , parAssets , 'bewerkingopen.png"></img>')
+            else concat('<img src="' , parAssets , 'bewerkingclosed.png">/img>')
             end
             from BEWERKINGFLOW BF,BEWERKING BW
             where BW.bewerkingsnummer = thisBewerkingsnummer
@@ -1105,9 +1105,9 @@ BEGIN
     select parProductnummer into thisProductnummer;
     select group_concat(
         concat(
-            '<span style=\`white-space:nowrap;color:black;background-color:',
+            '<span style="white-space:nowrap;color:black;background-color:',
             kleur,
-            '\`>',
+            '">',
             afkorting,
             '(', 
             open_aantal,

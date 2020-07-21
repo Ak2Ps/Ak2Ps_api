@@ -18,7 +18,9 @@ export class Schedule extends Action {
             "Schedule"
         )
         this.isRunning = false;
-        this.runTimer();
+        if (Config.scheduleinterval > 0){
+            this.runTimer();
+        }
     }
 
     protected addMessage(message: string, res?: Response): string {
