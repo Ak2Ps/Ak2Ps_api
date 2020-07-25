@@ -262,7 +262,8 @@ export class Exactclient extends Crud {
             res.crudData.refresh = '';
             let thisResponse: any;
             try {
-                res.crudData.code = String(fs.readFileSync(Config.exactdir + "/exactcode.dat"));
+                let thisFilename = Config.exactdir + "/exactcode.dat";
+                res.crudData.code = String(fs.readFileSync(thisFilename));
             } catch (error) {
                 res.crudData.code = '';
                 Logger.error(req, JSON.stringify(error));

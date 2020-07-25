@@ -1103,7 +1103,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     //
     connection.release();
     //
-    msg = `${tlUnlink} bestanden opgeschoond ...`;
+    msg = `${tlUnlink} backups opgeschoond ...`;
     let result = {
       items: [
         {

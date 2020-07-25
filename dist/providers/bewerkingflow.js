@@ -52,6 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Bewerkingflow = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -195,7 +196,7 @@ var Bewerkingflow = /** @class */ (function (_super) {
                     case 3:
                         if (!(addproductflow == 1)) return [3 /*break*/, 5];
                         sqlinsert = "\ninsert into BEWERKINGFLOW\n(Bewerkingsnummer,Bewerkingsoort,Volgnummer,\nBewerkingaantal, Startdatumtijd, Geprint, Plandatumtijd, Einddatumtijd)\nselect \n'" + db_1.default.fix(bewerkingsnummer) + "',\n bewerkingsoort, volgnummer,\n0,null,null,null,null\nfrom PRODUCTFLOW\nwhere productnummer = '" + db_1.default.fix(productnummer) + "'\nand not exists\n(select 1 from BEWERKINGFLOW\nwhere BEWERKINGFLOW.bewerkingsnummer = '" + db_1.default.fix(bewerkingsnummer) + "'\nand BEWERKINGFLOW.bewerkingsoort = PRODUCTFLOW.bewerkingsoort)\nand bewerkingsoort is not null";
-                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlinsert)];
                     case 4:
                         _b.sent();
                         _b.label = 5;

@@ -47,15 +47,21 @@ export class Exactinterface extends Crud {
         let query = db.fixQuery(req.query);
         res.crudConnection = await db.waitConnection();
         //
-        try {
-            if (!fs.existsSync(Config.exactdir)){
-                fs.mkdirSync(Config.exactdir);
-            }
-            fs.writeFileSync(Config.exactdir + "/" + "exactcode.dat",query.code);
-            result = "De verbinding met Exact is gecontroleerd, sluit dit window en voer deel2 uit om verder te gaan ...";
-        } catch (error){
-            result = JSON.stringify(error);
+        if (query.error){
+            result = query.error;
             Logger.error(req,result);
+        } else {
+            try {
+                if (!fs.existsSync(Config.exactdir)){
+                    fs.mkdirSync(Config.exactdir);
+                }
+                let thisFilename = Config.exactdir + "/" + "exactcode.dat";
+                fs.writeFileSync(thisFilename,query.code);
+                result = "De verbinding met Exact is gecontroleerd, sluit dit window en voer deel2 uit om verder te gaan ...";
+            } catch (error){
+                result = JSON.stringify(error);
+                Logger.error(req,result);
+            }
         }
         //
         res.crudConnection.release();

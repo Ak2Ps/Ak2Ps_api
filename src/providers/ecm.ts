@@ -33,7 +33,7 @@ export class Ecm {
         {
           host: thisHost,
           path: thisPath + thisParams,
-          port: Config.ecmport,
+          //port: Config.ecmport,
           method: "GET"
         },
         (request) => {

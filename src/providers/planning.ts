@@ -750,7 +750,7 @@ Eindcontrolenummer =  '${body.EINDCONTROLENUMMER}',
 Productnummer = '${body.PRODUCTNUMMER}',
 Productieaantal = '${body.PRODUCTIEAANTAL}',
 Startaantal = '${body.STARTAANTAL}'
-where id = ''.$id) .''`;
+where id = '${id}'`;
                 await db.waitQuery(res.crudConnection, sql);
                 //
                 sql = `

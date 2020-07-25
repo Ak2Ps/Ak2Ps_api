@@ -12,6 +12,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -51,14 +70,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Exactclient = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -247,7 +260,7 @@ var Exactclient = /** @class */ (function (_super) {
     };
     Exactclient.prototype.doQuery = function (req, res, next, xoptions) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, options, json, xml, tlblok, query, _a, exactstart, outfile, thisUrl, thisResponse, _b, _c, error_1, thisResponse, _d, _e, error_2, sep, thisPathFirst, thisPathGet, retry, thisTs_d, thisData, firstproperty, thisSingleTopic, property;
+            var result, options, json, xml, tlblok, query, _a, exactstart, outfile, thisUrl, thisResponse, thisFilename, _b, _c, error_1, thisResponse, _d, _e, error_2, sep, thisPathFirst, thisPathGet, retry, thisTs_d, thisData, firstproperty, thisSingleTopic, property;
             return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
@@ -314,7 +327,8 @@ var Exactclient = /** @class */ (function (_super) {
                         res.crudData.refresh = '';
                         thisResponse = void 0;
                         try {
-                            res.crudData.code = String(fs.readFileSync(config_1.Config.exactdir + "/exactcode.dat"));
+                            thisFilename = config_1.Config.exactdir + "/exactcode.dat";
+                            res.crudData.code = String(fs.readFileSync(thisFilename));
                         }
                         catch (error) {
                             res.crudData.code = '';

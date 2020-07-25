@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Ecm = void 0;
 var http_1 = __importDefault(require("http"));
 var logger_1 = require("../logger");
 var config_1 = require("../config");
@@ -65,7 +66,7 @@ var Ecm = /** @class */ (function () {
                             thisEcmRequest = http_1.default.request({
                                 host: thisHost,
                                 path: thisPath + thisParams,
-                                port: config_1.Config.ecmport,
+                                //port: Config.ecmport,
                                 method: "GET"
                             }, function (request) {
                                 var responseString = "";

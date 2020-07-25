@@ -52,6 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Planning = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -503,7 +504,7 @@ var Planning = /** @class */ (function (_super) {
                         if (body.BEWERKINGSNUMMER == 'Order') {
                             body.BEWERKINGSNUMMER = '???';
                         }
-                        sql = "\nupdate BEWERKING set\nBewerkingsnummer =  '" + body.BEWERKINGSNUMMER + "',\nStartdatumtijd =screendate2date('" + body.START + "'),\nLijn =  '" + body.LIJN + "',\nPlandatumtijd =screendate2date('" + body.PLAN + "'),\nEinddatumtijd =screendate2date('" + body.EIND + "'),\nEindcontrolenummer =  '" + body.EINDCONTROLENUMMER + "',\nProductnummer = '" + body.PRODUCTNUMMER + "',\nProductieaantal = '" + body.PRODUCTIEAANTAL + "',\nStartaantal = '" + body.STARTAANTAL + "'\nwhere id = ''.$id) .''";
+                        sql = "\nupdate BEWERKING set\nBewerkingsnummer =  '" + body.BEWERKINGSNUMMER + "',\nStartdatumtijd =screendate2date('" + body.START + "'),\nLijn =  '" + body.LIJN + "',\nPlandatumtijd =screendate2date('" + body.PLAN + "'),\nEinddatumtijd =screendate2date('" + body.EIND + "'),\nEindcontrolenummer =  '" + body.EINDCONTROLENUMMER + "',\nProductnummer = '" + body.PRODUCTNUMMER + "',\nProductieaantal = '" + body.PRODUCTIEAANTAL + "',\nStartaantal = '" + body.STARTAANTAL + "'\nwhere id = '" + id + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 6:
                         _b.sent();

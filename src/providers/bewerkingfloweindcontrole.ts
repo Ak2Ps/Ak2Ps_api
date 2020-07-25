@@ -331,7 +331,7 @@ select
 '${row.BEWERKINGSNUMMER}',
 '${row.ID}',
 '${rowproduct.PRODUCTNUMMER}',
-'uitval'
+uitval
 from UITVAL
 where not exists (
 select 1 from BEWERKINGUITVAL where BEWERKINGUITVAL.uitval = UITVAL.UITVAL

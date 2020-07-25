@@ -52,6 +52,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Bewerkingfloweindcontrole = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -328,7 +329,7 @@ var Bewerkingfloweindcontrole = /** @class */ (function (_super) {
                     case 10:
                         rowstijd = _c.sent();
                         irowtijd = 0;
-                        sqluitval = "\ninsert into BEWERKINGUITVAL \n(bewerkingsnummer,bewerkingflowid, productnummer, uitval)\nselect \n'" + row.BEWERKINGSNUMMER + "',\n'" + row.ID + "',\n'" + rowproduct.PRODUCTNUMMER + "',\n'uitval'\nfrom UITVAL\nwhere not exists (\nselect 1 from BEWERKINGUITVAL where BEWERKINGUITVAL.uitval = UITVAL.UITVAL\nand bewerkingflowid = '" + row.ID + "')";
+                        sqluitval = "\ninsert into BEWERKINGUITVAL \n(bewerkingsnummer,bewerkingflowid, productnummer, uitval)\nselect \n'" + row.BEWERKINGSNUMMER + "',\n'" + row.ID + "',\n'" + rowproduct.PRODUCTNUMMER + "',\nuitval\nfrom UITVAL\nwhere not exists (\nselect 1 from BEWERKINGUITVAL where BEWERKINGUITVAL.uitval = UITVAL.UITVAL\nand bewerkingflowid = '" + row.ID + "')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqluitval)];
                     case 11:
                         _c.sent();

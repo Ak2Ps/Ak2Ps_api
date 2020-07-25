@@ -177,7 +177,7 @@ and not exists
 where BEWERKINGFLOW.bewerkingsnummer = '${db.fix(bewerkingsnummer)}'
 and BEWERKINGFLOW.bewerkingsoort = PRODUCTFLOW.bewerkingsoort)
 and bewerkingsoort is not null`;
-      await db.waitQuery(res.crudConnection, sql);
+      await db.waitQuery(res.crudConnection, sqlinsert);
     }
     // Aantallen invullen
     if (bewerkingsnummer != '') {

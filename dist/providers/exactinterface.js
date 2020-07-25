@@ -12,6 +12,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -51,14 +70,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Exactinterface = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -92,7 +105,7 @@ var Exactinterface = /** @class */ (function (_super) {
     }
     Exactinterface.prototype.doSetcode = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, query, _a;
+            var result, query, _a, thisFilename;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -103,16 +116,23 @@ var Exactinterface = /** @class */ (function (_super) {
                     case 1:
                         _a.crudConnection = _b.sent();
                         //
-                        try {
-                            if (!fs.existsSync(config_1.Config.exactdir)) {
-                                fs.mkdirSync(config_1.Config.exactdir);
-                            }
-                            fs.writeFileSync(config_1.Config.exactdir + "/" + "exactcode.dat", query.code);
-                            result = "De verbinding met Exact is gecontroleerd, sluit dit window en voer deel2 uit om verder te gaan ...";
-                        }
-                        catch (error) {
-                            result = JSON.stringify(error);
+                        if (query.error) {
+                            result = query.error;
                             logger_1.Logger.error(req, result);
+                        }
+                        else {
+                            try {
+                                if (!fs.existsSync(config_1.Config.exactdir)) {
+                                    fs.mkdirSync(config_1.Config.exactdir);
+                                }
+                                thisFilename = config_1.Config.exactdir + "/" + "exactcode.dat";
+                                fs.writeFileSync(thisFilename, query.code);
+                                result = "De verbinding met Exact is gecontroleerd, sluit dit window en voer deel2 uit om verder te gaan ...";
+                            }
+                            catch (error) {
+                                result = JSON.stringify(error);
+                                logger_1.Logger.error(req, result);
+                            }
                         }
                         //
                         res.crudConnection.release();

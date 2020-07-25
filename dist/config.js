@@ -1,12 +1,25 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Config = void 0;
 var fs = __importStar(require("fs"));
 var logger_1 = require("./logger");
 var Config = /** @class */ (function () {
@@ -164,8 +177,12 @@ var Config = /** @class */ (function () {
             //
             // exact interface naar 192.168.43.43
             //
+            // Test NodeApiTasseron
             Config.exactclientid = '{d7cc6408-fb9b-44d6-9034-817f07dcdb27}';
             Config.exactclientsecret = '516VytgFDnj2';
+            // productie ImportNaarTasseron
+            // Config.exactclientid = '{d2792cd4-b1af-4e95-92b4-afc560741d8d}';
+            // Config.exactclientsecret = 'tLrwvCG81Dqe';
             Config.urlRedirect = "http://192.168.43.43:9001/setcode.php";
         }
         //

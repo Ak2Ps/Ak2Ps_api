@@ -355,8 +355,12 @@ export class Config {
       //
       // exact interface naar 192.168.43.43
       //
-      Config.exactclientid = '{d7cc6408-fb9b-44d6-9034-817f07dcdb27}'
+      // Test NodeApiTasseron
+      Config.exactclientid = '{d7cc6408-fb9b-44d6-9034-817f07dcdb27}';
       Config.exactclientsecret = '516VytgFDnj2';
+      // productie ImportNaarTasseron
+      // Config.exactclientid = '{d2792cd4-b1af-4e95-92b4-afc560741d8d}';
+      // Config.exactclientsecret = 'tLrwvCG81Dqe';
       Config.urlRedirect = `http://192.168.43.43:9001/setcode.php`;
     }
     //
