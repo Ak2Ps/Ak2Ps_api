@@ -1169,6 +1169,9 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
       },
       footer: {
         height: "10mm"
+      },
+      border: {
+        left: "20mm"
       }
     }
     pdf.create(html, options).toFile(`${targetdir}/${filename}.pdf`, (pdferr, pdfres) => {
