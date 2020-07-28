@@ -97,6 +97,9 @@ where naam = 'PERFORMANCESTART'`;
                 norm = Number(row.GEMIDDELD) * faktor;
                 row.NORM = norm.toFixed(0);
             }
+            if (norm == 0){
+                norm = 1;
+            }
             target = Number((Number(row.TODO) / norm * 60).toFixed(0));
             besteed = Number(row.BESTEED);
             let HHMMNORMAAL = Util.MakeHHMM(target);
@@ -319,9 +322,7 @@ where naam = 'PERFORMANCESTART'`;
         tijd,
         round(sum(startaantal) * 60 / sum(tijd)) as gemiddeld,
         concat (round(sum(startaantal) * 60 / sum(tijd)), ' uit ', aantal_bewerkingen) as uurperformance
-        
         from (
-        
         select 
         productnummer,
         performance,

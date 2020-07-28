@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Retourtermijn = void 0;
 var crud_1 = require("../crud");
 var dict = {
     table: "RETOURTERMIJN",

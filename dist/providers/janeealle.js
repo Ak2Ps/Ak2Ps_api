@@ -49,6 +49,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Janeealle = void 0;
 var util_1 = require("../util");
 var crud_1 = require("../crud");
 var dict = {
