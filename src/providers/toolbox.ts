@@ -141,7 +141,6 @@ WHERE ORDERNUMMER = '${ordernummer}'`;
       ordernummer = String(id).split("_")[0];
       productnummer = String(id).split("_")[1];
     } catch (error) {
-
     }
     let sql = `
 select 
@@ -501,11 +500,19 @@ WHERE bewerkingsnummer = '${req.body.bewerkingsnummer}'`;
   }
 
   private async saveVraagproductOpmerking(req: Request, res: Response, next: NextFunction) {
+    let id = req.body.id;
+    let ordernummer = '';
+    let productnummer = '';
+    try {
+      ordernummer = String(id).split("_")[0];
+      productnummer = String(id).split("_")[1];
+    } catch (error) {
+    }
     let sql = `
 update PRODUCTVRAAG
 set opmerking = '${req.body.opmerking}'
-WHERE ordernummer = '${req.body.ordernummer}'
-AND productnummer = '${req.body.productnummer}'`;
+WHERE ordernummer = '${ordernummer}'
+AND productnummer = '${productnummer}'`;
     let connection = await db.waitConnection();
     let rows = await db.waitQuery(connection, sql);
     connection.release();

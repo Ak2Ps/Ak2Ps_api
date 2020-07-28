@@ -632,11 +632,20 @@ var Toolbox = /** @class */ (function () {
     };
     Toolbox.prototype.saveVraagproductOpmerking = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var sql, connection, rows, result;
+            var id, ordernummer, productnummer, sql, connection, rows, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        sql = "\nupdate PRODUCTVRAAG\nset opmerking = '" + req.body.opmerking + "'\nWHERE ordernummer = '" + req.body.ordernummer + "'\nAND productnummer = '" + req.body.productnummer + "'";
+                        id = req.body.id;
+                        ordernummer = '';
+                        productnummer = '';
+                        try {
+                            ordernummer = String(id).split("_")[0];
+                            productnummer = String(id).split("_")[1];
+                        }
+                        catch (error) {
+                        }
+                        sql = "\nupdate PRODUCTVRAAG\nset opmerking = '" + req.body.opmerking + "'\nWHERE ordernummer = '" + ordernummer + "'\nAND productnummer = '" + productnummer + "'";
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
                         connection = _a.sent();
