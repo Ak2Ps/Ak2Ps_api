@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Router = void 0;
 var util_1 = require("./util");
 var logger_1 = require("./logger");
 var config_1 = require("./config");
