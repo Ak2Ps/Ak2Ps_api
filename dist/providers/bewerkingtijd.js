@@ -140,7 +140,7 @@ var Bewerkingtijd = /** @class */ (function (_super) {
                         //
                         _a.crudConnection = _b.sent();
                         //
-                        sql = "\nupdate BEWERKINGTIJD set'\nBewerkingsnummer = '" + db_1.default.fix(req.body.BEWERKINGSNUMMER || '') + "',\nBewerkingflowid = '" + db_1.default.fix(req.body.BEWERKINGFLOWID || '') + "',\nProductnummer = '" + db_1.default.fix(req.body.PRODUCTNUMMER || '') + "',\nAantalGemaakt = '" + db_1.default.fix(req.body.AANTALGEMAAKT || '') + "',\nAantalUitval = '" + db_1.default.fix(req.body.AANTALUITVAL || '') + "',";
+                        sql = "\nupdate BEWERKINGTIJD set\nBewerkingsnummer = '" + db_1.default.fix(req.body.BEWERKINGSNUMMER || '') + "',\nBewerkingflowid = '" + db_1.default.fix(req.body.BEWERKINGFLOWID || '') + "',\nProductnummer = '" + db_1.default.fix(req.body.PRODUCTNUMMER || '') + "',\nAantalGemaakt = '" + db_1.default.fix(req.body.AANTALGEMAAKT || '') + "',\nAantalUitval = '" + db_1.default.fix(req.body.AANTALUITVAL || '') + "',";
                         if (req.body.GEBRUIKER == '') {
                             sql += "\nGebruiker = '" + req.ak2_user + "',";
                         }

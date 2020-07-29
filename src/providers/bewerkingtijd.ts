@@ -100,7 +100,7 @@ order by Bewerkingsnummer,Productnummer,Gebruiker,startdatumtijd`;
         res.crudConnection = await db.waitConnection();
         //
         sql = `
-update BEWERKINGTIJD set'
+update BEWERKINGTIJD set
 Bewerkingsnummer = '${db.fix(req.body.BEWERKINGSNUMMER || '')}',
 Bewerkingflowid = '${db.fix(req.body.BEWERKINGFLOWID || '')}',
 Productnummer = '${db.fix(req.body.PRODUCTNUMMER || '')}',
