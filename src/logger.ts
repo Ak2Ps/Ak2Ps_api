@@ -73,8 +73,6 @@ export class Logger {
     if (Config.show_sql) {
       console.log(`\n<sql>\n${message}\n</sql>\n`);
       this.add(`\n<sql>\n${message}\n</sql>\n`);
-    } else if (Config.runmode == runmode.test) {
-      this.add(`\n<sql>\n${message}\n</sql>\n`);
     }
   }
 
