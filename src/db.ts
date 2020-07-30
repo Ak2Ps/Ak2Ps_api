@@ -149,7 +149,7 @@ class Db {
           }
           value = yyyy + "-" + mm + "-" + dd + " " + hh + ":" + mi + ":" + ss;
         } catch (error) {
-          Logger.error(<Request><unknown>undefined, "error: " + JSON.stringify(error, null, 2));
+          Logger.error(<Request><unknown>undefined, "fixRow error: " + JSON.stringify(error, null, 2));
           Logger.error(<Request><unknown>undefined, `key: [${key}=${String(value)}]`);
           Logger.error(<Request><unknown>undefined, 'row: ' + JSON.stringify(row, null, 2));
         }

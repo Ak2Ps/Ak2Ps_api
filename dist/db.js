@@ -147,7 +147,7 @@ var Db = /** @class */ (function () {
                     value = yyyy + "-" + mm + "-" + dd + " " + hh + ":" + mi + ":" + ss;
                 }
                 catch (error) {
-                    logger_1.Logger.error(undefined, "error: " + JSON.stringify(error, null, 2));
+                    logger_1.Logger.error(undefined, "fixRow error: " + JSON.stringify(error, null, 2));
                     logger_1.Logger.error(undefined, "key: [" + key + "=" + String(value) + "]");
                     logger_1.Logger.error(undefined, 'row: ' + JSON.stringify(row, null, 2));
                 }

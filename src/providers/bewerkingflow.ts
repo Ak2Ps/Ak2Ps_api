@@ -270,11 +270,11 @@ as layout,
 from BEWERKINGTIJD 
 where BEWERKINGTIJD.bewerkingflowid = BEWERKINGFLOW.id) 
 as besteed,
-(select concat(
+(select cast(concat(
 sum(case when aantalAfkeur is null then 0 else aantalAfkeur end),
 '/',
 sum(case when aantalreparatie is null then 0 else aantalreparatie end)
-)
+) as char(1000))
 from BEWERKINGUITVAL 
 where BEWERKINGUITVAL.bewerkingflowid = BEWERKINGFLOW.id) 
 as registreeruitval,
