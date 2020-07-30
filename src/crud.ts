@@ -275,7 +275,7 @@ where `;
     sql = `update ${options?.table} set`;
     sql += this.addUpdateFields(req, res, next, options?.update?.fields);
     sql += `
-where id = ${db.fix(req.body.ID)}`;
+where id = '${db.fix(req.body.ID)}'`;
     rows = await db.waitQuery(res.crudConnection, sql);
     //
     // en daarna de afterupdate
@@ -296,7 +296,7 @@ where id = ${db.fix(req.body.ID)}`;
     let id = db.getDataId(req);
     let sql = `
 delete from ${options?.table} 
-where id = ${id};`;
+where id = '${id}';`;
     return sql;
   }
 

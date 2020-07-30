@@ -331,7 +331,7 @@ var Crud = /** @class */ (function () {
                         //
                         sql = "update " + (options === null || options === void 0 ? void 0 : options.table) + " set";
                         sql += this.addUpdateFields(req, res, next, (_c = options === null || options === void 0 ? void 0 : options.update) === null || _c === void 0 ? void 0 : _c.fields);
-                        sql += "\nwhere id = " + db_1.default.fix(req.body.ID);
+                        sql += "\nwhere id = '" + db_1.default.fix(req.body.ID) + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 9:
                         rows = _e.sent();
@@ -363,7 +363,7 @@ var Crud = /** @class */ (function () {
     };
     Crud.prototype.createDelete = function (req, res, next, options) {
         var id = db_1.default.getDataId(req);
-        var sql = "\ndelete from " + (options === null || options === void 0 ? void 0 : options.table) + " \nwhere id = " + id + ";";
+        var sql = "\ndelete from " + (options === null || options === void 0 ? void 0 : options.table) + " \nwhere id = '" + id + "';";
         return sql;
     };
     Crud.prototype.doCheckDelete = function (req, res, next, options) {
