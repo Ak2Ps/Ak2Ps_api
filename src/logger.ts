@@ -47,7 +47,8 @@ export class Logger {
       this.add(thisMessage);
       if (req !== undefined) {
         try {
-          fs.appendFileSync(`${Config.appDir}/log/test.log`, `${thisPath} error ...\n`);
+          fs.appendFileSync(`${Config.appDir}/log/error.log`, `${thisPath} error:\n`);
+          fs.appendFileSync(`${Config.appDir}/log/error.log`, `${thisMessage}\n`);
         } catch (error) {
           console.log(error);
         }
