@@ -22,6 +22,15 @@ var Db = /** @class */ (function () {
     Db.prototype.waitConnection = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
+            var thisLimit = _this.pool.config.connectionLimit;
+            var thisCount = _this.pool._allConnections.length;
+            if (thisLimit - thisCount <= 0) {
+                var thisMessage_1 = "Connectionpool overflow: " + thisCount + " / " + thisLimit;
+                console.log(thisMessage_1);
+                logger_1.Logger.error(thisMessage_1);
+            }
+            var thisMessage = "Connectionpool usage: " + thisCount + " / " + thisLimit;
+            logger_1.Logger.info(thisMessage);
             _this.pool.getConnection(function (err, connection) {
                 if (err) {
                     logger_1.Logger.error(JSON.stringify(err));

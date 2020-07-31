@@ -299,6 +299,7 @@ var Toolbox = /** @class */ (function () {
                             ]
                         };
                         res.status(200).send(result);
+                        connection.release();
                         return [2 /*return*/];
                 }
             });

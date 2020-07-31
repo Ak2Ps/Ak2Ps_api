@@ -1,11 +1,11 @@
 import mysql, { PoolConnection } from "mysql";
 import { Request, Response, NextFunction } from "express";
 import { Util } from "./util";
-import { Config } from "./config";
+import { Config } from "./config"; 
 import { Logger } from "./logger";
 
 class Db {
-  private pool: mysql.Pool;
+  private pool: any;
 
   constructor() {
     this.pool = <mysql.Pool><unknown>undefined;
@@ -24,6 +24,15 @@ class Db {
 
   public waitConnection(): Promise<PoolConnection> {
     return new Promise((resolve, reject) => {
+      let thisLimit:number = this.pool.config.connectionLimit;
+      let thisCount:number = this.pool._allConnections.length;
+      if (thisLimit - thisCount <= 0){
+        let thisMessage = `Connectionpool overflow: ${thisCount} / ${thisLimit}`;
+        console.log(thisMessage);
+        Logger.error(thisMessage);
+      }
+      let thisMessage = `Connectionpool usage: ${thisCount} / ${thisLimit}`;
+      Logger.info(thisMessage);
       this.pool.getConnection((err: mysql.MysqlError, connection: mysql.PoolConnection) => {
         if (err) {
           Logger.error(JSON.stringify(err));

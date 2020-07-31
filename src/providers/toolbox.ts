@@ -245,6 +245,7 @@ and BEWERKING.bewerkingsnummer = 'BEWERKINGFLOW.bewerkingsnummer'`;
       ]
     };
     res.status(200).send(result);
+    connection.release();
     return;
   }
 
