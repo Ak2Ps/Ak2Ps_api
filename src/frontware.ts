@@ -25,6 +25,8 @@ export class Frontware {
 
     } else if (req.path.indexOf("/getcode")==0){
 
+    } else if (req.path.indexOf("/status")==0){
+
     } else {
       if (req.ak2_app != Config.app) {
         res.status(401).send("Unauthorized");

@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Router = void 0;
 var util_1 = require("./util");
 var logger_1 = require("./logger");
 var config_1 = require("./config");
 //
 var template_1 = require("./providers/template");
 var ecmtester_1 = require("./providers/ecmtester");
+var status_1 = require("./providers/status");
 var patch_1 = require("./providers/patch");
 var createcomparesql_1 = require("./providers/createcomparesql");
 var schedule_1 = require("./providers/schedule");
@@ -204,6 +204,10 @@ var Router = /** @class */ (function () {
         this.app.route('/ecmtester.php').all(function (req, res, next) {
             var ecmtester = new ecmtester_1.Ecmtester();
             ecmtester.routes(req, res, next);
+        });
+        this.app.route('/status.php').all(function (req, res, next) {
+            var status = new status_1.Status();
+            status.routes(req, res, next);
         });
         this.app.route('/patch.php').all(function (req, res, next) {
             var patch = new patch_1.Patch();

@@ -27,7 +27,7 @@ var Db = /** @class */ (function () {
             var thisFree = _this.pool._freeConnections.length;
             var result = {
                 max: thisLimit,
-                create: thisCount,
+                created: thisCount,
                 free: thisFree,
             };
             var thisMessage = "Connectionpool max: " + thisLimit + ", created: " + thisCount + " free: " + thisFree;

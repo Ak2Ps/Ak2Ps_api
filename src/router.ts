@@ -7,6 +7,7 @@ import { Config } from './config';
 //
 import { Template } from "./providers/template";
 import { Ecmtester } from "./providers/ecmtester";
+import { Status } from "./providers/status";
 import { Patch } from "./providers/patch";
 import { CreateCompareSql } from "./providers/createcomparesql";
 import { Schedule } from "./providers/schedule";
@@ -287,6 +288,10 @@ export class Router {
     this.app.route('/ecmtester.php').all((req, res, next) => {
       let ecmtester = new Ecmtester();
       ecmtester.routes(req, res, next)
+    });
+    this.app.route('/status.php').all((req, res, next) => {
+      let status = new Status();
+      status.routes(req, res, next)
     });
     this.app.route('/patch.php').all((req, res, next) => {
       let patch = new Patch();

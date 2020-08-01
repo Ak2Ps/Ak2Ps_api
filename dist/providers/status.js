@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -48,58 +35,58 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = require("../util");
-var crud_1 = require("../crud");
-var dict = {
-    key: [
-        {
-            body: "VOLGNR",
-            sql: "VOLGNR"
-        }
-    ],
-    table: "\n(\nselect 1 as VOLGNR, 'Ja' as VALUE from DUAL\nunion\nselect 2 as VOLGNR, 'Nee' as VALUE from DUAL\n) JaNee",
-    select: {
-        orderby: "VOLGNR",
-        where: [],
-        fields: [
-            {
-                row: "VALUE",
-                sql: "VALUE"
-            }
-        ]
-    }
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var Janee = /** @class */ (function (_super) {
-    __extends(Janee, _super);
-    function Janee() {
-        return _super.call(this, dict) || this;
+Object.defineProperty(exports, "__esModule", { value: true });
+var db_1 = __importDefault(require("../db"));
+var util_1 = require("../util");
+var logger_1 = require("../logger");
+var Status = /** @class */ (function () {
+    function Status() {
+        logger_1.Logger.info("Creating Status");
     }
-    Janee.prototype.doDelete = function (req, res, next, options) {
+    Status.prototype.getStatus = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
+            var connection, poolstatus, result;
             return __generator(this, function (_a) {
-                util_1.Util.unknownOperation(req, res, next);
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db_1.default.waitConnection()];
+                    case 1:
+                        connection = _a.sent();
+                        return [4 /*yield*/, db_1.default.waitPoolstatus()];
+                    case 2:
+                        poolstatus = _a.sent();
+                        result = {
+                            poolstatus: poolstatus
+                        };
+                        connection.release();
+                        res.status(200).send(result);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Status.prototype.routes = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var method, action;
+            return __generator(this, function (_a) {
+                method = req.method;
+                action = util_1.Util.getLast(req.query.action);
+                //
+                logger_1.Logger.request(req);
+                //
+                if (action == "get") {
+                    this.getStatus(req, res, next);
+                }
+                else {
+                    util_1.Util.unknownOperation(req, res, next);
+                }
                 return [2 /*return*/];
             });
         });
     };
-    Janee.prototype.doQuery = function (req, res, next, options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                util_1.Util.unknownOperation(req, res, next);
-                return [2 /*return*/];
-            });
-        });
-    };
-    Janee.prototype.doUpdate = function (req, res, next, options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                util_1.Util.unknownOperation(req, res, next);
-                return [2 /*return*/];
-            });
-        });
-    };
-    return Janee;
-}(crud_1.Crud));
-exports.Janee = Janee;
-//# sourceMappingURL=janee.js.map
+    return Status;
+}());
+exports.Status = Status;
+//# sourceMappingURL=status.js.map

@@ -29,7 +29,7 @@ class Db {
       let thisFree: number = this.pool._freeConnections.length;
       let result = {
         max: thisLimit,
-        create: thisCount,
+        created: thisCount,
         free: thisFree,
       }
       let thisMessage = `Connectionpool max: ${thisLimit}, created: ${thisCount} free: ${thisFree}`;

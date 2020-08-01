@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Frontware = void 0;
 var config_1 = require("./config");
 var Frontware = /** @class */ (function () {
     function Frontware() {
@@ -26,6 +25,8 @@ var Frontware = /** @class */ (function () {
         else if (req.path.indexOf("/setcode") == 0) {
         }
         else if (req.path.indexOf("/getcode") == 0) {
+        }
+        else if (req.path.indexOf("/status") == 0) {
         }
         else {
             if (req.ak2_app != config_1.Config.app) {
