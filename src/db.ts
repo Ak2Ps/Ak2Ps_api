@@ -1,7 +1,7 @@
 import mysql, { PoolConnection } from "mysql";
 import { Request, Response, NextFunction } from "express";
 import { Util } from "./util";
-import { Config } from "./config"; 
+import { Config } from "./config";
 import { Logger } from "./logger";
 
 class Db {
@@ -22,17 +22,32 @@ class Db {
 
   }
 
+  public waitPoolstatus(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let thisLimit: number = this.pool.config.connectionLimit;
+      let thisCount: number = this.pool._allConnections.length;
+      let thisFree: number = this.pool._freeConnections.length;
+      let result = {
+        max: thisLimit,
+        create: thisCount,
+        free: thisFree,
+      }
+      let thisMessage = `Connectionpool max: ${thisLimit}, created: ${thisCount} free: ${thisFree}`;
+      Logger.info(thisMessage);
+      resolve(result);
+    });
+  }
+
   public waitConnection(): Promise<PoolConnection> {
     return new Promise((resolve, reject) => {
-      let thisLimit:number = this.pool.config.connectionLimit;
-      let thisCount:number = this.pool._allConnections.length;
-      if (thisLimit - thisCount <= 0){
-        let thisMessage = `Connectionpool overflow: ${thisCount} / ${thisLimit}`;
+      let thisLimit: number = this.pool.config.connectionLimit;
+      let thisCount: number = this.pool._allConnections.length;
+      let thisFree: number = this.pool._freeConnections.length;
+      if (thisFree <= 0) {
+        let thisMessage = `Connectionpool wait: max: ${thisLimit}, created: ${thisCount} free: ${thisFree}`;
         console.log(thisMessage);
         Logger.error(thisMessage);
       }
-      let thisMessage = `Connectionpool usage: ${thisCount} / ${thisLimit}`;
-      Logger.info(thisMessage);
       this.pool.getConnection((err: mysql.MysqlError, connection: mysql.PoolConnection) => {
         if (err) {
           Logger.error(JSON.stringify(err));

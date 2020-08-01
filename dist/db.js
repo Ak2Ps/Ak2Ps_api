@@ -19,18 +19,33 @@ var Db = /** @class */ (function () {
             multipleStatements: true
         });
     };
+    Db.prototype.waitPoolstatus = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var thisLimit = _this.pool.config.connectionLimit;
+            var thisCount = _this.pool._allConnections.length;
+            var thisFree = _this.pool._freeConnections.length;
+            var result = {
+                max: thisLimit,
+                create: thisCount,
+                free: thisFree,
+            };
+            var thisMessage = "Connectionpool max: " + thisLimit + ", created: " + thisCount + " free: " + thisFree;
+            logger_1.Logger.info(thisMessage);
+            resolve(result);
+        });
+    };
     Db.prototype.waitConnection = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var thisLimit = _this.pool.config.connectionLimit;
             var thisCount = _this.pool._allConnections.length;
-            if (thisLimit - thisCount <= 0) {
-                var thisMessage_1 = "Connectionpool overflow: " + thisCount + " / " + thisLimit;
-                console.log(thisMessage_1);
-                logger_1.Logger.error(thisMessage_1);
+            var thisFree = _this.pool._freeConnections.length;
+            if (thisFree <= 0) {
+                var thisMessage = "Connectionpool wait: max: " + thisLimit + ", created: " + thisCount + " free: " + thisFree;
+                console.log(thisMessage);
+                logger_1.Logger.error(thisMessage);
             }
-            var thisMessage = "Connectionpool usage: " + thisCount + " / " + thisLimit;
-            logger_1.Logger.info(thisMessage);
             _this.pool.getConnection(function (err, connection) {
                 if (err) {
                     logger_1.Logger.error(JSON.stringify(err));
