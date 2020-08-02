@@ -43,8 +43,8 @@ class Db {
       let thisLimit: number = this.pool.config.connectionLimit;
       let thisCount: number = this.pool._allConnections.length;
       let thisFree: number = this.pool._freeConnections.length;
-      if (thisFree <= 0) {
-        let thisMessage = `Connectionpool wait: max: ${thisLimit}, created: ${thisCount} free: ${thisFree}`;
+      if (thisCount != 0 && thisFree <= 0) {
+        let thisMessage = `Connectionpool overflow: max: ${thisLimit}, created: ${thisCount} free: ${thisFree}`;
         console.log(thisMessage);
         Logger.error(thisMessage);
       }

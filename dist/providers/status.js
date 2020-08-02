@@ -38,29 +38,67 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
 var logger_1 = require("../logger");
+var config_1 = require("../config");
+var fs = __importStar(require("fs"));
 var Status = /** @class */ (function () {
     function Status() {
         logger_1.Logger.info("Creating Status");
     }
     Status.prototype.getStatus = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var connection, poolstatus, result;
+            var poolstatus, connection, thisParam, thisError, thisErrorName, thisErrorLines, iLine, thisLog, thisApiName, thisApiLines, iLine, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, db_1.default.waitConnection()];
+                    case 0: return [4 /*yield*/, db_1.default.waitPoolstatus()
+                        //
+                        // haal versie
+                        //
+                    ];
                     case 1:
-                        connection = _a.sent();
-                        return [4 /*yield*/, db_1.default.waitPoolstatus()];
-                    case 2:
                         poolstatus = _a.sent();
-                        result = {
-                            poolstatus: poolstatus
-                        };
+                        return [4 /*yield*/, db_1.default.waitConnection()];
+                    case 2:
+                        connection = _a.sent();
+                        return [4 /*yield*/, util_1.Util.waitParam(req, res, next, "VERSIE")];
+                    case 3:
+                        thisParam = _a.sent();
+                        thisError = [];
+                        thisErrorName = config_1.Config.appDir + "/log/error.log";
+                        thisErrorLines = String(fs.readFileSync(thisErrorName)).split("\n");
+                        for (iLine = thisErrorLines.length - 50; iLine < thisErrorLines.length; iLine++) {
+                            if (iLine >= 0) {
+                                thisError.push(String(iLine) + ": " + thisErrorLines[iLine]);
+                            }
+                        }
+                        thisLog = [];
+                        thisApiName = config_1.Config.appDir + "/log/api.log";
+                        thisApiLines = String(fs.readFileSync(thisApiName)).split("\n");
+                        for (iLine = thisApiLines.length - 50; iLine < thisApiLines.length; iLine++) {
+                            if (iLine >= 0) {
+                                thisLog.push(String(iLine) + ": " + thisApiLines[iLine]);
+                            }
+                        }
+                        //
+                        //
+                        //
                         connection.release();
+                        result = {
+                            poolstatus: poolstatus,
+                            versie: thisParam,
+                            error: thisError,
+                            log: thisLog,
+                        };
                         res.status(200).send(result);
                         return [2 /*return*/];
                 }
