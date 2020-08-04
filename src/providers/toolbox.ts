@@ -953,6 +953,19 @@ where naam = 'PAUZEEIND';`;
     let lijn = req.query.lijn || '';
     let datum = req.query.datum || '';
     //
+    switch (productnummer) {
+      case 'TSA00A7':
+        break;
+      case 'TSA00BD':
+        break;
+      case 'TSDS800':
+        break;
+      case 'TSD20D3':
+        break;
+      default:
+        break;
+    }
+    //
     sql = `
 select * from BEWERKINGSOORT
 where layout = 'rapBEWERKINGFLOWPICK.php'
@@ -987,7 +1000,7 @@ and BEWERKINGSOORT.layout = 'rapBEWERKINGFLOWPICK.php')`;
           row.STARTAANTAL = '0';
         }
         //
-        // Bestaat er een productflowregel voor?
+        // Bestaat er een logistiek productflowregel voor?
         //
         sql = `
 select *,
@@ -1056,7 +1069,7 @@ where id = '${idbw}'`;
     let connection = await db.waitConnection();
     let saveDate = new Date();
     let savedays = 7;
-    saveDate.setTime(saveDate.getTime() - (24*60*60*1000*savedays));
+    saveDate.setTime(saveDate.getTime() - (24 * 60 * 60 * 1000 * savedays));
     let tlUnlink = 0;
     //
     // Log bbmsg
@@ -1075,7 +1088,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         let file = fs.statSync(path);
         if (file.mtime < saveDate) {
           fs.unlinkSync(path);
-          tlUnlink ++;
+          tlUnlink++;
           Logger.info(`Clean ${path} ...`);
         }
       }
@@ -1089,7 +1102,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         let file = fs.statSync(path);
         if (file.mtime < saveDate) {
           fs.unlinkSync(path);
-          tlUnlink ++;
+          tlUnlink++;
           Logger.info(`Clean ${path} ...`);
         }
       }
@@ -1103,7 +1116,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         let file = fs.statSync(path);
         if (file.mtime < saveDate) {
           fs.unlinkSync(path);
-          tlUnlink ++;
+          tlUnlink++;
           Logger.info(`Clean ${path} ...`);
         }
       }

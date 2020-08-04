@@ -262,17 +262,21 @@ export class Schedule extends Action {
             // getLEVERANCIER
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen leveranciers.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=Accounts"
-                + "&outfile=import/exactaccounts.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen leveranciers.", res);
+            } else {
+                message += this.addMessage("Ophalen leveranciers.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=Accounts"
+                    + "&outfile=import/exactaccounts.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Leveranciers inlezen.", res);
@@ -291,17 +295,21 @@ export class Schedule extends Action {
             // getKLANT
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen klanten.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=Accounts"
-                + "&outfile=import/exactaccounts.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen klanten.", res);
+            } else {
+                message += this.addMessage("Ophalen klanten.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=Accounts"
+                    + "&outfile=import/exactaccounts.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Klanten inlezen.", res);
@@ -320,17 +328,21 @@ export class Schedule extends Action {
             // getPRODUCT
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen producten.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=Items"
-                + "&outfile=import/exactitems.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen producten.", res);
+            } else {
+                message += this.addMessage("Ophalen producten.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=Items"
+                    + "&outfile=import/exactitems.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Producten inlezen.", res);
@@ -349,18 +361,22 @@ export class Schedule extends Action {
             // getSTUKLIJST
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen stuklijsten.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=ManufacturedBillofMaterials"
-                + "&Params_Status=30,20,10"
-                + "&outfile=import/exactmbom.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen stuklijsten.", res);
+            } else {
+                message += this.addMessage("Ophalen stuklijsten.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=ManufacturedBillofMaterials"
+                    + "&Params_Status=30,20,10"
+                    + "&outfile=import/exactmbom.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Stuklijsten inlezen.", res);
@@ -379,18 +395,22 @@ export class Schedule extends Action {
             // getLEVERANCIERPRODUCT
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen leverancierproductnummers.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=PurchaseOrders"
-                + "&Params_Status=10,20"
-                + "&outfile=import/exactpurchase.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen leverancierproductnummers.", res);
+            } else {
+                message += this.addMessage("Ophalen leverancierproductnummers.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=PurchaseOrders"
+                    + "&Params_Status=10,20"
+                    + "&outfile=import/exactpurchase.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Leverancierproductnummers inlezen.", res);
@@ -409,17 +429,21 @@ export class Schedule extends Action {
             // getVOORRAAD
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen voorraad.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=StockPositions"
-                + "&outfile=import/exactstock.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen voorraad.", res);
+            } else {
+                message += this.addMessage("Ophalen voorraad.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=StockPositions"
+                    + "&outfile=import/exactstock.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Voorraad inlezen.", res);
@@ -438,18 +462,22 @@ export class Schedule extends Action {
             // getBESTELLING
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen bestellingen.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=PurchaseOrders"
-                + "&Params_Status=10,20"
-                + "&outfile=import/exactpurchase.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen bestellingen.", res);
+            } else {
+                message += this.addMessage("Ophalen bestellingen.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=PurchaseOrders"
+                    + "&Params_Status=10,20"
+                    + "&outfile=import/exactpurchase.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Bestellingen inlezen.", res);
@@ -468,17 +496,21 @@ export class Schedule extends Action {
             // getRECEIPT
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen ontvangsten.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=Receipts"
-                + "&outfile=import/exactreceipt.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen ontvangsten.", res);
+            } else {
+                message += this.addMessage("Ophalen ontvangsten.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=Receipts"
+                    + "&outfile=import/exactreceipt.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Ontvangsten inlezen.", res);
@@ -497,18 +529,22 @@ export class Schedule extends Action {
             // getORDER
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen orders.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=SalesOrders"
-                + "&Params_Status=12,20"
-                + "&outfile=import/exactsales.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen orders.", res);
+            } else {
+                message += this.addMessage("Ophalen orders.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=SalesOrders"
+                    + "&Params_Status=12,20"
+                    + "&outfile=import/exactsales.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Orders inlezen.", res);
@@ -527,17 +563,21 @@ export class Schedule extends Action {
             // getDELIVERY
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen afleveringen.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=Deliveries"
-                + "&outfile=import/exactdeliveries.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen afleveringen.", res);
+            } else {
+                message += this.addMessage("Ophalen afleveringen.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=Deliveries"
+                    + "&outfile=import/exactdeliveries.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Afleveringen inlezen.", res);
@@ -556,18 +596,22 @@ export class Schedule extends Action {
             // getBEWERK
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen bewerkingen.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=ShopOrders"
-                + "&Params_Status=20,10"
-                + "&outfile=import/exactshoporders.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen bewerkingen.", res);
+            } else {
+                message += this.addMessage("Ophalen bewerkingen.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=ShopOrders"
+                    + "&Params_Status=20,10"
+                    + "&outfile=import/exactshoporders.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Bewerkingen inlezen.", res);
@@ -586,17 +630,21 @@ export class Schedule extends Action {
             // getBEWERKONTVANGST
             //
             message += this.addMessage("", res);
-            message += this.addMessage("Ophalen bewerkingontvangsten.", res);
-            thisPath = `/exactclient.php?app=${Config.app}`
-                + "&action=GET"
-                + "&type=XML"
-                + "&topic=ShopOrderStockReceipts"
-                + "&outfile=import/exactshoporderreceipts.dat";
-            data = await Util.getInfo(thisPath);
-            try {
-                message += this.addMessage(data.msg, res);
-            } catch (error) {
-                message += this.addMessage(JSON.stringify(error), res);
+            if (Config.exactinterfaceapp == "false"){
+                message += this.addMessage("Skip Ophalen bewerkingontvangsten.", res);
+            } else {
+                message += this.addMessage("Ophalen bewerkingontvangsten.", res);
+                thisPath = `/exactclient.php?app=${Config.app}`
+                    + "&action=GET"
+                    + "&type=XML"
+                    + "&topic=ShopOrderStockReceipts"
+                    + "&outfile=import/exactshoporderreceipts.dat";
+                data = await Util.getInfo(thisPath);
+                try {
+                    message += this.addMessage(data.msg, res);
+                } catch (error) {
+                    message += this.addMessage(JSON.stringify(error), res);
+                }
             }
             //
             message += this.addMessage("Bewerkingontvangsten inlezen.", res);

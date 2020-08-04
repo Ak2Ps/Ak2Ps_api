@@ -131,6 +131,15 @@ and volgnummer = -1`;
     //
     let where = '';
     let sql = '';
+    let sqlinsert = '';
+    let rows: any;
+    let row: any;
+    let aantal = '';
+    let sqlaantal = '';
+    let rowsaantal: any;
+    let rowaantal: any;
+    let sqlupdate = '';
+    let volgnummer = 0;
     //
     let bewerkingsnummer = req.query.bewerkingsnummer || '';
     let productnummer = req.query.productnummer || '';
@@ -141,15 +150,18 @@ and volgnummer = -1`;
     if (bewerkingsnummer == '') {
       addbwkflow = 0;
     }
+    //
+    //
+    //
     if (addbwkflow == 1) {
       sql = `
 select 
 productnummer from BEWERKING
 where bewerkingsnummer = '${db.fix(bewerkingsnummer)}'
 and einddatumtijd is null`;
-      let rows = await db.waitQuery(res.crudConnection, sql);
+      rows = await db.waitQuery(res.crudConnection, sql);
       if (rows[0]) {
-        let row = rows[0];
+        row = rows[0];
         productnummer = row.PRODUCTNUMMER;
         if (productnummer != '') {
           addproductflow = 1;
@@ -158,11 +170,13 @@ and einddatumtijd is null`;
         addbwkflow = 0;
       }
     }
+    //
     // Alleen als de bewerking bestaat 
     // en de bewerking nog niet gereed is (einddatumtijd = null)
     // en er sprake van een product is, productflow regels toevoegen aan flow
+    //
     if (addproductflow == 1) {
-      let sqlinsert = `
+      sqlinsert = `
 insert into BEWERKINGFLOW
 (Bewerkingsnummer,Bewerkingsoort,Volgnummer,
 Bewerkingaantal, Startdatumtijd, Geprint, Plandatumtijd, Einddatumtijd)
@@ -179,7 +193,9 @@ and BEWERKINGFLOW.bewerkingsoort = PRODUCTFLOW.bewerkingsoort)
 and bewerkingsoort is not null`;
       await db.waitQuery(res.crudConnection, sqlinsert);
     }
+    //
     // Aantallen invullen
+    //
     if (bewerkingsnummer != '') {
       sql = `
         select * from BEWERKINGFLOW
@@ -190,31 +206,42 @@ and exists
 (select 1 from BEWERKINGSOORT 
 where BEWERKINGSOORT.bewerkingsoort = BEWERKINGFLOW.bewerkingsoort 
 and voortgang = '1')`;
-      let rows = await db.waitQuery(res.crudConnection, sql);
+      rows = await db.waitQuery(res.crudConnection, sql);
       for (let irow = 0; irow < rows.length; irow++) {
-        let row = rows[0];
-        let aantal = '0';
-        let sqlaantal = `
+        row = rows[irow];
+        aantal = '0';
+        //
+        // wat is er al gereed gemeld op deze bewerkingsoort
+        //
+        sqlaantal = `
 select 
 sum(ifnull(bewerkingaantal,0)) as aantal 
 from BEWERKINGFLOW
 where bewerkingsnummer = '${db.fix(bewerkingsnummer)}'
 and bewerkingsoort = '${row.BEWERKINGSOORT}'`;
-        let rowsaantal = await db.waitQuery(res.crudConnection, sqlaantal);
+        rowsaantal = await db.waitQuery(res.crudConnection, sqlaantal);
         if (rowsaantal[0]) {
-          let rowaantal = rowsaantal[0];
+          rowaantal = rowsaantal[0];
           aantal = rowaantal.AANTAL;
         }
         if (aantal == '') {
           aantal = '0';
         }
-        let sqlupdate = `
+        //
+        // aantal = startaantal - andere aantallen van deze bewerkingsoort
+        //
+        sqlupdate = `
 update BEWERKINGFLOW set
-bewerkingaantal = 
-(select ifnull(startaantal,0) from BEWERKING
-where bewerkingsnummer = '${db.fix(bewerkingsnummer)}') - ${aantal}
+bewerkingaantal = (
+select ifnull(startaantal,0) from BEWERKING
+where bewerkingsnummer = '${db.fix(bewerkingsnummer)}'
+)
+- ${aantal}
 where id = '${db.fix(row.ID)}'`;
         await db.waitQuery(res.crudConnection, sqlupdate);
+        //
+        // aantal mag niet kleiner dan nul zijn
+        //
         sqlupdate = `
 update BEWERKINGFLOW set
 bewerkingaantal = 0
@@ -223,19 +250,21 @@ and id = '${db.fix(row.ID)}'`;
         await db.waitQuery(res.crudConnection, sqlupdate);
       }
     }
+    //
     // Hernummeren
+    //
     if (bewerkingsnummer != '') {
       sql = `
 select * 
 from BEWERKINGFLOW
 where bewerkingsnummer = '${db.fix(bewerkingsnummer)}'
 order by case when volgnummer = null then 999999 when volgnummer = 0 then 999999 else volgnummer end, id`;
-      let volgnummer = 0;
-      let rows = await db.waitQuery(res.crudConnection, sql);
+      volgnummer = 0;
+      rows = await db.waitQuery(res.crudConnection, sql);
       for (let irow = 0; irow < rows.length; irow++) {
-        let row = rows[irow];
+        row = rows[irow];
         volgnummer = volgnummer + 1;
-        let sqlupdate = `
+        sqlupdate = `
 update BEWERKINGFLOW set
 volgnummer = '${volgnummer}'
 where id = '${db.fix(row.ID)}'`;
@@ -317,7 +346,7 @@ select bewerkingsoort from BEWERKINGSOORT where naam = '${db.fix(bewerkingsoort)
 ${where}
 order by Bewerkingsnummer,volgnummer`;
     //
-    let rows = await db.waitQuery(res.crudConnection, sql);
+    rows = await db.waitQuery(res.crudConnection, sql);
     //
     res.crudConnection.release();
     res.status(200).send(rows);

@@ -156,7 +156,7 @@ var Bewerkingflow = /** @class */ (function (_super) {
     };
     Bewerkingflow.prototype.doQuery = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, where, sql, bewerkingsnummer, productnummer, bewerkingsoort, addbwkflow, addproductflow, rows_1, row, sqlinsert, rows_2, irow, row, aantal, sqlaantal, rowsaantal, rowaantal, sqlupdate, volgnummer, rows_3, irow, row, sqlupdate, rows;
+            var _a, where, sql, sqlinsert, rows, row, aantal, sqlaantal, rowsaantal, rowaantal, sqlupdate, volgnummer, bewerkingsnummer, productnummer, bewerkingsoort, addbwkflow, addproductflow, irow, irow;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -168,6 +168,11 @@ var Bewerkingflow = /** @class */ (function (_super) {
                         _a.crudConnection = _b.sent();
                         where = '';
                         sql = '';
+                        sqlinsert = '';
+                        aantal = '';
+                        sqlaantal = '';
+                        sqlupdate = '';
+                        volgnummer = 0;
                         bewerkingsnummer = req.query.bewerkingsnummer || '';
                         productnummer = req.query.productnummer || '';
                         bewerkingsoort = req.query.bewerkingsoort || '';
@@ -180,9 +185,9 @@ var Bewerkingflow = /** @class */ (function (_super) {
                         sql = "\nselect \nproductnummer from BEWERKING\nwhere bewerkingsnummer = '" + db_1.default.fix(bewerkingsnummer) + "'\nand einddatumtijd is null";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 2:
-                        rows_1 = _b.sent();
-                        if (rows_1[0]) {
-                            row = rows_1[0];
+                        rows = _b.sent();
+                        if (rows[0]) {
+                            row = rows[0];
                             productnummer = row.PRODUCTNUMMER;
                             if (productnummer != '') {
                                 addproductflow = 1;
@@ -204,13 +209,16 @@ var Bewerkingflow = /** @class */ (function (_super) {
                         sql = "\n        select * from BEWERKINGFLOW\nwhere bewerkingsnummer = '" + db_1.default.fix(bewerkingsnummer) + "'\nand bewerkingsoort is not null\nand bewerkingaantal = 0\nand exists\n(select 1 from BEWERKINGSOORT \nwhere BEWERKINGSOORT.bewerkingsoort = BEWERKINGFLOW.bewerkingsoort \nand voortgang = '1')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 6:
-                        rows_2 = _b.sent();
+                        rows = _b.sent();
                         irow = 0;
                         _b.label = 7;
                     case 7:
-                        if (!(irow < rows_2.length)) return [3 /*break*/, 12];
-                        row = rows_2[0];
+                        if (!(irow < rows.length)) return [3 /*break*/, 12];
+                        row = rows[irow];
                         aantal = '0';
+                        //
+                        // wat is er al gereed gemeld op deze bewerkingsoort
+                        //
                         sqlaantal = "\nselect \nsum(ifnull(bewerkingaantal,0)) as aantal \nfrom BEWERKINGFLOW\nwhere bewerkingsnummer = '" + db_1.default.fix(bewerkingsnummer) + "'\nand bewerkingsoort = '" + row.BEWERKINGSOORT + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlaantal)];
                     case 8:
@@ -222,10 +230,16 @@ var Bewerkingflow = /** @class */ (function (_super) {
                         if (aantal == '') {
                             aantal = '0';
                         }
-                        sqlupdate = "\nupdate BEWERKINGFLOW set\nbewerkingaantal = \n(select ifnull(startaantal,0) from BEWERKING\nwhere bewerkingsnummer = '" + db_1.default.fix(bewerkingsnummer) + "') - " + aantal + "\nwhere id = '" + db_1.default.fix(row.ID) + "'";
+                        //
+                        // aantal = startaantal - andere aantallen van deze bewerkingsoort
+                        //
+                        sqlupdate = "\nupdate BEWERKINGFLOW set\nbewerkingaantal = (\nselect ifnull(startaantal,0) from BEWERKING\nwhere bewerkingsnummer = '" + db_1.default.fix(bewerkingsnummer) + "'\n)\n- " + aantal + "\nwhere id = '" + db_1.default.fix(row.ID) + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlupdate)];
                     case 9:
                         _b.sent();
+                        //
+                        // aantal mag niet kleiner dan nul zijn
+                        //
                         sqlupdate = "\nupdate BEWERKINGFLOW set\nbewerkingaantal = 0\nwhere bewerkingaantal < 0 \nand id = '" + db_1.default.fix(row.ID) + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlupdate)];
                     case 10:
@@ -240,12 +254,12 @@ var Bewerkingflow = /** @class */ (function (_super) {
                         volgnummer = 0;
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 13:
-                        rows_3 = _b.sent();
+                        rows = _b.sent();
                         irow = 0;
                         _b.label = 14;
                     case 14:
-                        if (!(irow < rows_3.length)) return [3 /*break*/, 17];
-                        row = rows_3[irow];
+                        if (!(irow < rows.length)) return [3 /*break*/, 17];
+                        row = rows[irow];
                         volgnummer = volgnummer + 1;
                         sqlupdate = "\nupdate BEWERKINGFLOW set\nvolgnummer = '" + volgnummer + "'\nwhere id = '" + db_1.default.fix(row.ID) + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlupdate)];
@@ -282,6 +296,7 @@ var Bewerkingflow = /** @class */ (function (_super) {
                         sql += "\n" + where + "\norder by Bewerkingsnummer,volgnummer";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 18:
+                        //
                         rows = _b.sent();
                         //
                         res.crudConnection.release();

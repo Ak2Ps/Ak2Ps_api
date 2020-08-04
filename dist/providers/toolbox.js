@@ -1140,6 +1140,19 @@ var Toolbox = /** @class */ (function () {
                         lijn = req.query.lijn || '';
                         datum = req.query.datum || '';
                         //
+                        switch (productnummer) {
+                            case 'TSA00A7':
+                                break;
+                            case 'TSA00BD':
+                                break;
+                            case 'TSDS800':
+                                break;
+                            case 'TSD20D3':
+                                break;
+                            default:
+                                break;
+                        }
+                        //
                         sql = "\nselect * from BEWERKINGSOORT\nwhere layout = 'rapBEWERKINGFLOWPICK.php'\norder by bewerkingsoort";
                         return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
                     case 2:
@@ -1170,7 +1183,7 @@ var Toolbox = /** @class */ (function () {
                             row.STARTAANTAL = '0';
                         }
                         //
-                        // Bestaat er een productflowregel voor?
+                        // Bestaat er een logistiek productflowregel voor?
                         //
                         sql = "\nselect *,\nPRODUCTFLOW.id as PFID\nfrom PRODUCTFLOW,BEWERKINGSOORT\nwhere PRODUCTFLOW.productnummer = '" + row.PRODUCTNUMMER + "'\nand PRODUCTFLOW.bewerkingsoort = BEWERKINGSOORT.bewerkingsoort\nand BEWERKINGSOORT.layout = 'rapBEWERKINGFLOWPICK.php'\norder by PRODUCTFLOW.volgnummer";
                         return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];

@@ -337,11 +337,15 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
-                        if (!(All == 1)) return [3 /*break*/, 4];
+                        if (!(All == 1)) return [3 /*break*/, 6];
                         //
                         // getLEVERANCIER
                         //
                         message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 2];
+                        message += this.addMessage("Skip Ophalen leveranciers.", res);
+                        return [3 /*break*/, 4];
+                    case 2:
                         message += this.addMessage("Ophalen leveranciers.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
@@ -349,57 +353,23 @@ var Schedule = /** @class */ (function (_super) {
                             + "&topic=Accounts"
                             + "&outfile=import/exactaccounts.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 2:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        //
-                        message += this.addMessage("Leveranciers inlezen.", res);
-                        thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactleverancier"
-                            + "&file=import/exactaccounts.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 3:
                         data = _a.sent();
                         try {
-                            message += this.addMessage(data.items[0].msg, res);
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         _a.label = 4;
                     case 4:
-                        if (!(All == 1)) return [3 /*break*/, 7];
                         //
-                        // getKLANT
-                        //
-                        message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen klanten.", res);
-                        thisPath = "/exactclient.php?app=" + config_1.Config.app
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=Accounts"
-                            + "&outfile=import/exactaccounts.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 5:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        //
-                        message += this.addMessage("Klanten inlezen.", res);
+                        message += this.addMessage("Leveranciers inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactklant"
+                            + "&action=get,exactleverancier"
                             + "&file=import/exactaccounts.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 6:
+                    case 5:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].msg, res);
@@ -407,19 +377,23 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 7;
-                    case 7:
-                        if (!(All == 1)) return [3 /*break*/, 10];
+                        _a.label = 6;
+                    case 6:
+                        if (!(All == 1)) return [3 /*break*/, 11];
                         //
-                        // getPRODUCT
+                        // getKLANT
                         //
                         message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen producten.", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 7];
+                        message += this.addMessage("Skip Ophalen klanten.", res);
+                        return [3 /*break*/, 9];
+                    case 7:
+                        message += this.addMessage("Ophalen klanten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
-                            + "&topic=Items"
-                            + "&outfile=import/exactitems.dat";
+                            + "&topic=Accounts"
+                            + "&outfile=import/exactaccounts.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 8:
                         data = _a.sent();
@@ -429,85 +403,55 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
+                        _a.label = 9;
+                    case 9:
+                        //
+                        message += this.addMessage("Klanten inlezen.", res);
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactklant"
+                            + "&file=import/exactaccounts.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 10:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.items[0].msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 11;
+                    case 11:
+                        if (!(All == 1)) return [3 /*break*/, 16];
+                        //
+                        // getPRODUCT
+                        //
+                        message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 12];
+                        message += this.addMessage("Skip Ophalen producten.", res);
+                        return [3 /*break*/, 14];
+                    case 12:
+                        message += this.addMessage("Ophalen producten.", res);
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=Items"
+                            + "&outfile=import/exactitems.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 13:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 14;
+                    case 14:
                         //
                         message += this.addMessage("Producten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactproduct"
                             + "&file=import/exactitems.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 9:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.items[0].msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        _a.label = 10;
-                    case 10:
-                        if (!(All == 1)) return [3 /*break*/, 13];
-                        //
-                        // getSTUKLIJST
-                        //
-                        message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen stuklijsten.", res);
-                        thisPath = "/exactclient.php?app=" + config_1.Config.app
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=ManufacturedBillofMaterials"
-                            + "&Params_Status=30,20,10"
-                            + "&outfile=import/exactmbom.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 11:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        //
-                        message += this.addMessage("Stuklijsten inlezen.", res);
-                        thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactstuklijst"
-                            + "&file=import/exactmbom.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 12:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.items[0].msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        _a.label = 13;
-                    case 13:
-                        if (!(All == 1)) return [3 /*break*/, 16];
-                        //
-                        // getLEVERANCIERPRODUCT
-                        //
-                        message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen leverancierproductnummers.", res);
-                        thisPath = "/exactclient.php?app=" + config_1.Config.app
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=PurchaseOrders"
-                            + "&Params_Status=10,20"
-                            + "&outfile=import/exactpurchase.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 14:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        //
-                        message += this.addMessage("Leverancierproductnummers inlezen.", res);
-                        thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactleverancierproduct"
-                            + "&file=import/exactpurchase.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 15:
                         data = _a.sent();
@@ -519,70 +463,40 @@ var Schedule = /** @class */ (function (_super) {
                         }
                         _a.label = 16;
                     case 16:
-                        if (!(All == 1)) return [3 /*break*/, 19];
+                        if (!(All == 1)) return [3 /*break*/, 21];
                         //
-                        // getVOORRAAD
+                        // getSTUKLIJST
                         //
                         message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen voorraad.", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 17];
+                        message += this.addMessage("Skip Ophalen stuklijsten.", res);
+                        return [3 /*break*/, 19];
+                    case 17:
+                        message += this.addMessage("Ophalen stuklijsten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
-                            + "&topic=StockPositions"
-                            + "&outfile=import/exactstock.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 17:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        //
-                        message += this.addMessage("Voorraad inlezen.", res);
-                        thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactvoorraad"
-                            + "&file=import/exactstock.dat";
+                            + "&topic=ManufacturedBillofMaterials"
+                            + "&Params_Status=30,20,10"
+                            + "&outfile=import/exactmbom.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 18:
                         data = _a.sent();
                         try {
-                            message += this.addMessage(data.items[0].msg, res);
+                            message += this.addMessage(data.msg, res);
                         }
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
                         _a.label = 19;
                     case 19:
-                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 22];
                         //
-                        // getBESTELLING
-                        //
-                        message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen bestellingen.", res);
-                        thisPath = "/exactclient.php?app=" + config_1.Config.app
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=PurchaseOrders"
-                            + "&Params_Status=10,20"
-                            + "&outfile=import/exactpurchase.dat";
+                        message += this.addMessage("Stuklijsten inlezen.", res);
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactstuklijst"
+                            + "&file=import/exactmbom.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 20:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        //
-                        message += this.addMessage("Bestellingen inlezen.", res);
-                        thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactbestelling"
-                            + "&file=import/exactpurchase.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 21:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].msg, res);
@@ -590,19 +504,24 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 22;
-                    case 22:
-                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 25];
+                        _a.label = 21;
+                    case 21:
+                        if (!(All == 1)) return [3 /*break*/, 26];
                         //
-                        // getRECEIPT
+                        // getLEVERANCIERPRODUCT
                         //
                         message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen ontvangsten.", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 22];
+                        message += this.addMessage("Skip Ophalen leverancierproductnummers.", res);
+                        return [3 /*break*/, 24];
+                    case 22:
+                        message += this.addMessage("Ophalen leverancierproductnummers.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
-                            + "&topic=Receipts"
-                            + "&outfile=import/exactreceipt.dat";
+                            + "&topic=PurchaseOrders"
+                            + "&Params_Status=10,20"
+                            + "&outfile=import/exactpurchase.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 23:
                         data = _a.sent();
@@ -612,50 +531,15 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
-                        //
-                        message += this.addMessage("Ontvangsten inlezen.", res);
-                        thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactreceipt"
-                            + "&file=import/exactreceipt.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                        _a.label = 24;
                     case 24:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.items[0].msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        _a.label = 25;
+                        //
+                        message += this.addMessage("Leverancierproductnummers inlezen.", res);
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactleverancierproduct"
+                            + "&file=import/exactpurchase.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 25:
-                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 28];
-                        //
-                        // getORDER
-                        //
-                        message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen orders.", res);
-                        thisPath = "/exactclient.php?app=" + config_1.Config.app
-                            + "&action=GET"
-                            + "&type=XML"
-                            + "&topic=SalesOrders"
-                            + "&Params_Status=12,20"
-                            + "&outfile=import/exactsales.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 26:
-                        data = _a.sent();
-                        try {
-                            message += this.addMessage(data.msg, res);
-                        }
-                        catch (error) {
-                            message += this.addMessage(JSON.stringify(error), res);
-                        }
-                        //
-                        message += this.addMessage("Orders inlezen.", res);
-                        thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactorder"
-                            + "&file=import/exactsales.dat";
-                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 27:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].msg, res);
@@ -663,21 +547,25 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 28;
-                    case 28:
-                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 31];
+                        _a.label = 26;
+                    case 26:
+                        if (!(All == 1)) return [3 /*break*/, 31];
                         //
-                        // getDELIVERY
+                        // getVOORRAAD
                         //
                         message += this.addMessage("", res);
-                        message += this.addMessage("Ophalen afleveringen.", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 27];
+                        message += this.addMessage("Skip Ophalen voorraad.", res);
+                        return [3 /*break*/, 29];
+                    case 27:
+                        message += this.addMessage("Ophalen voorraad.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
                             + "&type=XML"
-                            + "&topic=Deliveries"
-                            + "&outfile=import/exactdeliveries.dat";
+                            + "&topic=StockPositions"
+                            + "&outfile=import/exactstock.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 29:
+                    case 28:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.msg, res);
@@ -685,11 +573,13 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
+                        _a.label = 29;
+                    case 29:
                         //
-                        message += this.addMessage("Afleveringen inlezen.", res);
+                        message += this.addMessage("Voorraad inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
-                            + "&action=get,exactdelivery"
-                            + "&file=import/exactdeliveries.dat";
+                            + "&action=get,exactvoorraad"
+                            + "&file=import/exactstock.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
                     case 30:
                         data = _a.sent();
@@ -701,11 +591,185 @@ var Schedule = /** @class */ (function (_super) {
                         }
                         _a.label = 31;
                     case 31:
-                        if (!(All == 1 || OperationalOnly == 1 || BewerkingOnly == 1)) return [3 /*break*/, 34];
+                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 36];
+                        //
+                        // getBESTELLING
+                        //
+                        message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 32];
+                        message += this.addMessage("Skip Ophalen bestellingen.", res);
+                        return [3 /*break*/, 34];
+                    case 32:
+                        message += this.addMessage("Ophalen bestellingen.", res);
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=PurchaseOrders"
+                            + "&Params_Status=10,20"
+                            + "&outfile=import/exactpurchase.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 33:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 34;
+                    case 34:
+                        //
+                        message += this.addMessage("Bestellingen inlezen.", res);
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactbestelling"
+                            + "&file=import/exactpurchase.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 35:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.items[0].msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 36;
+                    case 36:
+                        if (!(All == 1 || OperationalOnly == 1 || BestellingOnly == 1)) return [3 /*break*/, 41];
+                        //
+                        // getRECEIPT
+                        //
+                        message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 37];
+                        message += this.addMessage("Skip Ophalen ontvangsten.", res);
+                        return [3 /*break*/, 39];
+                    case 37:
+                        message += this.addMessage("Ophalen ontvangsten.", res);
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=Receipts"
+                            + "&outfile=import/exactreceipt.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 38:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 39;
+                    case 39:
+                        //
+                        message += this.addMessage("Ontvangsten inlezen.", res);
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactreceipt"
+                            + "&file=import/exactreceipt.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 40:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.items[0].msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 41;
+                    case 41:
+                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 46];
+                        //
+                        // getORDER
+                        //
+                        message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 42];
+                        message += this.addMessage("Skip Ophalen orders.", res);
+                        return [3 /*break*/, 44];
+                    case 42:
+                        message += this.addMessage("Ophalen orders.", res);
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=SalesOrders"
+                            + "&Params_Status=12,20"
+                            + "&outfile=import/exactsales.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 43:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 44;
+                    case 44:
+                        //
+                        message += this.addMessage("Orders inlezen.", res);
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactorder"
+                            + "&file=import/exactsales.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 45:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.items[0].msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 46;
+                    case 46:
+                        if (!(All == 1 || OperationalOnly == 1 || OrderOnly == 1)) return [3 /*break*/, 51];
+                        //
+                        // getDELIVERY
+                        //
+                        message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 47];
+                        message += this.addMessage("Skip Ophalen afleveringen.", res);
+                        return [3 /*break*/, 49];
+                    case 47:
+                        message += this.addMessage("Ophalen afleveringen.", res);
+                        thisPath = "/exactclient.php?app=" + config_1.Config.app
+                            + "&action=GET"
+                            + "&type=XML"
+                            + "&topic=Deliveries"
+                            + "&outfile=import/exactdeliveries.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 48:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 49;
+                    case 49:
+                        //
+                        message += this.addMessage("Afleveringen inlezen.", res);
+                        thisPath = "/upload.php?app=" + config_1.Config.app
+                            + "&action=get,exactdelivery"
+                            + "&file=import/exactdeliveries.dat";
+                        return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
+                    case 50:
+                        data = _a.sent();
+                        try {
+                            message += this.addMessage(data.items[0].msg, res);
+                        }
+                        catch (error) {
+                            message += this.addMessage(JSON.stringify(error), res);
+                        }
+                        _a.label = 51;
+                    case 51:
+                        if (!(All == 1 || OperationalOnly == 1 || BewerkingOnly == 1)) return [3 /*break*/, 56];
                         //
                         // getBEWERK
                         //
                         message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 52];
+                        message += this.addMessage("Skip Ophalen bewerkingen.", res);
+                        return [3 /*break*/, 54];
+                    case 52:
                         message += this.addMessage("Ophalen bewerkingen.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
@@ -714,7 +778,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&Params_Status=20,10"
                             + "&outfile=import/exactshoporders.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 32:
+                    case 53:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.msg, res);
@@ -722,13 +786,15 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
+                        _a.label = 54;
+                    case 54:
                         //
                         message += this.addMessage("Bewerkingen inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactbewerk"
                             + "&file=import/exactshoporders.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 33:
+                    case 55:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].msg, res);
@@ -736,13 +802,17 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 34;
-                    case 34:
-                        if (!(All == 1 || OperationalOnly == 1 || BewerkingOnly == 1)) return [3 /*break*/, 37];
+                        _a.label = 56;
+                    case 56:
+                        if (!(All == 1 || OperationalOnly == 1 || BewerkingOnly == 1)) return [3 /*break*/, 61];
                         //
                         // getBEWERKONTVANGST
                         //
                         message += this.addMessage("", res);
+                        if (!(config_1.Config.exactinterfaceapp == "false")) return [3 /*break*/, 57];
+                        message += this.addMessage("Skip Ophalen bewerkingontvangsten.", res);
+                        return [3 /*break*/, 59];
+                    case 57:
                         message += this.addMessage("Ophalen bewerkingontvangsten.", res);
                         thisPath = "/exactclient.php?app=" + config_1.Config.app
                             + "&action=GET"
@@ -750,7 +820,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&topic=ShopOrderStockReceipts"
                             + "&outfile=import/exactshoporderreceipts.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 35:
+                    case 58:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.msg, res);
@@ -758,13 +828,15 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
+                        _a.label = 59;
+                    case 59:
                         //
                         message += this.addMessage("Bewerkingontvangsten inlezen.", res);
                         thisPath = "/upload.php?app=" + config_1.Config.app
                             + "&action=get,exactbewerkontvangst"
                             + "&file=import/exactshoporderreceipts.dat";
                         return [4 /*yield*/, util_1.Util.getInfo(thisPath)];
-                    case 36:
+                    case 60:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].msg, res);
@@ -772,9 +844,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(JSON.stringify(error), res);
                         }
-                        _a.label = 37;
-                    case 37:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 39];
+                        _a.label = 61;
+                    case 61:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 63];
                         //
                         // addlogistiek
                         //
@@ -783,7 +855,7 @@ var Schedule = /** @class */ (function (_super) {
                         thisPath = "/toolbox.php?app=" + config_1.Config.app
                             + "&action=addlogistiek";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 38:
+                    case 62:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].MSG, res);
@@ -791,9 +863,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(data, res);
                         }
-                        _a.label = 39;
-                    case 39:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 41];
+                        _a.label = 63;
+                    case 63:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 65];
                         //
                         // fase0: Oude voorraadstand opschonen
                         //
@@ -801,7 +873,7 @@ var Schedule = /** @class */ (function (_super) {
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase0";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 40:
+                    case 64:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].msg, res);
@@ -809,9 +881,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(data, res);
                         }
-                        _a.label = 41;
-                    case 41:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 43];
+                        _a.label = 65;
+                    case 65:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 67];
                         //
                         // fase1: Startvoorraad, orders, bestellingen en bewerkingen doorrekenen
                         //
@@ -819,7 +891,7 @@ var Schedule = /** @class */ (function (_super) {
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase1";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 42:
+                    case 66:
                         data = _a.sent();
                         try {
                             message += this.addMessage(data.items[0].msg, res);
@@ -827,9 +899,9 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(data, res);
                         }
-                        _a.label = 43;
-                    case 43:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 49];
+                        _a.label = 67;
+                    case 67:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 73];
                         //
                         // Fase2: Voorraad afboeken van onderdelen van producten waar tekorten van zijn
                         //
@@ -837,7 +909,7 @@ var Schedule = /** @class */ (function (_super) {
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase2";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 44:
+                    case 68:
                         data = _a.sent();
                         retry = 0;
                         try {
@@ -850,20 +922,20 @@ var Schedule = /** @class */ (function (_super) {
                             message += this.addMessage(data, res);
                         }
                         tlcycle = 0;
-                        _a.label = 45;
-                    case 45:
-                        if (!(retry > 0)) return [3 /*break*/, 49];
+                        _a.label = 69;
+                    case 69:
+                        if (!(retry > 0)) return [3 /*break*/, 73];
                         message += this.addMessage(data.items[0].regelsbesteld + " regels afgeboekt, nog een keer ...", res);
                         tlcycle++;
                         retry = 0;
-                        if (!(tlcycle > 6)) return [3 /*break*/, 46];
+                        if (!(tlcycle > 6)) return [3 /*break*/, 70];
                         message += this.addMessage("Onderdeel is Onderdeel probleem, toch maar opbouwen lijst ...", res);
-                        return [3 /*break*/, 48];
-                    case 46:
+                        return [3 /*break*/, 72];
+                    case 70:
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase2";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 47:
+                    case 71:
                         data = _a.sent();
                         try {
                             if (Number(data.items[0].regelsbesteld) > 0) {
@@ -874,10 +946,10 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(data, res);
                         }
-                        _a.label = 48;
-                    case 48: return [3 /*break*/, 45];
-                    case 49:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 51];
+                        _a.label = 72;
+                    case 72: return [3 /*break*/, 69];
+                    case 73:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 75];
                         //
                         // fase3: Voorraadstand vastleggen
                         //
@@ -885,7 +957,7 @@ var Schedule = /** @class */ (function (_super) {
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase3";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 50:
+                    case 74:
                         data = _a.sent();
                         msg = 'Vastgelegd.';
                         if (data.items) {
@@ -896,9 +968,9 @@ var Schedule = /** @class */ (function (_super) {
                             }
                         }
                         message += this.addMessage(msg);
-                        _a.label = 51;
-                    case 51:
-                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 55];
+                        _a.label = 75;
+                    case 75:
+                        if (!(All == 1 || CalcOnly == 1)) return [3 /*break*/, 79];
                         //
                         // Eerste fase4: Beperkende faktoren bijwerken (Zoek de kurk)
                         //
@@ -906,7 +978,7 @@ var Schedule = /** @class */ (function (_super) {
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase4";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 52:
+                    case 76:
                         data = _a.sent();
                         retry = 0;
                         try {
@@ -917,14 +989,14 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(data, res);
                         }
-                        _a.label = 53;
-                    case 53:
-                        if (!(retry > 0)) return [3 /*break*/, 55];
+                        _a.label = 77;
+                    case 77:
+                        if (!(retry > 0)) return [3 /*break*/, 79];
                         message += this.addMessage(data.items[0].regels + " regels doorzocht, nog een keer ...", res);
                         thisPath = "/voorraad.php?app=" + config_1.Config.app
                             + "&action=fase4";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath)];
-                    case 54:
+                    case 78:
                         data = _a.sent();
                         retry = 0;
                         try {
@@ -935,8 +1007,8 @@ var Schedule = /** @class */ (function (_super) {
                         catch (error) {
                             message += this.addMessage(data, res);
                         }
-                        return [3 /*break*/, 53];
-                    case 55:
+                        return [3 /*break*/, 77];
+                    case 79:
                         if (All == 1 || CalcOnly == 1) {
                             //
                             // Alles is bijgewerkt
@@ -959,7 +1031,7 @@ var Schedule = /** @class */ (function (_super) {
                             + "&action=addmsg"
                             + "&bb=Log";
                         return [4 /*yield*/, util_1.Util.postInfo(thisPath, bericht)];
-                    case 56:
+                    case 80:
                         data = _a.sent();
                         //
                         // Logging
