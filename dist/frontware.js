@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Frontware = void 0;
 var config_1 = require("./config");
 var Frontware = /** @class */ (function () {
     function Frontware() {

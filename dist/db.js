@@ -16,6 +16,7 @@ var Db = /** @class */ (function () {
             user: config_1.Config.dbuser,
             password: config_1.Config.dbpassword,
             database: config_1.Config.dbschema,
+            connectionLimit: 100,
             multipleStatements: true
         });
     };

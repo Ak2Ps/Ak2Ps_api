@@ -1,23 +1,40 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Logger = void 0;
 var fs = __importStar(require("fs"));
 var config_1 = require("./config");
+var util_1 = require("./util");
 var Logger = /** @class */ (function () {
     function Logger() {
     }
+    Logger.getTime = function () {
+        return util_1.Util.Date2Screendatetime(new Date());
+    };
     Logger.add = function (message) {
         if (typeof message == "object") {
             message = JSON.stringify(message, null, 2);
         }
         try {
-            fs.appendFileSync(config_1.Config.appDir + "/log/api.log", message + "\n");
+            fs.appendFileSync(config_1.Config.appDir + "/log/api.log", this.getTime() + " " + message + "\n");
         }
         catch (error) {
             console.log(error);
@@ -54,8 +71,7 @@ var Logger = /** @class */ (function () {
             this.add(thisMessage);
             if (req !== undefined) {
                 try {
-                    fs.appendFileSync(config_1.Config.appDir + "/log/error.log", thisPath + " error:\n");
-                    fs.appendFileSync(config_1.Config.appDir + "/log/error.log", thisMessage + "\n");
+                    fs.appendFileSync(config_1.Config.appDir + "/log/error.log", this.getTime() + " " + thisMessage + "\n");
                 }
                 catch (error) {
                     console.log(error);

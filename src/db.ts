@@ -17,6 +17,7 @@ class Db {
       user: Config.dbuser,
       password: Config.dbpassword,
       database: Config.dbschema,
+      connectionLimit : 100,
       multipleStatements: true
     });
 

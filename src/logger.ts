@@ -3,15 +3,20 @@ import * as child from "child_process";
 import http from "http";
 import * as fs from "fs";
 import { Config } from "./config";
+import { Util } from "./util";
 
 export class Logger {
+
+  private static getTime() {
+    return Util.Date2Screendatetime(new Date());
+  }
 
   private static add(message: any): void {
     if (typeof message == "object") {
       message = JSON.stringify(message, null, 2);
     }
     try {
-      fs.appendFileSync(`${Config.appDir}/log/api.log`, `${message}\n`);
+      fs.appendFileSync(`${Config.appDir}/log/api.log`, `${this.getTime()} ${message}\n`);
     } catch (error) {
       console.log(error);
     }
@@ -39,7 +44,7 @@ export class Logger {
         thisMessage = message;
         try {
           thisPath = req.path;
-        } catch(error){
+        } catch (error) {
           thisPath = '???';
         }
       }
@@ -47,8 +52,7 @@ export class Logger {
       this.add(thisMessage);
       if (req !== undefined) {
         try {
-          fs.appendFileSync(`${Config.appDir}/log/error.log`, `${thisPath} error:\n`);
-          fs.appendFileSync(`${Config.appDir}/log/error.log`, `${thisMessage}\n`);
+          fs.appendFileSync(`${Config.appDir}/log/error.log`, `${this.getTime()} ${thisMessage}\n`);
         } catch (error) {
           console.log(error);
         }
