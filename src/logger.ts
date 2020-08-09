@@ -8,7 +8,15 @@ import { Util } from "./util";
 export class Logger {
 
   private static getTime() {
-    return Util.Date2Screendatetime(new Date());
+    return Util.Date2Screendatetimeseconds(new Date());
+  }
+
+  private static show(message: any): void {
+    if (typeof message == "object") {
+      message = JSON.stringify(message, null, 2);
+    }
+    message = `${this.getTime()} ${message}`;
+    console.log(message);
   }
 
   private static add(message: any): void {
@@ -48,7 +56,7 @@ export class Logger {
           thisPath = '???';
         }
       }
-      console.log(thisMessage);
+      this.show(thisMessage);
       this.add(thisMessage);
       if (req !== undefined) {
         try {
@@ -62,37 +70,47 @@ export class Logger {
 
   public static warning(message: any): void {
     if (Config.show_warning) {
-      console.log(message);
+      this.show(message);
       this.add(message);
     }
   }
 
   public static info(message: any): void {
     if (Config.show_info) {
-      console.log(message);
+      this.show(message);
       this.add(message);
     }
   }
 
   public static sql(message: any): void {
     if (Config.show_sql) {
-      console.log(`\n<sql>\n${message}\n</sql>\n`);
+      this.show(`\n<sql>\n${message}\n</sql>\n`);
       this.add(`\n<sql>\n${message}\n</sql>\n`);
     }
   }
 
   public static test(message: any): void {
     if (Config.runmode == runmode.test) {
-      console.log(message);
+      this.show(message);
       this.add(message);
     }
   }
 
   public static request(req: Request): void {
     if (Config.runmode == runmode.test) {
+      let swadd = 1;
       let message = `${req.method} ${req.path} ${req.query.action || ''}`;
-      console.log(message);
-      this.add(message);
+      switch (req.path) {
+        case "/gebruikertijd.php":
+          swadd = 0;
+          break;
+        default:
+          break;
+      }
+      this.show(message);
+      if (swadd == 1) {
+        this.add(message);
+      }
     }
   }
 }

@@ -27,7 +27,14 @@ var Logger = /** @class */ (function () {
     function Logger() {
     }
     Logger.getTime = function () {
-        return util_1.Util.Date2Screendatetime(new Date());
+        return util_1.Util.Date2Screendatetimeseconds(new Date());
+    };
+    Logger.show = function (message) {
+        if (typeof message == "object") {
+            message = JSON.stringify(message, null, 2);
+        }
+        message = this.getTime() + " " + message;
+        console.log(message);
     };
     Logger.add = function (message) {
         if (typeof message == "object") {
@@ -67,7 +74,7 @@ var Logger = /** @class */ (function () {
                     thisPath = '???';
                 }
             }
-            console.log(thisMessage);
+            this.show(thisMessage);
             this.add(thisMessage);
             if (req !== undefined) {
                 try {
@@ -81,33 +88,43 @@ var Logger = /** @class */ (function () {
     };
     Logger.warning = function (message) {
         if (config_1.Config.show_warning) {
-            console.log(message);
+            this.show(message);
             this.add(message);
         }
     };
     Logger.info = function (message) {
         if (config_1.Config.show_info) {
-            console.log(message);
+            this.show(message);
             this.add(message);
         }
     };
     Logger.sql = function (message) {
         if (config_1.Config.show_sql) {
-            console.log("\n<sql>\n" + message + "\n</sql>\n");
+            this.show("\n<sql>\n" + message + "\n</sql>\n");
             this.add("\n<sql>\n" + message + "\n</sql>\n");
         }
     };
     Logger.test = function (message) {
         if (config_1.Config.runmode == "test" /* test */) {
-            console.log(message);
+            this.show(message);
             this.add(message);
         }
     };
     Logger.request = function (req) {
         if (config_1.Config.runmode == "test" /* test */) {
+            var swadd = 1;
             var message = req.method + " " + req.path + " " + (req.query.action || '');
-            console.log(message);
-            this.add(message);
+            switch (req.path) {
+                case "/gebruikertijd.php":
+                    swadd = 0;
+                    break;
+                default:
+                    break;
+            }
+            this.show(message);
+            if (swadd == 1) {
+                this.add(message);
+            }
         }
     };
     return Logger;

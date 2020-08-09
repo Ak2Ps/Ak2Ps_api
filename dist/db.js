@@ -42,6 +42,11 @@ var Db = /** @class */ (function () {
             var thisLimit = _this.pool.config.connectionLimit;
             var thisCount = _this.pool._allConnections.length;
             var thisFree = _this.pool._freeConnections.length;
+            if (thisCount >= (thisLimit - 5)) {
+                var thisMessage = "Connectionpool warning: max: " + thisLimit + ", created: " + thisCount + " free: " + thisFree;
+                console.log(thisMessage);
+                logger_1.Logger.warning(thisMessage);
+            }
             if (thisCount >= thisLimit && thisFree <= 0) {
                 var thisMessage = "Connectionpool overflow: max: " + thisLimit + ", created: " + thisCount + " free: " + thisFree;
                 console.log(thisMessage);

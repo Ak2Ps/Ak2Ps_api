@@ -152,6 +152,39 @@ export class Util {
     return result;
   }
 
+  public static Date2Screendatetimeseconds(date: Date): string {
+    let result = '';
+    //
+    let jaar = String(date.getFullYear());
+    while (jaar.length < 4) {
+      jaar = '0' + jaar;
+    }
+    let maand = String(date.getMonth() + 1);
+    while (maand.length < 2) {
+      maand = '0' + maand;
+    }
+    let dag = String(date.getDate());
+    while (dag.length < 2) {
+      dag = '0' + dag;
+    }
+    result = `${dag}-${maand}-${jaar}`;
+    //
+    let uren = String(date.getHours());
+    while (uren.length < 2) {
+      uren = '0' + uren;
+    }
+    let minuten = String(date.getMinutes());
+    while (minuten.length < 2) {
+      minuten = '0' + minuten;
+    }
+    let seconds = String(date.getSeconds());
+    while (seconds.length < 2) {
+      seconds = '0' + seconds;
+    }
+    result = `${dag}-${maand}-${jaar} ${uren}:${minuten}:${seconds}`;
+    return result;
+  }
+
   public static unknownOperation(req: Request, res: Response, next: NextFunction): void {
     Logger.error(req, `${req.path}  ${req.method} ${JSON.stringify(req.query)} not implemented`);
     res.status(501).send(req.method + ": " + JSON.stringify(req.query) + "not implemented");

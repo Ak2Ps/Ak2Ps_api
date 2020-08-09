@@ -73,7 +73,7 @@ export class Schedule extends Action {
                 return result;
             }
             if (fs.existsSync(`${curdir}/${thisDbBackup}`)) {
-                message += this.addMessage(`Database backup ${thisDbBackup} is vandaag al gemaakt ...`);
+                // message += this.addMessage(`Database backup ${thisDbBackup} is vandaag al gemaakt ...`);
                 result = {
                     backup: `${thisDbBackup}`,
                     success: "true",
@@ -94,7 +94,7 @@ export class Schedule extends Action {
         } catch (error) {
             //Logger.error(req, JSON.stringify(error));
         }
-        message += this.addMessage(`Database backup ${thisDbBackup} is gemaakt ...`);
+        // message += this.addMessage(`Database backup ${thisDbBackup} is gemaakt ...`);
         result = {
             backup: `${thisDbBackup}`,
             success: "true",
@@ -130,7 +130,7 @@ export class Schedule extends Action {
                 return result;
             }
             if (fs.existsSync(`${curdir}/${thisDataBackup}`)) {
-                message += this.addMessage(`Databackup ${thisDataBackup} is vandaag al gemaakt ...`);
+                // message += this.addMessage(`Databackup ${thisDataBackup} is vandaag al gemaakt ...`);
                 result = {
                     backup: `${thisDataBackup}`,
                     success: "true",
@@ -230,7 +230,7 @@ export class Schedule extends Action {
                 return result;
             }
             if (fs.existsSync(`${curdir}/${thisFilename}`)) {
-                message += this.addMessage(`Import ${thisFilename} is vandaag al uitgevoerd ...`);
+                // message += this.addMessage(`Import ${thisFilename} is vandaag al uitgevoerd ...`);
                 result = {
                     backup: thisFilename,
                     success: "true",

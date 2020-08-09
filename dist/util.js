@@ -182,6 +182,38 @@ var Util = /** @class */ (function () {
         result = dag + "-" + maand + "-" + jaar + " " + uren + ":" + minuten;
         return result;
     };
+    Util.Date2Screendatetimeseconds = function (date) {
+        var result = '';
+        //
+        var jaar = String(date.getFullYear());
+        while (jaar.length < 4) {
+            jaar = '0' + jaar;
+        }
+        var maand = String(date.getMonth() + 1);
+        while (maand.length < 2) {
+            maand = '0' + maand;
+        }
+        var dag = String(date.getDate());
+        while (dag.length < 2) {
+            dag = '0' + dag;
+        }
+        result = dag + "-" + maand + "-" + jaar;
+        //
+        var uren = String(date.getHours());
+        while (uren.length < 2) {
+            uren = '0' + uren;
+        }
+        var minuten = String(date.getMinutes());
+        while (minuten.length < 2) {
+            minuten = '0' + minuten;
+        }
+        var seconds = String(date.getSeconds());
+        while (seconds.length < 2) {
+            seconds = '0' + seconds;
+        }
+        result = dag + "-" + maand + "-" + jaar + " " + uren + ":" + minuten + ":" + seconds;
+        return result;
+    };
     Util.unknownOperation = function (req, res, next) {
         logger_1.Logger.error(req, req.path + "  " + req.method + " " + JSON.stringify(req.query) + " not implemented");
         res.status(501).send(req.method + ": " + JSON.stringify(req.query) + "not implemented");
