@@ -755,7 +755,7 @@ export class Schedule extends Action {
             if (data.items){
                 if (data.items[0]){
                     if (data.items[0].regelsbijgewerkt){
-                        msg = `${data.regelsbijgewerkt} regels vastgelegd.`;
+                        msg = `${data.items[0].regelsbijgewerkt} regels vastgelegd.`;
                     }
                 }
             }

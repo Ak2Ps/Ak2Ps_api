@@ -25,7 +25,12 @@ export class Status {
     //
     let thisError = [];
     let thisErrorName = Config.appDir + "/log/error.log";
-    let thisErrorLines = String(fs.readFileSync(thisErrorName)).split("\n");
+    let thisErrorLines:any = [];
+    try {
+      thisErrorLines = String(fs.readFileSync(thisErrorName)).split("\n");
+    } catch (error) {
+      // no errors
+    }
     for (let iLine = thisErrorLines.length - 50; iLine < thisErrorLines.length; iLine++) {
       if (iLine >= 0) {
         thisError.push(String(iLine) + ": " + thisErrorLines[iLine]);
@@ -36,7 +41,12 @@ export class Status {
     //
     let thisLog = [];
     let thisApiName = Config.appDir + "/log/api.log";
-    let thisApiLines = String(fs.readFileSync(thisApiName)).split("\n");
+    let thisApiLines:any = [];
+    try {
+      thisApiLines = String(fs.readFileSync(thisApiName)).split("\n");
+    } catch (error) {
+      // no log
+    }
     for (let iLine = thisApiLines.length - 50; iLine < thisApiLines.length; iLine++) {
       if (iLine >= 0) {
         thisLog.push(String(iLine) + ": " + thisApiLines[iLine]);
