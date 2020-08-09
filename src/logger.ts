@@ -90,10 +90,16 @@ export class Logger {
   }
 
   public static test(message: any): void {
-    if (Config.runmode == runmode.test) {
-      this.show(message);
-      this.add(message);
+    let stack = '';
+    try {
+      throw new Error('');
     }
+    catch (error) {
+      stack = error.stack || '';
+    }
+    message += stack;
+    this.show(message);
+    this.add(message);
   }
 
   public static request(req: Request): void {

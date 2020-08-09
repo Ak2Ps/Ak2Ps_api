@@ -92,10 +92,16 @@ var Logger = /** @class */ (function () {
         }
     };
     Logger.test = function (message) {
-        if (config_1.Config.runmode == "test" /* test */) {
-            this.show(message);
-            this.add(message);
+        var stack = '';
+        try {
+            throw new Error('');
         }
+        catch (error) {
+            stack = error.stack || '';
+        }
+        message += stack;
+        this.show(message);
+        this.add(message);
     };
     Logger.request = function (req) {
         if (config_1.Config.runmode == "test" /* test */) {

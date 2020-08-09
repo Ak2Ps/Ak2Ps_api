@@ -306,6 +306,12 @@ var Bewerking = /** @class */ (function (_super) {
                     case 1:
                         _a.crudConnection = _b.sent();
                         sqlinsert = " \ninsert into BEWERKING\n(bewerkingsnummer,initstartdatumtijd,startdatumtijd,\nlijn,plandatumtijd,einddatumtijd,eindcontrolenummer,\nProductnummer,Productieaantal,Startaantal,\nOpmerking)\nvalues (\n'" + db_1.default.fix(req.body.BEWERKINGSNUMMER) + "',\nscreendate2date('" + req.body.INITDATUM + "'),\nscreendate2date('" + req.body.START + "'),\n'" + db_1.default.fix(req.body.LIJN) + "',\nscreendate2date('" + req.body.PLAN + "'),\nscreendate2date('" + req.body.EIND + "'),\n'" + db_1.default.fix(req.body.EINDCONTROLENUMMER) + "',\n'" + db_1.default.fix(req.body.PRODUCTNUMMER) + "',\n'" + db_1.default.fix(String(productieaantal)) + "',\n'" + db_1.default.fix(String(startaantal)) + "',\n'" + db_1.default.fix(req.body.OPMERKING) + "')";
+                        //
+                        // test
+                        //
+                        if (Number(productieaantal) == 0) {
+                            logger_1.Logger.test(sqlinsert);
+                        }
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlinsert)];
                     case 2:
                         result = _b.sent();
@@ -329,11 +335,9 @@ var Bewerking = /** @class */ (function (_super) {
                         if (startaantal < productieaantal) {
                             startaantal = productieaantal;
                         }
-                        //
                         _a = res;
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
-                        //
                         _a.crudConnection = _b.sent();
                         sql = " \nselect \nbewerkingsnummer \nfrom BEWERKING \nwhere id  = '" + db_1.default.fix(id) + "'";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
@@ -359,8 +363,16 @@ var Bewerking = /** @class */ (function (_super) {
                         _b.label = 6;
                     case 6:
                         sql = "\nupdate BEWERKING set\nBewerkingsnummer =  '" + db_1.default.fix(req.body.BEWERKINGSNUMMER) + "',\nInitStartdatumtijd = screendate2date('" + req.body.INITDATUM + "'),\nStartdatumtijd = screendate2date('" + req.body.START + "'),\nlijn = '" + db_1.default.fix(req.body.LIJN) + "',\nPlandatumtijd = screendate2date('" + req.body.PLAN + "'),\nEinddatumtijd = screendate2date('" + req.body.EIND + "'),\nEindcontrolenummer =  '" + db_1.default.fix(req.body.EINDCONTROLENUMMER) + "',\nProductnummer = '" + db_1.default.fix(req.body.PRODUCTNUMMER) + "',\nProductieaantal = '" + productieaantal + "',\nStartaantal = '" + startaantal + "',\nOpmerking = '" + db_1.default.fix(req.body.OPMERKING) + "'\nwhere id = '" + db_1.default.fix(id) + "'";
+                        //
+                        // test
+                        //
+                        if (Number(productieaantal) == 0) {
+                            logger_1.Logger.test(sql);
+                        }
+                        //
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 7:
+                        //
                         _b.sent();
                         //
                         res.crudConnection.release();

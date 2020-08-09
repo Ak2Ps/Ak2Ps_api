@@ -751,6 +751,13 @@ Productnummer = '${body.PRODUCTNUMMER}',
 Productieaantal = '${body.PRODUCTIEAANTAL}',
 Startaantal = '${body.STARTAANTAL}'
 where id = '${id}'`;
+                //
+                // test
+                //
+                if (Number(body.PRODUCTIEAANTAL) == 0) {
+                    Logger.test(sql);
+                }
+                //
                 await db.waitQuery(res.crudConnection, sql);
                 //
                 sql = `
@@ -836,7 +843,7 @@ where id = '${id}'`;
     public async routes(req: Request, res: Response, next: NextFunction) {
         //
         let method = req.method;
-        let action = db.fix(req.query.action||'');
+        let action = db.fix(req.query.action || '');
         //
         Logger.request(req);
         //

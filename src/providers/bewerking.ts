@@ -423,6 +423,12 @@ screendate2date('${req.body.EIND}'),
 '${db.fix(String(productieaantal))}',
 '${db.fix(String(startaantal))}',
 '${db.fix(req.body.OPMERKING)}')`;
+        //
+        // test
+        //
+        if (Number(productieaantal) == 0) {
+            Logger.test(sqlinsert);
+        }
         let result = await db.waitQuery(res.crudConnection, sqlinsert);
         req.body.ID = db.getInsertId(result);
         res.crudConnection.release();
@@ -437,7 +443,6 @@ screendate2date('${req.body.EIND}'),
         if (startaantal < productieaantal) {
             startaantal = productieaantal;
         }
-        //
         res.crudConnection = await db.waitConnection();
         // als bewerkingsnummer wijzigt
         // dan ook :
@@ -487,6 +492,13 @@ Productieaantal = '${productieaantal}',
 Startaantal = '${startaantal}',
 Opmerking = '${db.fix(req.body.OPMERKING)}'
 where id = '${db.fix(id)}'`;
+        //
+        // test
+        //
+        if (Number(productieaantal) == 0) {
+            Logger.test(sql);
+        }
+        //
         await db.waitQuery(res.crudConnection, sql);
         //
         res.crudConnection.release();
@@ -497,7 +509,7 @@ where id = '${db.fix(id)}'`;
     public async routes(req: Request, res: Response, next: NextFunction) {
         //
         let method = req.method;
-        let action = db.fix(req.query.action||'');
+        let action = db.fix(req.query.action || '');
         //
         Logger.request(req);
         //

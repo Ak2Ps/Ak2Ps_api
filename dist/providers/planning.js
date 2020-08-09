@@ -504,8 +504,16 @@ var Planning = /** @class */ (function (_super) {
                             body.BEWERKINGSNUMMER = '???';
                         }
                         sql = "\nupdate BEWERKING set\nBewerkingsnummer =  '" + body.BEWERKINGSNUMMER + "',\nStartdatumtijd =screendate2date('" + body.START + "'),\nLijn =  '" + body.LIJN + "',\nPlandatumtijd =screendate2date('" + body.PLAN + "'),\nEinddatumtijd =screendate2date('" + body.EIND + "'),\nEindcontrolenummer =  '" + body.EINDCONTROLENUMMER + "',\nProductnummer = '" + body.PRODUCTNUMMER + "',\nProductieaantal = '" + body.PRODUCTIEAANTAL + "',\nStartaantal = '" + body.STARTAANTAL + "'\nwhere id = '" + id + "'";
+                        //
+                        // test
+                        //
+                        if (Number(body.PRODUCTIEAANTAL) == 0) {
+                            logger_1.Logger.test(sql);
+                        }
+                        //
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 6:
+                        //
                         _b.sent();
                         //
                         sql = "\nupdate PRODUCT set\nPerformance =  '" + body.PERFORMANCE + "'\nwhere Productnummer = '" + body.PRODUCTNUMMER + "'";
