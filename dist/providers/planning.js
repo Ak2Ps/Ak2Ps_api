@@ -509,7 +509,7 @@ var Planning = /** @class */ (function (_super) {
                         // test
                         //
                         if (Number(body.PRODUCTIEAANTAL) == 0) {
-                            logger_1.Logger.test(sql);
+                            logger_1.Logger.test(req, sql);
                         }
                         //
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];

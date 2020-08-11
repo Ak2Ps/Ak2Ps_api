@@ -104,15 +104,35 @@ var Logger = /** @class */ (function () {
             this.add("\n<sql>\n" + message + "\n</sql>\n");
         }
     };
-    Logger.test = function (message) {
-        var stack = '';
+    Logger.test = function (req, message) {
+        var thisStack = '';
+        var thisPath = '';
+        var thisBody = '';
+        var thisQuery = '';
         try {
             throw new Error('');
         }
         catch (error) {
-            stack = error.stack || '';
+            thisStack = "stack: " + error.stack + "\n";
         }
-        message += stack;
+        if (typeof req == "string") {
+            thisPath = '';
+            thisBody = '';
+            thisQuery = '';
+        }
+        else {
+            try {
+                thisPath = "path: " + req.path + "\n";
+                thisBody = "body: " + JSON.stringify(req.body) + "\n";
+                thisQuery = "query: " + JSON.stringify(req.query) + "\n";
+            }
+            catch (error) {
+                thisPath = '???';
+                thisBody = '???';
+                thisQuery = '???';
+            }
+        }
+        message += "\n" + thisPath + thisQuery + thisBody + thisStack;
         this.show(message);
         this.add(message);
     };

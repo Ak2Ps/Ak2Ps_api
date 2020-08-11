@@ -89,15 +89,35 @@ export class Logger {
     }
   }
 
-  public static test(message: any): void {
-    let stack = '';
+  public static test(message: any): void;
+  public static test(req: Request, message: string): void;
+  public static test(req: Request | string, message?: string): void {
+    let thisStack = '';
+    let thisPath = '';
+    let thisBody = '';
+    let thisQuery = '';
     try {
       throw new Error('');
     }
     catch (error) {
-      stack = error.stack || '';
+      thisStack = `stack: ${error.stack}\n`;
     }
-    message += stack;
+    if (typeof req == "string") {
+      thisPath = '';
+      thisBody = '';
+      thisQuery = '';
+    } else {
+      try {
+        thisPath = `path: ${req.path}\n`;
+        thisBody = `body: ${JSON.stringify(req.body)}\n`;
+        thisQuery = `query: ${JSON.stringify(req.query)}\n`;
+      } catch (error) {
+        thisPath = '???';
+        thisBody = '???';
+        thisQuery = '???';
+      }
+    }
+    message += `\n${thisPath}${thisQuery}${thisBody}${thisStack}`;
     this.show(message);
     this.add(message);
   }

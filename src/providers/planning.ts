@@ -755,7 +755,7 @@ where id = '${id}'`;
                 // test
                 //
                 if (Number(body.PRODUCTIEAANTAL) == 0) {
-                    Logger.test(sql);
+                    Logger.test(req,sql);
                 }
                 //
                 await db.waitQuery(res.crudConnection, sql);

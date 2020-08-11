@@ -39,7 +39,6 @@ export class Ecm {
         (request) => {
           let responseString = "";
           request.on("data", function (data) {
-            Logger.test(data);
             responseString += data;
           });
           request.on("end", function () {
@@ -48,7 +47,6 @@ export class Ecm {
                 Logger.error(req,JSON.stringify(err));
                 resolve(result);
               } else {
-                Logger.test(xml);
                 result = {};
                 result.Number = xml.Batch.Number[0];
                 result.ErrorCode = xml.Batch.ErrorCode[0];

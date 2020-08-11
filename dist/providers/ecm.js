@@ -71,7 +71,6 @@ var Ecm = /** @class */ (function () {
                             }, function (request) {
                                 var responseString = "";
                                 request.on("data", function (data) {
-                                    logger_1.Logger.test(data);
                                     responseString += data;
                                 });
                                 request.on("end", function () {
@@ -81,7 +80,6 @@ var Ecm = /** @class */ (function () {
                                             resolve(result);
                                         }
                                         else {
-                                            logger_1.Logger.test(xml);
                                             result = {};
                                             result.Number = xml.Batch.Number[0];
                                             result.ErrorCode = xml.Batch.ErrorCode[0];

@@ -427,7 +427,7 @@ screendate2date('${req.body.EIND}'),
         // test
         //
         if (Number(productieaantal) == 0) {
-            Logger.test(sqlinsert);
+            Logger.test(req,sqlinsert);
         }
         let result = await db.waitQuery(res.crudConnection, sqlinsert);
         req.body.ID = db.getInsertId(result);
@@ -496,7 +496,7 @@ where id = '${db.fix(id)}'`;
         // test
         //
         if (Number(productieaantal) == 0) {
-            Logger.test(sql);
+            Logger.test(req,sql);
         }
         //
         await db.waitQuery(res.crudConnection, sql);

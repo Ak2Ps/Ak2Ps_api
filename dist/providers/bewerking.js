@@ -311,7 +311,7 @@ var Bewerking = /** @class */ (function (_super) {
                         // test
                         //
                         if (Number(productieaantal) == 0) {
-                            logger_1.Logger.test(sqlinsert);
+                            logger_1.Logger.test(req, sqlinsert);
                         }
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlinsert)];
                     case 2:
@@ -368,7 +368,7 @@ var Bewerking = /** @class */ (function (_super) {
                         // test
                         //
                         if (Number(productieaantal) == 0) {
-                            logger_1.Logger.test(sql);
+                            logger_1.Logger.test(req, sql);
                         }
                         //
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
