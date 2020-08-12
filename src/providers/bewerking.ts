@@ -439,7 +439,7 @@ screendate2date('${req.body.EIND}'),
     protected async doUpdate(req: Request, res: Response, next: NextFunction, options?: Dict) {
         let id = db.getDataId(req);
         let startaantal = Number(req.body.STARTAANTAL) || 0;
-        let productieaantal = Number(req.body.PRODUCTIE) || 0;
+        let productieaantal = Number(req.body.PRODUCTIEAANTAL) || 0;
         if (startaantal < productieaantal) {
             startaantal = productieaantal;
         }

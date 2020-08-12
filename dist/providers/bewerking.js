@@ -52,7 +52,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Bewerking = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -332,7 +331,7 @@ var Bewerking = /** @class */ (function (_super) {
                     case 0:
                         id = db_1.default.getDataId(req);
                         startaantal = Number(req.body.STARTAANTAL) || 0;
-                        productieaantal = Number(req.body.PRODUCTIE) || 0;
+                        productieaantal = Number(req.body.PRODUCTIEAANTAL) || 0;
                         if (startaantal < productieaantal) {
                             startaantal = productieaantal;
                         }
