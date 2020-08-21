@@ -46,7 +46,7 @@ export class Onderdeelproductgroep extends Crud {
             return;
         }
         let sql = `
-select productnummer from PRODUCTGROEPREGEL'
+select productnummer from PRODUCTGROEPREGEL
 where productgroep = '${productgroep}'
 and IsOnderdeel is null`;
         if (productnummer) {

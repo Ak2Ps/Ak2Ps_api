@@ -5,7 +5,6 @@ import db from "../db";
 import { Request, Response, NextFunction } from "express";
 import { Util } from "../util";
 import { Logger } from "../logger";
-import { PoolConnection } from 'mysql';
 import { Onderdeelproductgroep } from "./onderdeelproductgroep"
 
 const dict: Dict = {
@@ -102,6 +101,49 @@ export class Productgroep extends Crud {
     )
   }
 
+  protected async doDelete(req: Request, res: Response, next: NextFunction, options?: any) {
+    let id = db.getDataId(req);
+    let productgroep = '';
+    let msg = "";
+    //
+    let sql = `
+select * from PRODUCTGROEP
+where id = '${id}';`;
+    //
+    res.crudConnection = await db.waitConnection();
+    let rows = await db.waitQuery(res.crudConnection, sql);
+    if (rows.length <= 0) {
+      msg = "Productgroep bestaat niet";
+    } else {
+      //
+      //
+      //
+      productgroep = rows[0].PRODUCTGROEP;
+      //
+      // alle regels
+      //
+      sql = `
+delete from PRODUCTGROEPREGEL
+where productgroep = '${productgroep}'`;
+      await db.waitQuery(res.crudConnection, sql);
+      //
+      // de kop zelf
+      //
+      sql = `
+delete from PRODUCTGROEP
+where productgroep = '${productgroep}'`;
+      await db.waitQuery(res.crudConnection, sql);
+      res.status(200).send({
+        items: [{ msg: msg }]
+      });
+    }
+    //
+    // het is niet zo heel erg als hier iets mislukt
+    //
+    res.crudConnection.release();
+    return;
+  }
+
   private async doDelete9(req: Request, res: Response, next: NextFunction, options?: any) {
     let productgroep = db.fix(req.body.productgroep);
     let all = db.fix(req.body.all);
@@ -119,8 +161,8 @@ export class Productgroep extends Crud {
 select * from PRODUCTGROEP
 where productgroep = '${productgroep}';`;
     //
-    let connection = await db.waitConnection();
-    let rows = await db.waitQuery(connection, sql);
+    res.crudConnection = await db.waitConnection();
+    let rows = await db.waitQuery(res.crudConnection, sql);
     if (rows.length <= 0) {
       msg = "Productgroep bestaat niet";
     } else {
@@ -130,7 +172,7 @@ where productgroep = '${productgroep}'`;
       if (all != "all") {
         sql += ` and cast(PRODUCTNUMMER as decimal) > 0`;
       }
-      let result = await db.waitQuery(connection, sql);
+      let result = await db.waitQuery(res.crudConnection, sql);
       if (rows[0].METONDERDELEN == "1") {
         await Onderdeelproductgroep.delete(req, res, next, productgroep);
         await Onderdeelproductgroep.add(req, res, next, productgroep, "", 0);
@@ -139,7 +181,7 @@ where productgroep = '${productgroep}'`;
         items: [{ msg: msg }]
       });
     }
-    connection.release();
+    res.crudConnection.release();
     return;
   }
 
@@ -159,8 +201,8 @@ where productgroep = '${productgroep}'`;
     let sql = `select * from PRODUCTGROEP
 where productgroep = '${productgroep}';`;
     //
-    let connection = await db.waitConnection();
-    let rows = await db.waitQuery(connection, sql);
+    res.crudConnection = await db.waitConnection();
+    let rows = await db.waitQuery(res.crudConnection, sql);
     if (rows.length <= 0) {
       msg = "Productgroep bestaat niet";
     } else {
@@ -173,7 +215,7 @@ and PRODUCTGROEPREGEL.productnummer = PRODUCT.productnummer)`;
       if (all != "all") {
         sql += ` and cast(PRODUCTNUMMER as decimal) > 0`;
       }
-      let result = await db.waitQuery(connection, sql);
+      let result = await db.waitQuery(res.crudConnection, sql);
       if (rows[0].METONDERDELEN == "1") {
         await Onderdeelproductgroep.add(req, res, next, productgroep, "", 0);
       }
@@ -181,7 +223,7 @@ and PRODUCTGROEPREGEL.productnummer = PRODUCT.productnummer)`;
         items: [{ msg: msg }]
       });
     }
-    connection.release();
+    res.crudConnection.release();
     return;
   }
 

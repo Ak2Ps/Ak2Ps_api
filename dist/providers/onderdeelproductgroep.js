@@ -90,7 +90,7 @@ var Onderdeelproductgroep = /** @class */ (function (_super) {
                         if (level > 5) {
                             return [2 /*return*/];
                         }
-                        sql = "\nselect productnummer from PRODUCTGROEPREGEL'\nwhere productgroep = '" + productgroep + "'\nand IsOnderdeel is null";
+                        sql = "\nselect productnummer from PRODUCTGROEPREGEL\nwhere productgroep = '" + productgroep + "'\nand IsOnderdeel is null";
                         if (productnummer) {
                             sql += " and productnummer = '" + productnummer + "'";
                         }

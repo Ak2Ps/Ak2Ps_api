@@ -145,11 +145,66 @@ var Productgroep = /** @class */ (function (_super) {
     function Productgroep() {
         return _super.call(this, dict) || this;
     }
+    Productgroep.prototype.doDelete = function (req, res, next, options) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id, productgroep, msg, sql, _a, rows;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        id = db_1.default.getDataId(req);
+                        productgroep = '';
+                        msg = "";
+                        sql = "\nselect * from PRODUCTGROEP\nwhere id = '" + id + "';";
+                        //
+                        _a = res;
+                        return [4 /*yield*/, db_1.default.waitConnection()];
+                    case 1:
+                        //
+                        _a.crudConnection = _b.sent();
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                    case 2:
+                        rows = _b.sent();
+                        if (!(rows.length <= 0)) return [3 /*break*/, 3];
+                        msg = "Productgroep bestaat niet";
+                        return [3 /*break*/, 6];
+                    case 3:
+                        //
+                        //
+                        //
+                        productgroep = rows[0].PRODUCTGROEP;
+                        //
+                        // alle regels
+                        //
+                        sql = "\ndelete from PRODUCTGROEPREGEL\nwhere productgroep = '" + productgroep + "'";
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                    case 4:
+                        _b.sent();
+                        //
+                        // de kop zelf
+                        //
+                        sql = "\ndelete from PRODUCTGROEP\nwhere productgroep = '" + productgroep + "'";
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                    case 5:
+                        _b.sent();
+                        res.status(200).send({
+                            items: [{ msg: msg }]
+                        });
+                        _b.label = 6;
+                    case 6:
+                        //
+                        // het is niet zo heel erg als hier iets mislukt
+                        //
+                        res.crudConnection.release();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     Productgroep.prototype.doDelete9 = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var productgroep, all, msg, sql, connection, rows, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var productgroep, all, msg, sql, _a, rows, result;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         productgroep = db_1.default.fix(req.body.productgroep);
                         all = db_1.default.fix(req.body.all);
@@ -163,12 +218,15 @@ var Productgroep = /** @class */ (function (_super) {
                             return [2 /*return*/];
                         }
                         sql = "\nselect * from PRODUCTGROEP\nwhere productgroep = '" + productgroep + "';";
+                        //
+                        _a = res;
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
-                        connection = _a.sent();
-                        return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
+                        //
+                        _a.crudConnection = _b.sent();
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 2:
-                        rows = _a.sent();
+                        rows = _b.sent();
                         if (!(rows.length <= 0)) return [3 /*break*/, 3];
                         msg = "Productgroep bestaat niet";
                         return [3 /*break*/, 8];
@@ -177,24 +235,24 @@ var Productgroep = /** @class */ (function (_super) {
                         if (all != "all") {
                             sql += " and cast(PRODUCTNUMMER as decimal) > 0";
                         }
-                        return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 4:
-                        result = _a.sent();
+                        result = _b.sent();
                         if (!(rows[0].METONDERDELEN == "1")) return [3 /*break*/, 7];
                         return [4 /*yield*/, onderdeelproductgroep_1.Onderdeelproductgroep.delete(req, res, next, productgroep)];
                     case 5:
-                        _a.sent();
+                        _b.sent();
                         return [4 /*yield*/, onderdeelproductgroep_1.Onderdeelproductgroep.add(req, res, next, productgroep, "", 0)];
                     case 6:
-                        _a.sent();
-                        _a.label = 7;
+                        _b.sent();
+                        _b.label = 7;
                     case 7:
                         res.status(200).send({
                             items: [{ msg: msg }]
                         });
-                        _a.label = 8;
+                        _b.label = 8;
                     case 8:
-                        connection.release();
+                        res.crudConnection.release();
                         return [2 /*return*/];
                 }
             });
@@ -202,9 +260,9 @@ var Productgroep = /** @class */ (function (_super) {
     };
     Productgroep.prototype.doInsert9 = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var productgroep, all, msg, sql, connection, rows, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var productgroep, all, msg, sql, _a, rows, result;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         productgroep = db_1.default.fix(req.body.productgroep);
                         all = db_1.default.fix(req.body.all);
@@ -218,12 +276,15 @@ var Productgroep = /** @class */ (function (_super) {
                             return [2 /*return*/];
                         }
                         sql = "select * from PRODUCTGROEP\nwhere productgroep = '" + productgroep + "';";
+                        //
+                        _a = res;
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
-                        connection = _a.sent();
-                        return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
+                        //
+                        _a.crudConnection = _b.sent();
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 2:
-                        rows = _a.sent();
+                        rows = _b.sent();
                         if (!(rows.length <= 0)) return [3 /*break*/, 3];
                         msg = "Productgroep bestaat niet";
                         return [3 /*break*/, 7];
@@ -232,21 +293,21 @@ var Productgroep = /** @class */ (function (_super) {
                         if (all != "all") {
                             sql += " and cast(PRODUCTNUMMER as decimal) > 0";
                         }
-                        return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 4:
-                        result = _a.sent();
+                        result = _b.sent();
                         if (!(rows[0].METONDERDELEN == "1")) return [3 /*break*/, 6];
                         return [4 /*yield*/, onderdeelproductgroep_1.Onderdeelproductgroep.add(req, res, next, productgroep, "", 0)];
                     case 5:
-                        _a.sent();
-                        _a.label = 6;
+                        _b.sent();
+                        _b.label = 6;
                     case 6:
                         res.status(200).send({
                             items: [{ msg: msg }]
                         });
-                        _a.label = 7;
+                        _b.label = 7;
                     case 7:
-                        connection.release();
+                        res.crudConnection.release();
                         return [2 /*return*/];
                 }
             });
