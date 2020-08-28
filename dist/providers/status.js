@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -57,8 +38,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Status = void 0;
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
 var logger_1 = require("../logger");
@@ -68,9 +55,57 @@ var Status = /** @class */ (function () {
     function Status() {
         logger_1.Logger.info("Creating Status");
     }
+    Status.prototype.setLogger = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query, result;
+            return __generator(this, function (_a) {
+                query = db_1.default.fixQuery(req.query);
+                if (query.show_error) {
+                    if (query.show_error == "false") {
+                        config_1.Config.show_error = false;
+                    }
+                    else {
+                        config_1.Config.show_error = true;
+                    }
+                }
+                if (query.show_warning) {
+                    if (query.show_warning == "false") {
+                        config_1.Config.show_warning = false;
+                    }
+                    else {
+                        config_1.Config.show_warning = true;
+                    }
+                }
+                if (query.show_info) {
+                    if (query.show_info == "false") {
+                        config_1.Config.show_info = false;
+                    }
+                    else {
+                        config_1.Config.show_info = true;
+                    }
+                }
+                if (query.show_sql) {
+                    if (query.show_sql == "false") {
+                        config_1.Config.show_sql = false;
+                    }
+                    else {
+                        config_1.Config.show_sql = true;
+                    }
+                }
+                result = {
+                    show_error: config_1.Config.show_error,
+                    show_warning: config_1.Config.show_warning,
+                    show_info: config_1.Config.show_info,
+                    show_sql: config_1.Config.show_sql,
+                };
+                res.status(200).send(result);
+                return [2 /*return*/];
+            });
+        });
+    };
     Status.prototype.getStatus = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var poolstatus, connection, thisParam, thisError, thisErrorName, thisErrorLines, iLine, thisLog, thisApiName, thisApiLines, iLine, result;
+            var poolstatus, connection, thisParam, thisError, thisErrorName, thisErrorLines, iLine, thisLog, thisApiName, thisApiLines, iLine, thisDb, thisData, thisImport, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, db_1.default.waitPoolstatus()
@@ -114,13 +149,44 @@ var Status = /** @class */ (function () {
                                 thisLog.push(String(iLine) + ": " + thisApiLines[iLine]);
                             }
                         }
+                        thisDb = [];
+                        fs.readdirSync(config_1.Config.appDir + "/backup").map(function (filename) {
+                            if (filename.endsWith(".sql")) {
+                                var path = config_1.Config.appDir + "/backup/" + filename;
+                                var file = fs.statSync(path);
+                                thisDb.push(filename + ": (" + file.size + ")");
+                            }
+                        });
+                        thisData = [];
+                        fs.readdirSync(config_1.Config.appDir + "/backup").map(function (filename) {
+                            if (filename.endsWith(".7z")) {
+                                var path = config_1.Config.appDir + "/backup/" + filename;
+                                var file = fs.statSync(path);
+                                thisData.push(filename + ": (" + file.size + ")");
+                            }
+                        });
+                        thisImport = [];
+                        fs.readdirSync(config_1.Config.appDir + "/import").map(function (filename) {
+                            if (filename.endsWith(".log")) {
+                                var path = config_1.Config.appDir + "/import/" + filename;
+                                var file = fs.statSync(path);
+                                thisImport.push(filename);
+                            }
+                        });
                         //
                         //
                         //
                         connection.release();
                         result = {
-                            poolstatus: poolstatus,
                             versie: thisParam,
+                            show_error: config_1.Config.show_error,
+                            show_warning: config_1.Config.show_warning,
+                            show_info: config_1.Config.show_info,
+                            show_sql: config_1.Config.show_sql,
+                            poolstatus: poolstatus,
+                            dbbackupstatus: thisDb,
+                            databackupstatus: thisData,
+                            importstatus: thisImport,
                             error: thisError,
                             log: thisLog,
                         };
@@ -141,6 +207,9 @@ var Status = /** @class */ (function () {
                 //
                 if (action == "get") {
                     this.getStatus(req, res, next);
+                }
+                else if (action == "setLogger") {
+                    this.setLogger(req, res, next);
                 }
                 else {
                     util_1.Util.unknownOperation(req, res, next);
