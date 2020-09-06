@@ -309,7 +309,7 @@ var Crud = /** @class */ (function () {
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
                     case 6:
                         rows = _e.sent();
-                        req.body.ID = rows[0].last_id;
+                        req.body.ID = rows[0].LAST_ID;
                         _e.label = 7;
                     case 7:
                         //

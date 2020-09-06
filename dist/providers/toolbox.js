@@ -525,11 +525,12 @@ var Toolbox = /** @class */ (function () {
     };
     Toolbox.prototype.saveRetourKlantOpmerking = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var sql, connection, rows, result;
+            var referentie, sql, connection, rows, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        sql = "\nupdate RETOURKLANT\nset opmerking = '" + req.body.opmerking + "'\nWHERE ID = '" + req.body.id + "'";
+                        referentie = req.query.referentie || req.body.referentie || "";
+                        sql = "\nupdate RETOURKLANT\nset opmerking = '" + req.body.opmerking + "'\nWHERE REFERENTIE = '" + referentie + "'";
                         return [4 /*yield*/, db_1.default.waitConnection()];
                     case 1:
                         connection = _a.sent();

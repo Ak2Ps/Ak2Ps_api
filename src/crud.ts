@@ -253,7 +253,7 @@ from ${options?.table}`;
 select ifnull(max(ID),0) + 1 as last_id
 from ${options?.table}`;
       rows = await db.waitQuery(res.crudConnection, sql);
-      req.body.ID = rows[0].last_id;
+      req.body.ID = rows[0].LAST_ID;
     }
     //
     // mogelijk moet deze key ingevoegd worden

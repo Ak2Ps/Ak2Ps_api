@@ -425,10 +425,11 @@ WHERE REFERENTIE = '${referentie}'`;
   }
 
   private async saveRetourKlantOpmerking(req: Request, res: Response, next: NextFunction) {
+    let referentie = req.query.referentie || req.body.referentie || "";
     let sql = `
 update RETOURKLANT
 set opmerking = '${req.body.opmerking}'
-WHERE ID = '${req.body.id}'`;
+WHERE REFERENTIE = '${referentie}'`;
     let connection = await db.waitConnection();
     let rows = await db.waitQuery(connection, sql);
     connection.release();
