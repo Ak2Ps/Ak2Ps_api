@@ -52,7 +52,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Gebruikerrap = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -143,7 +142,7 @@ var Gebruikerrap = /** @class */ (function (_super) {
                             else {
                                 where += "\nand ";
                             }
-                            where += "startdatumtijd >= screendate2date('" + einddatum + "')";
+                            where += "startdatumtijd <= screendate2date('" + einddatum + "')";
                         }
                         if (inuit != '') {
                             if (where == '') {

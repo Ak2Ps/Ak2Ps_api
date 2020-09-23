@@ -121,7 +121,7 @@ from BEWERKINGTIJD`
             } else {
                 where += `\nand `;
             }
-            where += `startdatumtijd >= screendate2date('${einddatum}')`;
+            where += `startdatumtijd <= screendate2date('${einddatum}')`;
         }
         if (inuit != '') {
             if (where == '') {
