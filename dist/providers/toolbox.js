@@ -1609,7 +1609,7 @@ var Toolbox = /** @class */ (function () {
     };
     Toolbox.prototype.makeTekening = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var msg, error, shellresult, sql, rows, row, infile, outfile, tekeningnummer, bewerkingsoort, productnummer, bestelnummer, type, tekdir, outdir, curdir, dwg, indir, cmd, test, url, url2, url3, url4, url5, url6, url7, url8, url9, url10, connection, irow, thisStart_1, thisEnd_1, thisFiles, result;
+            var msg, error, shellresult, sql, rows, row, infile, outfile, tekeningnummer, bewerkingsoort, productnummer, bestelnummer, type, tekdir, outdir, curdir, dwg, indir, cmd, test, url, url2, url3, url4, url5, url6, url7, url8, url9, url10, connection, irow, thisFiles, thisStart_1, thisEnd_1, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1889,13 +1889,13 @@ var Toolbox = /** @class */ (function () {
                         if (fs.existsSync(infile) === false && test == 0) {
                             url4 = '';
                         }
+                        thisFiles = [];
                         thisStart_1 = '';
                         thisEnd_1 = '';
-                        thisFiles = [];
-                        indir = "F:\\data\\ak2\\werkvoorbereiding";
-                        thisStart_1 = indir + "\\I" + productnummer + "_";
+                        thisStart_1 = "I" + productnummer + "_";
                         thisEnd_1 = ".pdf";
                         try {
+                            indir = "F:\\data\\ak2\\werkvoorbereiding";
                             thisFiles = fs.readdirSync(indir).filter(function (element) {
                                 if (!element.startsWith(thisStart_1)) {
                                     return false;
@@ -1911,27 +1911,27 @@ var Toolbox = /** @class */ (function () {
                         }
                         //
                         if (thisFiles[0]) {
-                            infile = thisFiles[0];
+                            infile = indir + "\\" + thisFiles[0];
                             url5 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[1]) {
-                            infile = thisFiles[1];
+                            infile = indir + "\\" + thisFiles[1];
                             url6 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[2]) {
-                            infile = thisFiles[2];
+                            infile = indir + "\\" + thisFiles[2];
                             url7 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[3]) {
-                            infile = thisFiles[3];
+                            infile = indir + "\\" + thisFiles[3];
                             url8 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[4]) {
-                            infile = thisFiles[4];
+                            infile = indir + "\\" + thisFiles[4];
                             url9 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[5]) {
-                            infile = thisFiles[5];
+                            infile = indir + "\\" + thisFiles[5];
                             url10 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         _a.label = 6;
