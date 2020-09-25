@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,14 +57,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Toolbox = void 0;
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
 var logger_1 = require("../logger");
@@ -1497,7 +1510,7 @@ var Toolbox = /** @class */ (function () {
             var filename;
             return __generator(this, function (_a) {
                 filename = req.body.filename || req.query.filename;
-                res.status(200).sendFile(config_1.Config.appDir + "/pdf/" + filename);
+                res.status(200).sendFile("" + filename);
                 return [2 /*return*/];
             });
         });
@@ -1864,7 +1877,7 @@ var Toolbox = /** @class */ (function () {
                         tekeningnummer = 'W' + productnummer;
                         indir = "F:\\data\\ak2\\werkvoorbereiding";
                         infile = indir + "\\" + tekeningnummer + ".pdf";
-                        url3 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                        url3 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         if (fs.existsSync(infile) === false && test == 0) {
                             url3 = '';
                         }
@@ -1872,7 +1885,7 @@ var Toolbox = /** @class */ (function () {
                         tekeningnummer = 'O' + productnummer;
                         indir = "F:\\acltwin\\REMARKS";
                         infile = indir + "\\" + tekeningnummer + ".pdf";
-                        url4 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                        url4 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         if (fs.existsSync(infile) === false && test == 0) {
                             url4 = '';
                         }
@@ -1899,27 +1912,27 @@ var Toolbox = /** @class */ (function () {
                         //
                         if (thisFiles[0]) {
                             infile = thisFiles[0];
-                            url5 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                            url5 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[1]) {
                             infile = thisFiles[1];
-                            url6 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                            url6 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[2]) {
                             infile = thisFiles[2];
-                            url7 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                            url7 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[3]) {
                             infile = thisFiles[3];
-                            url8 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                            url8 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[4]) {
                             infile = thisFiles[4];
-                            url9 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                            url9 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         if (thisFiles[5]) {
                             infile = thisFiles[5];
-                            url10 = encodeURI("http://" + config_1.Config.server + config_1.Config.appUrl + "/toolbox.php?action=showpdf&filename=" + infile);
+                            url10 = encodeURI("http://" + config_1.Config.server + ":" + config_1.Config.serverPort + "/toolbox.php?app=" + config_1.Config.app + "&action=showpdf&filename=" + infile);
                         }
                         _a.label = 6;
                     case 6:

@@ -1293,7 +1293,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
   private async showPdf(req: Request, res: Response, next: NextFunction) {
     // nvt?
     let filename = req.body.filename || req.query.filename;
-    res.status(200).sendFile(`${Config.appDir}/pdf/${filename}`);
+    res.status(200).sendFile(`${filename}`);
     return;
     //
   }
@@ -1651,7 +1651,7 @@ where naam = '${bewerkingsoort}'`;
       tekeningnummer = 'W' + productnummer;
       indir = "F:\\data\\ak2\\werkvoorbereiding";
       infile = indir + "\\" + tekeningnummer + ".pdf";
-      url3 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+      url3 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       if (fs.existsSync(infile) === false && test == 0) {
         url3 = '';
       }
@@ -1659,7 +1659,7 @@ where naam = '${bewerkingsoort}'`;
       tekeningnummer = 'O' + productnummer;
       indir = "F:\\acltwin\\REMARKS";
       infile = indir + "\\" + tekeningnummer + ".pdf";
-      url4 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+      url4 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       if (fs.existsSync(infile) === false && test == 0) {
         url4 = '';
       }
@@ -1686,27 +1686,27 @@ where naam = '${bewerkingsoort}'`;
       //
       if (thisFiles[0]) {
         infile = thisFiles[0];
-        url5 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+        url5 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[1]) {
         infile = thisFiles[1];
-        url6 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+        url6 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[2]) {
         infile = thisFiles[2];
-        url7 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+        url7 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[3]) {
         infile = thisFiles[3];
-        url8 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+        url8 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[4]) {
         infile = thisFiles[4];
-        url9 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+        url9 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[5]) {
         infile = thisFiles[5];
-        url10 = encodeURI(`http://${Config.server}${Config.appUrl}/toolbox.php?action=showpdf&filename=${infile}`);
+        url10 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
 
     }
