@@ -52,7 +52,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Bewerkingflow = void 0;
 var crud_1 = require("../crud");
 var db_1 = __importDefault(require("../db"));
 var util_1 = require("../util");
@@ -370,7 +369,7 @@ var Bewerkingflow = /** @class */ (function (_super) {
     };
     Bewerkingflow.prototype.doDelete = function (req, res, next, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, id, bewerkingsnummer, sql, rows, row, sqldelete;
+            var _a, id, bewerkingsnummer, swError, sqlcheck, rowscheck, sql, rows, row, sqldelete;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -382,24 +381,34 @@ var Bewerkingflow = /** @class */ (function (_super) {
                         _a.crudConnection = _b.sent();
                         id = db_1.default.getDataId(req);
                         bewerkingsnummer = '';
-                        sql = "\nselect \nBEWERKINGSNUMMER from BEWERKINGFLOW\nwhere ID = '" + db_1.default.fix(id) + "'";
-                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                        swError = 0;
+                        sqlcheck = "\nselect * from BEWERKINGFLOW\nwhere ID = '" + db_1.default.fix(id) + "'\nand \n(\nexists \n(select 1 from BEWERKINGTIJD \nwhere BEWERKINGTIJD.bewerkingflowid = '" + db_1.default.fix(id) + "')\nor\nexists \n(select 1 from BEWERKINGUITVAL \nwhere BEWERKINGUITVAL.bewerkingflowid = '" + db_1.default.fix(id) + "')\n    )";
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqlcheck)];
                     case 2:
+                        rowscheck = _b.sent();
+                        if (rowscheck[0]) {
+                            req.body.msg = "Op deze bewerking is al tijd geschreven of uitval geregistreerd";
+                            swError = 1;
+                        }
+                        if (!(swError == 0)) return [3 /*break*/, 6];
+                        sql = "\nselect\nBEWERKINGSNUMMER from BEWERKINGFLOW\nwhere ID = '" + db_1.default.fix(id) + "'";
+                        return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sql)];
+                    case 3:
                         rows = _b.sent();
                         if (rows[0]) {
                             row = rows[0];
                             bewerkingsnummer = row.BEWERKINGSNUMMER;
                         }
-                        sqldelete = "\ndelete from BEWERKINGFLOW\nwhere ID = '" + db_1.default.fix(id) + "'\nand not exists \n(select 1 from BEWERKINGTIJD \nwhere BEWERKINGTIJD.bewerkingflowid = '" + db_1.default.fix(id) + "')\nand not exists \n(select 1 from BEWERKINGUITVAL \nwhere BEWERKINGUITVAL.bewerkingflowid = '" + db_1.default.fix(id) + "')";
+                        sqldelete = "\ndelete from BEWERKINGFLOW\nwhere ID = '" + db_1.default.fix(id) + "'\nand not exists\n(select 1 from BEWERKINGTIJD \nwhere BEWERKINGTIJD.bewerkingflowid = '" + db_1.default.fix(id) + "')\nand not exists\n(select 1 from BEWERKINGUITVAL \nwhere BEWERKINGUITVAL.bewerkingflowid = '" + db_1.default.fix(id) + "')";
                         return [4 /*yield*/, db_1.default.waitQuery(res.crudConnection, sqldelete)];
-                    case 3:
-                        _b.sent();
-                        if (!(bewerkingsnummer != '')) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.updateProductflow(req, res, next, bewerkingsnummer)];
                     case 4:
                         _b.sent();
-                        _b.label = 5;
+                        if (!(bewerkingsnummer != '')) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.updateProductflow(req, res, next, bewerkingsnummer)];
                     case 5:
+                        _b.sent();
+                        _b.label = 6;
+                    case 6:
                         //
                         res.crudConnection.release();
                         res.status(200).send(req.body);

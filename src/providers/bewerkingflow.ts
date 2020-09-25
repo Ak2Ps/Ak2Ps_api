@@ -425,27 +425,49 @@ screendate2date('${db.fix(req.body.TEKENINGDATUM)}'),
     //
     let id = db.getDataId(req);
     let bewerkingsnummer = '';
-    let sql = `
-select 
-BEWERKINGSNUMMER from BEWERKINGFLOW
-where ID = '${db.fix(id)}'`;
-    let rows = await db.waitQuery(res.crudConnection, sql);
-    if (rows[0]) {
-      let row = rows[0];
-      bewerkingsnummer = row.BEWERKINGSNUMMER;
-    }
-    let sqldelete = `
-delete from BEWERKINGFLOW
+    let swError = 0;
+    let sqlcheck = `
+select * from BEWERKINGFLOW
 where ID = '${db.fix(id)}'
-and not exists 
+and 
+(
+exists 
 (select 1 from BEWERKINGTIJD 
 where BEWERKINGTIJD.bewerkingflowid = '${db.fix(id)}')
-and not exists 
+or
+exists 
+(select 1 from BEWERKINGUITVAL 
+where BEWERKINGUITVAL.bewerkingflowid = '${db.fix(id)}')
+    )`;
+    let rowscheck = await db.waitQuery(res.crudConnection, sqlcheck);
+    if (rowscheck[0]) {
+      req.body.msg = "Op deze bewerking is al tijd geschreven of uitval geregistreerd";
+      swError = 1;
+    }
+    //
+    if (swError == 0) {
+      let sql = `
+select
+BEWERKINGSNUMMER from BEWERKINGFLOW
+where ID = '${db.fix(id)}'`;
+      let rows = await db.waitQuery(res.crudConnection, sql);
+      if (rows[0]) {
+        let row = rows[0];
+        bewerkingsnummer = row.BEWERKINGSNUMMER;
+      }
+      let sqldelete = `
+delete from BEWERKINGFLOW
+where ID = '${db.fix(id)}'
+and not exists
+(select 1 from BEWERKINGTIJD 
+where BEWERKINGTIJD.bewerkingflowid = '${db.fix(id)}')
+and not exists
 (select 1 from BEWERKINGUITVAL 
 where BEWERKINGUITVAL.bewerkingflowid = '${db.fix(id)}')`;
-    await db.waitQuery(res.crudConnection, sqldelete);
-    if (bewerkingsnummer != '') {
-      await this.updateProductflow(req, res, next, bewerkingsnummer);
+      await db.waitQuery(res.crudConnection, sqldelete);
+      if (bewerkingsnummer != '') {
+        await this.updateProductflow(req, res, next, bewerkingsnummer);
+      }
     }
     //
     res.crudConnection.release();
@@ -457,7 +479,7 @@ where BEWERKINGUITVAL.bewerkingflowid = '${db.fix(id)}')`;
   public async routes(req: Request, res: Response, next: NextFunction) {
     //
     let method = req.method;
-    let action = db.fix(req.query.action||'');
+    let action = db.fix(req.query.action || '');
     //
     Logger.request(req);
     //
