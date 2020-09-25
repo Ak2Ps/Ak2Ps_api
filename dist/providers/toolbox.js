@@ -1878,7 +1878,7 @@ var Toolbox = /** @class */ (function () {
                         }
                         thisStart_1 = '';
                         thisEnd_1 = '';
-                        thisFiles = void 0;
+                        thisFiles = [];
                         indir = "F:\\data\\ak2\\werkvoorbereiding";
                         thisStart_1 = indir + "\\I" + productnummer + "_";
                         thisEnd_1 = ".pdf";
@@ -1894,7 +1894,7 @@ var Toolbox = /** @class */ (function () {
                             });
                         }
                         catch (error) {
-                            return [2 /*return*/, false];
+                            thisFiles = [];
                         }
                         //
                         if (thisFiles[0]) {

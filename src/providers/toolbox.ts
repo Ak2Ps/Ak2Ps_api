@@ -1666,7 +1666,7 @@ where naam = '${bewerkingsoort}'`;
       // + I1 tm I6 in url5 tm url10
       let thisStart = '';
       let thisEnd = '';
-      let thisFiles: any;
+      let thisFiles: any= [];
       indir = "F:\\data\\ak2\\werkvoorbereiding";
       thisStart = indir + "\\I" + productnummer + "_";
       thisEnd = ".pdf";
@@ -1681,7 +1681,7 @@ where naam = '${bewerkingsoort}'`;
           return true;
         });
       } catch (error) {
-        return false;
+        thisFiles = [];
       }
       //
       if (thisFiles[0]) {
