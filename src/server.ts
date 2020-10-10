@@ -34,7 +34,7 @@ class App {
             Logger.info(`Ak2 is listening for ${Config.appUrl} on port ${Config.serverPort} ...`);
             process.title = `Ak2: ${Config.appUrl}, ${Config.serverPort}`;
         });
-        server.setTimeout(1800000);
+        server.setTimeout(3600000);
     }
 }
 

@@ -32,7 +32,7 @@ var App = /** @class */ (function () {
             logger_1.Logger.info("Ak2 is listening for " + config_1.Config.appUrl + " on port " + config_1.Config.serverPort + " ...");
             process.title = "Ak2: " + config_1.Config.appUrl + ", " + config_1.Config.serverPort;
         });
-        server.setTimeout(1800000);
+        server.setTimeout(3600000);
     }
     return App;
 }());
