@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Lijn = void 0;
 var crud_1 = require("../crud");
 var dict = {
     table: "\n(\nselect distinct \nID,\nrtrim(VALUE) as VALUE from (\nselect ifnull(productlijn,'') as ID, concat(ifnull(productlijn,''),' ', ifnull(productlijnnaam,'')) as VALUE\nfrom PRODUCTLIJN\nunion\nselect ifnull(productielijn,'') , max(concat(ifnull(productielijn,''),' ', ifnull(productielijnnaam,'')))\nfrom PRODUCTLIJN \ngroup by productielijn\n) base ) lijn",
