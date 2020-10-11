@@ -190,7 +190,7 @@ var Gebruiker = /** @class */ (function () {
                     case 19:
                         rows = _a.sent();
                         if (!req.body.wachtwoord) return [3 /*break*/, 21];
-                        sql = this.getMyPasswordUpdate(db_1.default.fix(req.body.gebruiker));
+                        sql = this.getMyPasswordUpdate(req.body);
                         return [4 /*yield*/, db_1.default.waitQuery(connection, sql)];
                     case 20:
                         rows_1 = _a.sent();

@@ -231,7 +231,7 @@ where ucase(gebruiker) = ucase('${db.fix(params.gebruiker)}');`;
         let sql = this.getMyInfoUpdate(req.body);
         let rows = await db.waitQuery(connection, sql);
         if (req.body.wachtwoord) {
-          sql = this.getMyPasswordUpdate(db.fix(req.body.gebruiker));
+          sql = this.getMyPasswordUpdate(req.body);
           let rows = await db.waitQuery(connection, sql);
           connection.release();
           res.status(200).send(`[{}]`);
