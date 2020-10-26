@@ -119,7 +119,7 @@ values (
 '${db.fix(params.BADGE1)}',
 '${db.fix(params.BADGE2)}'
 );
-select last_insert_id() as last_id;`;
+`;
     return sql;
   }
 
@@ -266,7 +266,7 @@ where ucase(gebruiker) = ucase('${db.fix(params.gebruiker)}');`;
         let connection = await db.waitConnection();
         let sql = this.getInsert(req.body);
         let rows = await db.waitQuery(connection, sql);
-        let last_id = rows[1][0].last_id;
+        let last_id = rows[0].INSERTID;
         let where = `ID = ${last_id} `;
         sql = this.getQuery(where, "");
         rows = await db.waitQuery(connection, sql);
