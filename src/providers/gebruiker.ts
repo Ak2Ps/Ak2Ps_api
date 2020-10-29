@@ -92,7 +92,7 @@ where ucase(gebruiker) = ucase('${gebruiker}');`;
 select 
 NAAM,
 GEBRUIKER,
-"???"as BARCODE 
+upper(BADGE1) as BARCODE 
 from GEBRUIKER 
 where ucase(gebruiker) = ucase('${gebruiker}');`;
     return sql;
