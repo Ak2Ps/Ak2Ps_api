@@ -265,11 +265,11 @@ where ucase(gebruiker) = ucase('${db.fix(params.gebruiker)}');`;
       } else {
         let connection = await db.waitConnection();
         let sql = this.getInsert(req.body);
-        let rows = await db.waitQuery(connection, sql);
-        let last_id = rows[0].INSERTID;
+        let result = await db.waitQuery(connection, sql);
+        let last_id = result.insertId;
         let where = `ID = ${last_id} `;
         sql = this.getQuery(where, "");
-        rows = await db.waitQuery(connection, sql);
+        let rows = await db.waitQuery(connection, sql);
         connection.release();
         res.status(200).send(rows);
         return;
