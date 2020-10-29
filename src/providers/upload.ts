@@ -1192,7 +1192,7 @@ where ifnull(status,'') != 'OLD'`;
         } else if (query.action=="get,exactbewerkontvangst") {
             json = await this.getJson('import/exactshoporderreceipts.dat');
             msg = await this.loadExactBewerkingontvangst(req, res, next, json, query.datum);
-        } else if (query.action=="get,handtekening") {
+        } else if (query.action=="handtekening") {
             msg = await this.loadHandtekening(req, res, next, filename, query.gebruiker);
         } else {
             msg = ('<p>Onbekende actie: ' + query.action + '... </p>');
