@@ -211,6 +211,7 @@ from ${options?.table}`;
   protected async doUpdateInsert(req: Request, res: Response, next: NextFunction, options?: Dict) {
     let sql: any;
     let rows: any;
+    let result: any;
     //
     res.crudConnection = await db.waitConnection();
     //
@@ -232,7 +233,7 @@ from ${options?.table}`;
     //
     // eerst maar eens checken
     //
-    let result = true;
+    result = true;
     if (await this.doCheckField(req, res, next, options) === false) {
       result = false;
     }
@@ -249,26 +250,24 @@ from ${options?.table}`;
       return;
     }
     if (Number(req.body.ID) < 0) {
-      sql = `
-select ifnull(max(ID),0) + 1 as last_id
-from ${options?.table}`;
-      rows = await db.waitQuery(res.crudConnection, sql);
-      req.body.ID = rows[0].LAST_ID;
-    }
-    //
-    // mogelijk moet deze key ingevoegd worden
-    //
-    sql = `insert into ${options?.table}`;
-    sql += this.addInsertKeyList(req, res, next, options?.key);
-    sql += "\nselect"
-    sql += this.addInsertKeyValues(req, res, next, options?.key);
-    sql += `
+      //
+      // mogelijk moet deze key ingevoegd worden
+      //
+      sql = `insert into ${options?.table}`;
+      sql += this.addInsertKeyList(req, res, next, options?.key);
+      sql += "\nselect"
+      sql += this.addInsertKeyValues(req, res, next, options?.key);
+      sql += `
 from dual where not exists 
 (select 1 from  ${options?.table}
 where `;
-    sql += this.addInsertKeyWhere(req, res, next, options?.key);
-    sql += ` )`;
-    rows = await db.waitQuery(res.crudConnection, sql);
+      sql += this.addInsertKeyWhere(req, res, next, options?.key);
+      sql += ` )`;
+      result = await db.waitQuery(res.crudConnection, sql);
+      if (result.affectedRows == 1) {
+        req.body.ID = result.insertId;
+      }
+    }
     //
     // en daarna de update
     //
@@ -316,7 +315,7 @@ where id = '${id}';`;
     let rows = await db.waitQuery(res.crudConnection, sql);
     res.crudConnection.release();
     res.status(200).send(rows);
-    return ;
+    return;
   }
 
   protected async doQuery(req: Request, res: Response, next: NextFunction, options?: Dict) {
@@ -326,7 +325,7 @@ where id = '${id}';`;
     let rows = await db.waitQuery(res.crudConnection, sql);
     res.crudConnection.release();
     res.status(200).send(rows);
-    return ;
+    return;
   }
 
   protected async doUpdate(req: Request, res: Response, next: NextFunction, options?: Dict) {
@@ -363,7 +362,7 @@ where id = '${id}';`;
   public async routes(req: Request, res: Response, next: NextFunction) {
     //
     let method = req.method;
-    let action = db.fix(req.query.action||'');
+    let action = db.fix(req.query.action || '');
     //
     Logger.request(req);
     //
