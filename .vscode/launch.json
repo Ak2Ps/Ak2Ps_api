@@ -4,24 +4,33 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
-            "type": "node",
+            "name": "Launch TAS",
             "request": "launch",
-            "name": "TAS_api",
-            "program": "C:/Ak2Ps/Ak2Ps_api/src/server.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": ["C:/Ak2Ps/Ak2Ps_api/dist/**/*.js"],
-            "args":["TAS"],
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node",
+            "args":["TAS"]
         },
         {
-            "type": "node",
+            "name": "Launch CONTROLS",
             "request": "launch",
-            "name": "CONTROLS_api",
-            "program": "C:/Ak2Ps/Ak2Ps_api/src/server.ts",
-            "preLaunchTask": "tsc: build -P tsconfig.json",
-            "outFiles": ["C:/Ak2Ps/Ak2Ps_api/dist/**/*.js"],
-            "args":["CONTROLS"],
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node",
+            "args":["CONTROLS"]
         },
     ]
 }

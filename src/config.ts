@@ -208,7 +208,11 @@ export class Config {
     //
     let json: any = {};
     //
-    Config.appnaam = process.argv[2] || 'Tas';
+    if (process.argv[2]=="--inspect"){
+      Config.appnaam = process.argv[4] || 'Tas';
+    } else {
+      Config.appnaam = process.argv[2] || 'Tas';
+    }
     if (Config.appnaam.toLowerCase() == "controls") {
       Config.ConfigFile = 'C:/Ak2Ps/Ak2Ps_server/CONTROLS/api.json';
       Config.app = 'C';
