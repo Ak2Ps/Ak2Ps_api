@@ -441,7 +441,8 @@ where BEWERKINGUITVAL.bewerkingflowid = '${db.fix(id)}')
     )`;
     let rowscheck = await db.waitQuery(res.crudConnection, sqlcheck);
     if (rowscheck[0]) {
-      req.body.msg = "Op deze bewerking is al tijd geschreven of uitval geregistreerd";
+      req.body.success = false;
+      req.body.message = "Op deze bewerking is ooit tijd geschreven of uitval geregistreerd";
       swError = 1;
     }
     //

@@ -304,7 +304,7 @@ and e.gebruiker = '${gebruiker}'`;
     //
     sql += `
 group by gebruiker, datum
-order by gebruiker, datum`;
+order by ucase(gebruiker), datum`;
     //
     let rows = await db.waitQuery(res.crudConnection, sql);
     //

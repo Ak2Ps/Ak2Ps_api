@@ -197,7 +197,8 @@ BEWERKINGFLOW.VOLGNUMMER,
 (select min(kleur) from BEWERKINGSOORT where BEWERKINGSOORT.Bewerkingsoort = BEWERKINGFLOW.bewerkingsoort) as kleur,
 sum(ifnull(uitval,0)) as aantaluitval
 from BEWERKING,BEWERKINGFLOW
-where BEWERKINGFLOW.id = '${bewerkingflowid}'`;
+where BEWERKINGFLOW.id = '${bewerkingflowid}'
+and BEWERKING.bewerkingsnummer = BEWERKINGFLOW.bewerkingsnummer`;
     let rows = await db.waitQuery(connection, sql);
     if (!rows[0]) {
       result = {

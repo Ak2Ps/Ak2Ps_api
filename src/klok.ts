@@ -46,20 +46,22 @@ export class Klok {
     let bonarr = msg.split('-');
     //
     if (scan == '') {
-      if (bonarr[0].toUpperCase() == 'U') {
-        //
-        // Bestaat de gebruiker?
-        //
-        sql = `
+      if (bonarr[0]) {
+        if (bonarr[0].toUpperCase() == 'U') {
+          //
+          // Bestaat de gebruiker?
+          //
+          sql = `
 select * 
 from GEBRUIKER 
 where upper(gebruiker) = '${bonarr[1].toUpperCase()}'`;
-        rows = await db.waitQuery(connection, sql);
-        if (rows[0]) {
-          row = rows[0];
-          scan = 'gebruiker';
-          gebruiker = row.GEBRUIKER;
-          naam = row.NAAM;
+          rows = await db.waitQuery(connection, sql);
+          if (rows[0]) {
+            row = rows[0];
+            scan = 'gebruiker';
+            gebruiker = row.GEBRUIKER;
+            naam = row.NAAM;
+          }
         }
       }
     }
@@ -67,24 +69,27 @@ where upper(gebruiker) = '${bonarr[1].toUpperCase()}'`;
     //
     //
     if (scan == '') {
-      if (bonarr[0].toUpperCase() == 'UIT') {
-        scan = 'uit';
+      if (bonarr[0]) {
+        if (bonarr[0].toUpperCase() == 'UIT') {
+          scan = 'uit';
+        }
       }
     }
     //
     //
     //
     if (scan == '') {
-      if (bonarr[0].length == 2
-        && bonarr[0].substr(0, 1).toUpperCase() == 'B') {
-        //
-        // Bestaat de bon?
-        //
-        if (bonarr[1].length >= 1
-          && bonarr[1].length < 9
-          && bonarr[2].length >= 1
-          && bonarr[2].length < 5) {
-          sql = `
+      if (bonarr[0] && bonarr[1] && bonarr[2]) {
+        if (bonarr[0].length == 2
+          && bonarr[0].substr(0, 1).toUpperCase() == 'B') {
+          //
+          // Bestaat de bon?
+          //
+          if (bonarr[1].length >= 1
+            && bonarr[1].length < 9
+            && bonarr[2].length >= 1
+            && bonarr[2].length < 5) {
+            sql = `
 select 
 BEWERKINGFLOW.ID, 
 BEWERKINGFLOW.bewerkingsnummer,
@@ -97,16 +102,17 @@ where BEWERKINGFLOW.bewerkingsnummer = '${bonarr[1]}'
 and BEWERKINGFLOW.volgnummer = '${bonarr[2]}'
 and BEWERKING.bewerkingsnummer = BEWERKINGFLOW.bewerkingsnummer
 and BEWERKINGFLOW.bewerkingsoort = BEWERKINGSOORT.bewerkingsoort`;
-          rows = await db.waitQuery(connection, sql);
-          if (rows[0]) {
-            row = rows[0];
-            scan = 'bon';
-            bewerkingsnummer = row.BEWERKINGSNUMMER;
-            bewerkingflowid = row.ID;
-            volgnummer = row.VOLGNUMMER;
-            productnummer = row.PRODUCTNUMMER;
-            bewerkingsoort = row.BEWERKINGSOORT;
-            bewerkingsoortnaam = row.BEWERKINGSOORTNAAM;
+            rows = await db.waitQuery(connection, sql);
+            if (rows[0]) {
+              row = rows[0];
+              scan = 'bon';
+              bewerkingsnummer = row.BEWERKINGSNUMMER;
+              bewerkingflowid = row.ID;
+              volgnummer = row.VOLGNUMMER;
+              productnummer = row.PRODUCTNUMMER;
+              bewerkingsoort = row.BEWERKINGSOORT;
+              bewerkingsoortnaam = row.BEWERKINGSOORTNAAM;
+            }
           }
         }
       }
