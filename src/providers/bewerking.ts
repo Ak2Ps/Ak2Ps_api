@@ -61,7 +61,9 @@ export class Bewerking extends Crud {
         let assets = db.fix(req.query.assets || '');
         if (assets == "") {
             assets = "images/";
-        } else {
+        } else if (assets == "2"){
+            assets = "";
+        } else if (assets == "1"){
             assets = "assets/image/";
         }
         let startstatistiek = '';
