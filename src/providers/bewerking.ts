@@ -161,15 +161,15 @@ and BEWERKINGFLOW.bewerkingsoort = BEWERKINGSOORT.bewerkingsoort
 ')',
 '</span>',
 (select max(
-case when einddatumtijd is null then '<img src="${assets}bewerkingopen.png"></img> '
-else '<img src="${assets}bewerkingclosed.png"></img> '
+case when einddatumtijd is null then '<img src="${assets}bewerkingopen.png"></img>'
+else '<img src="${assets}bewerkingclosed.png"></img>'
 end)
 from BEWERKINGFLOW
 where BEWERKINGFLOW.bewerkingsnummer = BASE.bewerkingsnummer
 and BEWERKINGFLOW.bewerkingsoort = BEWERKINGSOORT.bewerkingsoort
 )
 )
-order by volgnummer)
+order by volgnummer separator ', ')
 from BEWERKINGFLOW,BEWERKINGSOORT
 where BEWERKINGSOORT.bewerkingsoort = BEWERKINGFLOW.bewerkingsoort
 and BEWERKINGFLOW.bewerkingsnummer = BASE.bewerkingsnummer`;

@@ -346,7 +346,7 @@ where BEWERKINGFLOW.bewerkingsnummer = BASE.bewerkingsnummer
 and BEWERKINGFLOW.bewerkingsoort = BEWERKINGSOORT.bewerkingsoort
 )
 )
-order by volgnummer)
+order by volgnummer separator ', ')
 from BEWERKINGFLOW,BEWERKINGSOORT
 where BEWERKINGSOORT.bewerkingsoort = BEWERKINGFLOW.bewerkingsoort
 and BEWERKINGFLOW.bewerkingsnummer = BASE.bewerkingsnummer`;

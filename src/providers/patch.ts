@@ -950,6 +950,7 @@ BEGIN
                 )
             ) 
             ORDER BY BEWERKINGSOORT.VOLGORDE,BEWERKINGSOORT.BEWERKINGSOORT
+            SEPARATOR ', '
             )
         from BEWERKINGSOORT
         into thisStand;
@@ -1011,6 +1012,7 @@ BEGIN
                 )
             ) 
             ORDER BY BEWERKINGSOORT.VOLGORDE,BEWERKINGSOORT.BEWERKINGSOORT
+            SEPARATOR ', '
             )
         from BEWERKINGSOORT
         into thisStand;
