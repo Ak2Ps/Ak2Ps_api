@@ -623,7 +623,7 @@ PRODUCTVOORRAAD.productnummer = ('${productnummer}')`;
       } else {
         where += ' and ';
       }
-      where += `PRODUCTVOORRAAD.productnummer in (select productnummer from PRODUCTVRAAG where klantnaam = '${String(klant).trim()}')`;
+      where += `PRODUCTVOORRAAD.productnummer in (select productnummer from PRODUCTVRAAG where klantnummer = '${String(klant).trim()}')`;
     }
     if (String(soort).substr(0, 1) == 'M') {
       if (where == '') {

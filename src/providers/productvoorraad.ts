@@ -89,6 +89,7 @@ on (PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer)`;
             where += `ucase(PRODUCTVOORRAAD.productnummer) like ucase('${query.productnummer}%')`;
         }
         if (query.klant.trim() != '') {
+            where += Util.addAnd(where);
             where += `PRODUCTVOORRAAD.productnummer in 
 (select productnummer from PRODUCTVRAAG 
 where klantnummer = trim('${query.klant}'))`;
