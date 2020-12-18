@@ -226,6 +226,8 @@ alter table berekening add index berekening_i1(productnummer)`;
         //
         if (query.assets == "") {
             query.assets = "images/";
+        } else if (query.assets == "2"){
+            query.assets = "";
         } else {
             query.assets = "assets/image/";
         }

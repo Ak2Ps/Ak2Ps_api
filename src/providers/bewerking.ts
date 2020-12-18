@@ -63,7 +63,7 @@ export class Bewerking extends Crud {
             assets = "images/";
         } else if (assets == "2"){
             assets = "";
-        } else if (assets == "1"){
+        } else {
             assets = "assets/image/";
         }
         let startstatistiek = '';

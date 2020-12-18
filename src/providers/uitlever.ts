@@ -45,6 +45,8 @@ export class Uitlever extends Crud {
         query.startvoorraad = {};
         if (query.assets == "") {
             query.assets = "images/";
+        } else if (query.assets == "2"){
+            query.assets = "";
         } else {
             query.assets = "assets/image/";
         }
