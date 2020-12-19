@@ -11,30 +11,30 @@ export class Status {
   }
 
   private async setLogger(req: Request, res: Response, next: NextFunction) {
-    let query = db.fixQuery(req.query);
-    if (query.show_error){
-      if (query.show_error == "false"){
+    let body = db.fixQuery(req.body);
+    if (body.show_error){
+      if (body.show_error == "false"){
         Config.show_error = false;
       } else {
         Config.show_error = true;
       }
     }
-    if (query.show_warning){
-      if (query.show_warning == "false"){
+    if (body.show_warning){
+      if (body.show_warning == "false"){
         Config.show_warning = false;
       } else {
         Config.show_warning = true;
       }
     }
-    if (query.show_info){
-      if (query.show_info == "false"){
+    if (body.show_info){
+      if (body.show_info == "false"){
         Config.show_info = false;
       } else {
         Config.show_info = true;
       }
     }
-    if (query.show_sql){
-      if (query.show_sql == "false"){
+    if (body.show_sql){
+      if (body.show_sql == "false"){
         Config.show_sql = false;
       } else {
         Config.show_sql = true;

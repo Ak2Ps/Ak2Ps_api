@@ -558,6 +558,7 @@ update param set opmerking = '' where opmerking is null`
         await this.addOption(req, res, next, 'SubBeheer', 19, 'RetourActietypes', '', 'showPage("retouractietype.html")');
         await this.addOption(req, res, next, 'SubBeheer', 20, 'Plansoorten', '', 'showPage("plansoort.html")');
         await this.addOption(req, res, next, 'SubBeheer', 21, 'Update versie', '', 'showWindow("patch.php")');
+        await this.addOption(req, res, next, 'SubBeheer', 22, 'Status', '', 'showPage("status.html")');
         //
         await this.addOption(req, res, next, 'SubSuperBeheer', 1, 'Gebruikers', '', 'showPage("gebruiker.html")');
         await this.addOption(req, res, next, 'SubSuperBeheer', 7, 'Uitvalcodes', '', 'showPage("uitval.html")');
