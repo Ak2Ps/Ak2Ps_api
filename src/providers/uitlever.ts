@@ -45,7 +45,7 @@ export class Uitlever extends Crud {
         query.startvoorraad = {};
         if (query.assets == "") {
             query.assets = "images/";
-        } else if (query.assets == "2"){
+        } else if (query.assets == "2") {
             query.assets = "";
         } else {
             query.assets = "assets/image/";
@@ -179,7 +179,7 @@ from TABLE_UITLEVER`;
 or initvraagdatumtijd > screendate2date('31-12-2044'))`;
         } else if (query.sel44 == "Ja") {
             where += Util.addAnd(where);
-            where = `initvraagdatumtijd >= screendate2date('01-01-2044')
+            where += `initvraagdatumtijd >= screendate2date('01-01-2044')
 and initvraagdatumtijd <= screendate2date('31-12-2044')`;
         }
         if (query.klant != '') {
@@ -189,7 +189,35 @@ and initvraagdatumtijd <= screendate2date('31-12-2044')`;
         if (query.zoekcode) {
             if (query.zoekcode != '') {
                 where += Util.addAnd(where);
-                where = `ucase(klantzoekcode) like ucase('${query.zoekcode}%')`;
+                where += `ucase(klantzoekcode) like ucase('${query.zoekcode}%')`;
+            }
+        }
+        if (query.selVoorraad) {
+            switch (query.selVoorraad) {
+                case "Negatief":
+                    where += Util.addAnd(where);
+                    where += 'VOORRAAD < 0';
+                    break;
+                case "Positief":
+                    where += Util.addAnd(where);
+                    where += 'VOORRAAD > 0';
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (query.selVoorraadProductie) {
+            switch (query.selVoorraadProductie) {
+                case "Negatief":
+                    where += Util.addAnd(where);
+                    where += '(VOORRAAD + OPENPRODUCTIEAANTAL) < 0';
+                    break;
+                case "Positief":
+                    where += Util.addAnd(where);
+                    where += '(VOORRAAD + OPENPRODUCTIEAANTAL) > 0';
+                    break;
+                default:
+                    break;
             }
         }
         sql += `
