@@ -59,7 +59,7 @@ export class Status {
     // haal versie
     //
     let connection = await db.waitConnection();
-    let thisParam = await Util.waitParam(req, res, next, "VERSIE");
+    let thisParam = await Util.waitParamSilent(req, res, next, "VERSIE");
     //
     // tail error.log
     //
@@ -151,7 +151,7 @@ export class Status {
     let method = req.method;
     let action = Util.getLast(req.query.action);
     //
-    Logger.request(req);
+    // Logger.request(req);
     //
     if (action == "get") {
       this.getStatus(req, res, next);

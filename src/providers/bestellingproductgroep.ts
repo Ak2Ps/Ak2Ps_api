@@ -86,6 +86,7 @@ ifnull((select min(actievoorraad) from PRODUCTVOORRAAD where PRODUCT.productnumm
 ifnull((select min(voorraaddatumtijd) from PRODUCTVOORRAAD where PRODUCT.productnummer = PRODUCTVOORRAAD.productnummer and actievoorraad < 0),0) as mindatum,
 date2screendate(voorraaddatumtijd) as VOORRAADDATUM
 from PRODUCT`;
+//
         if ((productgroep != '') && (productnummer != '')) {
             if (where == '') {
                 where += ' where';
@@ -93,10 +94,10 @@ from PRODUCT`;
                 where += ' and ';
             }
             where += `
-(productnummer in 
+productnummer in 
 (select productnummer from PRODUCTGROEPREGEL
 where productgroep = '${productgroep}'
-or ucase(productnummer) like ucase('${productnummer}%'))`;
+or ucase(productnummer) like (ucase('${productnummer}%')))`;
         } else if (productgroep != '') {
             if (where == '') {
                 where += ' where';
@@ -114,7 +115,7 @@ where productgroep = '${productgroep}')`;
                 where += ' and ';
             }
             where += `
-ucase(productnummer) like ucase('${productnummer}%')`;
+ucase(productnummer) like (ucase('${productnummer}%'))`;
         } else {
             if (where == '') {
                 where += ' where';

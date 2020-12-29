@@ -207,6 +207,23 @@ where NAAM = '${naam}'`;
     return (result);
   }
 
+  public static async waitParamSilent(req: Request, res: Response, next: NextFunction, naam: string) {
+    let result = '';
+    let connection = await db.waitConnection();
+    let sql = `
+select INHOUD
+from param
+where NAAM = '${naam}'`;
+    let rows = await db.waitQuerySilent(connection, sql);
+    if (rows[0]) {
+      let row = rows[0];
+      result = row.INHOUD;
+    }
+    //
+    connection.release();
+    return (result);
+  }
+
   public static addAnd(where: string): string {
     let result = '';
     if (where == '') {
