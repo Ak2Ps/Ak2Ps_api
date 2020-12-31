@@ -1197,7 +1197,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
       }
     }
     pdf.create(html, options).toFile(`${targetdir}/${filename}.pdf`, (pdferr, pdfres) => {
-      let msg = `${filename}.pfd has been generated successfully!`;
+      let msg = `${filename}.pdf has been generated successfully!`;
       if (pdferr) {
         Logger.error(req, JSON.stringify(pdferr));
         msg = JSON.stringify(pdferr);
