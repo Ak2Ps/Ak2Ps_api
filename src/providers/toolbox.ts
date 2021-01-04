@@ -1172,7 +1172,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     let targetdir = `${Config.appDir}/pdf`;
     try {
       fs.mkdirSync(sourcedir);
-    } catch (error) {
+    } catch (error) {""
       // already exists
     }
     try {
@@ -1185,7 +1185,6 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     let options: pdf.CreateOptions = {
       format: papersize,
       orientation: orientation,
-      base: "http://localhost/ak2ps/build/",
       header: {
         height: "10mm"
       },
@@ -1221,24 +1220,11 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     let orientation = req.body.orientation || 'portrait';
     let papersize = req.body.papersize || 'A4';
     //
-    let sourcedir = `${Config.appDir}/html`;
-    let targetdir = `${Config.appDir}/pdf`;
-    try {
-      fs.mkdirSync(sourcedir);
-    } catch (error) {
-      // already exists
-    }
-    try {
-      fs.mkdirSync(targetdir);
-    } catch (error) {
-      // already exists
-    }
-    fs.writeFileSync(`${sourcedir}/${filename}.html`, scherm);
-    let html = fs.readFileSync(`${sourcedir}/${filename}.html`, 'utf8');
+    fs.writeFileSync(`${filename}.html`, scherm);
+    let html = fs.readFileSync(`${filename}.html`, 'utf8');
     let options: pdf.CreateOptions = {
       format: papersize,
       orientation: orientation,
-      base: "http://localhost/ak2ps/build/",
       header: {
         height: "10mm"
       },
@@ -1246,7 +1232,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         height: "10mm"
       }
     }
-    pdf.create(html, options).toFile(`${targetdir}/${filename}.pdf`, (pdferr, pdfres) => {
+    pdf.create(html, options).toFile(`${filename}`, (pdferr, pdfres) => {
       let msg = `${filename}.pdf has been generated successfully!`;
       if (pdferr) {
         Logger.error(req, JSON.stringify(pdferr));
@@ -1256,7 +1242,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         items: [
           {
             msg: msg,
-            filename: `pdf/${filename}`
+            filename: `${filename}`
           }]
       };
       res.status(200).send(result);

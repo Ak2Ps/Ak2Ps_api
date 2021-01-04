@@ -313,6 +313,9 @@ export class Router {
     this.app.route('/pdf/:filename').get((req, res, next) => {
       res.sendFile(`${Config.appDir}/pdf/${req.params.filename}`);
     });
+    this.app.route('/images/:filename').get((req, res, next) => {
+      res.sendFile(`${Config.appDir}/images/${req.params.filename}`);
+    });
     //
     this.app.route('/setcode.php').all((req, res, next) => this.exactinterface.routes(req, res, next));
     this.app.route('/getcode.php').all((req, res, next) => this.exactinterface.routes(req, res, next));

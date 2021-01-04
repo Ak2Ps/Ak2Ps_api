@@ -137,7 +137,11 @@ where leveranciernummer = '${row.LEVERANCIERNUMMER}'`;
         }
         let filename = '';
         let targetdir = Config.bestellingendir;
-        let targeturl = "toolbox.php?action=showpdf&filename=" + targetdir;
+        let targeturl = "http://" //
+            + Config.server + ":" + Config.serverPort //
+            + "/toolbox.php?action=showpdf" // 
+            + "&app=" + Config.app //
+            + "&filename=" + targetdir;
         try {
             fs.mkdirSync(targetdir);
         } catch (error) {
@@ -168,7 +172,7 @@ where leveranciernummer = '${row.LEVERANCIERNUMMER}'`;
 
         this.html = '';
 
-        this.html += ('<div style="height:7em;">');
+        this.html += ('<div style="height:160px;">');
         this.html += ('<table class="t">');
         this.html += ('<tr>');
         this.html += ('<td class="leftmargin">&nbsp;</td>');
@@ -234,7 +238,7 @@ where leveranciernummer = '${row.LEVERANCIERNUMMER}'`;
         this.html += ('</table>');
         this.html += ('</div>');
 
-        this.html += ('<div style="height:3em;">');
+        this.html += ('<div style="height:60px;">');
         this.html += ('<table class="t">');
         this.html += ('<tr>');
         this.html += ('<td class="leftmargin">&nbsp;</td>');
@@ -263,9 +267,9 @@ where leveranciernummer = '${row.LEVERANCIERNUMMER}'`;
         this.html += ('</div>');
 
         if (Number(req.query.copy) == 1) {
-            this.html += ('<div style="height:30em;background-image: url(images/Copy_watermark.gif);">');
+            this.html += ('<div style="height:400px;background-image: url(images/Copy_watermark.gif);">');
         } else {
-            this.html += ('<div style="height:30em;">');
+            this.html += ('<div style="height:400px;">');
         }
         this.html += ('<div>');
         // regels:
@@ -453,7 +457,7 @@ where productnummer = '${rowpick.ONDERDEELNUMMER}'`;
         this.html += ('</div>');
         this.html += ('</div>');
 
-        this.html += ('<div style="height:5em">');
+        this.html += ('<div style="height:100px">');
         //Footer
         this.html += ('<table class="t">');
         this.html += ('<tr>');
@@ -481,7 +485,7 @@ where productnummer = '${rowpick.ONDERDEELNUMMER}'`;
         this.html += ('</table>');
         this.html += ('</div>');
 
-        this.html += ('<div style="height:3em">');
+        this.html += ('<div style="height:60px">');
         this.html += ('<table class="t">');
         this.html += ('<tr>');
         this.html += ('<td class="leftmargin">&nbsp;</td>');
@@ -539,7 +543,7 @@ where productnummer = '${rowpick.ONDERDEELNUMMER}'`;
     public async routes(req: Request, res: Response, next: NextFunction) {
         //
         let method = req.method;
-        let action = db.fix(req.query.action||'');
+        let action = db.fix(req.query.action || '');
         let result = '';
         //
         Logger.request(req);
