@@ -34,7 +34,7 @@ class Db {
         free: thisFree,
       }
       let thisMessage = `Connectionpool max: ${thisLimit}, created: ${thisCount} free: ${thisFree}`;
-      Logger.info(thisMessage);
+      // silent: Logger.info(thisMessage);
       resolve(result);
     });
   }

@@ -7,7 +7,7 @@ import * as fs from "fs";
 
 export class Status {
   constructor() {
-    Logger.info("Creating Status");
+    // silent: Logger.info("Creating Status");
   }
 
   private async setLogger(req: Request, res: Response, next: NextFunction) {
