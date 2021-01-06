@@ -332,36 +332,40 @@ WHERE REFERENTIE = '${referentie}'`;
 
   private async getRetourActie(req: Request, res: Response, next: NextFunction) {
     let id = req.query.id || req.body.id;
-    let sql = `
-select ifnull(OPMERKING,'') as OPMERKING
+    let result: any = {};
+    result = {
+      items: [
+        {
+          msg: "",
+          GEBRUIKER: req.ak2_user,
+          GEBRUIKERNAAM: req.ak2_user,
+          OPMERKING: "",
+          ACTIE_DESC: "",
+        }
+      ]
+    };
+    if (Number(id) > 0) {
+      let sql = `
+select ifnull(OPMERKING,'') as OPMERKING,
+(select ifnull(min(naam),'') from RETOURACTIETYPE where retouractie.actie = RETOURACTIETYPE.actie) as ACTIE_DESC
 FROM RETOURACTIE
 WHERE ID = '${id}'`;
-    let connection = await db.waitConnection();
-    let rows = await db.waitQuery(connection, sql);
-    connection.release();
-    let result: any = {};
-    if (rows.length <= 0) {
-      result = {
-        items: [
-          {
-            msg: "Referentie onbekend",
-            GEBRUIKER: req.ak2_user,
-            GEBRUIKERNAAM: req.ak2_user,
-            OPMERKING: ""
-          }
-        ]
-      };
-    } else {
-      result = {
-        items: [
-          {
-            msg: "",
-            GEBRUIKER: req.ak2_user,
-            GEBRUIKERNAAM: req.ak2_user,
-            OPMERKING: rows[0].OPMERKING
-          }
-        ]
-      };
+      let connection = await db.waitConnection();
+      let rows = await db.waitQuery(connection, sql);
+      connection.release();
+      if (rows.length > 0) {
+        result = {
+          items: [
+            {
+              msg: "",
+              GEBRUIKER: req.ak2_user,
+              GEBRUIKERNAAM: req.ak2_user,
+              OPMERKING: rows[0].OPMERKING,
+              ACTIE_DESC: rows[0].ACTIE_DESC,
+            }
+          ]
+        };
+      }
     }
     res.status(200).send(result);
     return;
