@@ -369,36 +369,39 @@ WHERE ID = '${id}'`;
 
   private async getRetourProduct(req: Request, res: Response, next: NextFunction) {
     let id = req.query.id || req.body.id;
-    let sql = `
-select ifnull(OPMERKING,'') as OPMERKING
+    let result: any = {};
+    result = {
+      items: [
+        {
+          msg: "",
+          GEBRUIKER: req.ak2_user,
+          GEBRUIKERNAAM: req.ak2_user,
+          OPMERKING: "",
+          PRODUCTNUMMER: "",
+        }
+      ]
+    };
+    if (Number(id) > 0) {
+      let sql = `
+select ifnull(OPMERKING,'') as OPMERKING, PRODUCTNUMMER
 FROM RETOURPRODUCT
 WHERE ID = '${id}'`;
-    let connection = await db.waitConnection();
-    let rows = await db.waitQuery(connection, sql);
-    connection.release();
-    let result: any = {};
-    if (rows.length <= 0) {
-      result = {
-        items: [
-          {
-            msg: "Referentie onbekend",
-            GEBRUIKER: req.ak2_user,
-            GEBRUIKERNAAM: req.ak2_user,
-            OPMERKING: ""
-          }
-        ]
-      };
-    } else {
-      result = {
-        items: [
-          {
-            msg: "",
-            GEBRUIKER: req.ak2_user,
-            GEBRUIKERNAAM: req.ak2_user,
-            OPMERKING: rows[0].OPMERKING
-          }
-        ]
-      };
+      let connection = await db.waitConnection();
+      let rows = await db.waitQuery(connection, sql);
+      connection.release();
+      if (rows.length > 0) {
+        result = {
+          items: [
+            {
+              msg: "",
+              GEBRUIKER: req.ak2_user,
+              GEBRUIKERNAAM: req.ak2_user,
+              OPMERKING: rows[0].OPMERKING,
+              PRODUCTNUMMER: rows[0].PRODUCTNUMMER,
+            }
+          ]
+        };
+      }
     }
     res.status(200).send(result);
     return;
@@ -1172,7 +1175,8 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     let targetdir = `${Config.appDir}/pdf`;
     try {
       fs.mkdirSync(sourcedir);
-    } catch (error) {""
+    } catch (error) {
+      ""
       // already exists
     }
     try {
@@ -1652,10 +1656,10 @@ where naam = '${bewerkingsoort}'`;
       // + I1 tm I6 in url5 tm url10
       let thisFiles: any = [];
       let thisStart: string = '';
-      let thisEnd: string  = '';
+      let thisEnd: string = '';
       thisStart = "I" + productnummer + "_";
       thisEnd = ".pdf";
-  try {
+      try {
         indir = "F:\\data\\ak2\\werkvoorbereiding";
         thisFiles = fs.readdirSync(indir).filter((element) => {
           if (!element.startsWith(thisStart)) {
@@ -1675,23 +1679,23 @@ where naam = '${bewerkingsoort}'`;
         url5 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[1]) {
-        infile =  indir + "\\" + thisFiles[1];
+        infile = indir + "\\" + thisFiles[1];
         url6 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[2]) {
-        infile =  indir + "\\" + thisFiles[2];
+        infile = indir + "\\" + thisFiles[2];
         url7 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[3]) {
-        infile =  indir + "\\" + thisFiles[3];
+        infile = indir + "\\" + thisFiles[3];
         url8 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[4]) {
-        infile =  indir + "\\" + thisFiles[4];
+        infile = indir + "\\" + thisFiles[4];
         url9 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
       if (thisFiles[5]) {
-        infile =  indir + "\\" + thisFiles[5];
+        infile = indir + "\\" + thisFiles[5];
         url10 = encodeURI(`http://${Config.server}:${Config.serverPort}/toolbox.php?app=${Config.app}&action=showpdf&filename=${infile}`);
       }
 
