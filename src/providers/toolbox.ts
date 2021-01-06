@@ -1171,7 +1171,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
 
   private async makePdf(req: Request, res: Response, next: NextFunction) {
     let scherm = req.body.html || '';
-    let filename = req.body.filename || 'todo';
+    let filename = req.body.filename || 'todo.pdf';
     let orientation = req.body.orientation || 'portrait';
     let papersize = req.body.papersize || 'A4';
     //
@@ -1188,8 +1188,8 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     } catch (error) {
       // already exists
     }
-    fs.writeFileSync(`${sourcedir}/${filename}.html`, scherm);
-    let html = fs.readFileSync(`${sourcedir}/${filename}.html`, 'utf8');
+    fs.writeFileSync(`${filename}.html`, scherm);
+    let html = fs.readFileSync(`${filename}.html`, 'utf8');
     let options: pdf.CreateOptions = {
       format: papersize,
       orientation: orientation,
@@ -1203,8 +1203,8 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         left: "20mm"
       }
     }
-    pdf.create(html, options).toFile(`${targetdir}/${filename}.pdf`, (pdferr, pdfres) => {
-      let msg = `${filename}.pdf has been generated successfully!`;
+    pdf.create(html, options).toFile(`${filename}`, (pdferr, pdfres) => {
+      let msg = `${filename} has been generated successfully!`;
       if (pdferr) {
         Logger.error(req, JSON.stringify(pdferr));
         msg = JSON.stringify(pdferr);
@@ -1213,7 +1213,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         items: [
           {
             msg: msg,
-            filename: `pdf/${filename}`
+            filename: `${filename}`
           }]
       };
       res.status(200).send(result);
@@ -1241,7 +1241,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
       }
     }
     pdf.create(html, options).toFile(`${filename}`, (pdferr, pdfres) => {
-      let msg = `${filename}.pdf has been generated successfully!`;
+      let msg = `${filename} has been generated successfully!`;
       if (pdferr) {
         Logger.error(req, JSON.stringify(pdferr));
         msg = JSON.stringify(pdferr);
