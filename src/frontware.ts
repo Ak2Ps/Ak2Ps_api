@@ -22,6 +22,7 @@ export class Frontware {
     } else if (req.path.endsWith(".pdf")==true){
         res.sendFile(`${req.path.substr(1)}`);
         return;
+        
     } else if (req.path.indexOf("/ecmtester")==0){
 
     } else if (req.path.indexOf("/setcode")==0){

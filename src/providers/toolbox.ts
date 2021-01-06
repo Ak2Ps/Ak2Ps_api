@@ -1180,7 +1180,6 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     try {
       fs.mkdirSync(sourcedir);
     } catch (error) {
-      ""
       // already exists
     }
     try {
