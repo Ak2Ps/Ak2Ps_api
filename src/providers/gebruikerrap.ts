@@ -48,11 +48,11 @@ export class Gebruikerrap extends Crud {
         //
         let where = '';
         let naam = db.fix(req.query.naam || '');
+        let gebruiker = db.fix(req.query.gebruiker || '');
         let startdatum = db.fix(req.query.startdatum || '');
         let einddatum = db.fix(req.query.einddatum || '');
         let afdeling = db.fix(req.query.afdeling || '');
         let inuit = db.fix(req.query.inuit || '');
-        let gebruiker = '';
         if (naam != '') {
             sql = `
 select gebruiker 
@@ -146,8 +146,8 @@ ${where}
             } else {
                 where += `\nand `;
             }
-            where += `afdeling = (select min(afdeling) from AFDELING 
-where naam = '${afdeling}')`;
+            where += `(afdeling = (select min(afdeling) from AFDELING 
+where naam = '${afdeling}') or afdeling = '${afdeling}')`;
         }
         sql += `
 ${where}
