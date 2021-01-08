@@ -210,11 +210,11 @@ and initvraagdatumtijd <= screendate2date('31-12-2044')`;
             switch (query.selVoorraadProductie) {
                 case "Negatief":
                     where += Util.addAnd(where);
-                    where += '(VOORRAAD + OPENPRODUCTIEAANTAL) < 0';
+                    where += '(VOORRAAD + ifnull(OPENPRODUCTIEAANTAL,0)) < 0';
                     break;
                 case "Positief":
                     where += Util.addAnd(where);
-                    where += '(VOORRAAD + OPENPRODUCTIEAANTAL) > 0';
+                    where += '(VOORRAAD + ifnull(OPENPRODUCTIEAANTAL,0)) > 0';
                     break;
                 default:
                     break;
