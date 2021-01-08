@@ -179,10 +179,10 @@ and startdatumtijd >= screendate2date('${startstatistiek}')`;
 select productnummer from PRODUCTVRAAG 
 where klantnaam = trim('${query.klant}'))`;
         }
-        if (query.soort.substr(0, 1) == 'M') {
+        if (query.soort.substr(0, 1) == 'M' || query.soort.substr(0, 1) == '1') {
             where += Util.addAnd(where);
             where += `PRODUCT.soort = 'M'`;
-        } else if (query.soort.substr(0, 1) == 'V') {
+        } else if (query.soort.substr(0, 1) == 'V' || query.soort.substr(0, 1) == '0') {
             where += Util.addAnd(where);
             where += `PRODUCT.soort = 'V'`;
         }
@@ -265,7 +265,7 @@ LIMIT 0,${query.top}`;
     public async routes(req: Request, res: Response, next: NextFunction) {
         //
         let method = req.method;
-        let action = db.fix(req.query.action||'');
+        let action = db.fix(req.query.action || '');
         //
         Logger.request(req);
         //

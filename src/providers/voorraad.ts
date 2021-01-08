@@ -625,7 +625,7 @@ PRODUCTVOORRAAD.productnummer = ('${productnummer}')`;
       }
       where += `PRODUCTVOORRAAD.productnummer in (select productnummer from PRODUCTVRAAG where klantnummer = '${String(klant).trim()}')`;
     }
-    if (String(soort).substr(0, 1) == 'M') {
+    if (String(soort).substr(0, 1) == 'M' || String(soort).substr(0, 1) == '1') {
       if (where == '') {
         where += ' where ';
       } else {
@@ -633,7 +633,7 @@ PRODUCTVOORRAAD.productnummer = ('${productnummer}')`;
       }
       where += "PRODUCT.soort = 'M'";
     }
-    if (String(soort).substr(0, 1) == 'V') {
+    if (String(soort).substr(0, 1) == 'V' || String(soort).substr(0, 1) == '0') {
       if (where == '') {
         where += ' where ';
       } else {

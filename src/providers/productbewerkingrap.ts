@@ -209,10 +209,10 @@ from PRODUCT` ;
 select productnummer from PRODUCTVRAAG 
 where klantnaam = trim('${query.klant}')`;
             }
-            if (query.soort.substr(0, 1) == 'M') {
+            if (query.soort.substr(0, 1) == 'M' || query.soort.substr(0, 1) == '1') {
                 where += Util.addAnd(where);
                 where += `soort = 'M'`;
-            } else if (query.soort.substr(0, 1) == 'V') {
+            } else if (query.soort.substr(0, 1) == 'V' || query.soort.substr(0, 1) == '0') {
                 where += Util.addAnd(where);
                 where += `soort = 'V'`;
             }

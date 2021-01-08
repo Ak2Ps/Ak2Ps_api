@@ -1187,8 +1187,8 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     } catch (error) {
       // already exists
     }
-    fs.writeFileSync(`${filename}.html`, scherm);
-    let html = fs.readFileSync(`${filename}.html`, 'utf8');
+    fs.writeFileSync(`${sourcedir}/${filename}.html`, scherm);
+    let html = fs.readFileSync(`${sourcedir}/${filename}.html`, 'utf8');
     let options: pdf.CreateOptions = {
       format: papersize,
       orientation: orientation,
@@ -1202,7 +1202,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
         left: "20mm"
       }
     }
-    pdf.create(html, options).toFile(`${filename}`, (pdferr, pdfres) => {
+    pdf.create(html, options).toFile(`${targetdir}/${filename}`, (pdferr, pdfres) => {
       let msg = `${filename} has been generated successfully!`;
       if (pdferr) {
         Logger.error(req, JSON.stringify(pdferr));
