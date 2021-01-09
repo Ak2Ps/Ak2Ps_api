@@ -1221,7 +1221,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
     //
   }
 
-  private async makePdfBestelling(req: Request, res: Response, next: NextFunction) {
+  private async makePdfFile(req: Request, res: Response, next: NextFunction) {
     let scherm = req.body.html || '';
     let filename = req.body.filename || 'test.pdf';
     let orientation = req.body.orientation || 'portrait';
@@ -1800,8 +1800,8 @@ where naam = '${bewerkingsoort}'`;
       this.sendVrijMail(req, res, next);
     } else if (action == "makepdf") {
       this.makePdf(req, res, next);
-    } else if (action == "makepdfbestelling") {
-      this.makePdfBestelling(req, res, next);
+    } else if (action == "makepdfbestelling" || action == "makepdffile") {
+      this.makePdfFile(req, res, next);
     } else if (action == "makeexcel") {
       this.makeExcel(req, res, next);
     } else if (action == "showpdf") {
