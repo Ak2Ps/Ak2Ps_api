@@ -10,8 +10,12 @@ const dict: Dict = {
     table: "RETOURPRODUCT",
     key: [
         {
-            body: "ID",
-            sql: "ID",
+            body: "REFERENTIE",
+            sql: "REFERENTIE",
+        },
+        {
+            body: "PRODUCTNUMMER",
+            sql: "PRODUCTNUMMER",
         },
     ],
     altKeys: [],
@@ -222,7 +226,7 @@ where id =  '${req.query.productid}'`;
     public async routes(req: Request, res: Response, next: NextFunction) {
         //
         let method = req.method;
-        let action = db.fix(req.query.action||'');
+        let action = db.fix(req.query.action || '');
         //
         Logger.request(req);
         //

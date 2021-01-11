@@ -7,9 +7,13 @@ const dict: Dict = {
   table: "RETOURACTIE",
   key: [
     {
-      body: "ID",
-      sql: "ID",
-    }
+      body: "REFERENTIE",
+      sql: "REFERENTIE",
+    },
+    {
+      body: "ACTIE",
+      sql: "ACTIE",
+    },
   ],
   altKeys: [],
   foreignKeys: [],
