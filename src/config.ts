@@ -120,8 +120,8 @@ export class Config {
   public static show_info: boolean;
   public static show_sql: boolean;
   public static scheduleinterval: number;
-  public static exacttime: string;
   public static backuptime: string;
+  public static exacttime: string;
   //
   public static ecmserver: string;
   public static ecmport: number;
@@ -192,10 +192,12 @@ export class Config {
       bbstmtp: Config.bbsmtp,
       bbgmailuser: Config.bbgmailuser,
       bbgmailpassword: Config.bbgmailpassword,
-          //
+      //
       exactinterfaceapp: Config.exactinterfaceapp,
       exactdir: Config.exactdir,
       //
+      backuptime: Config.backuptime,
+      exacttime: Config.exacttime,
     };
     try {
       fs.writeFileSync(this.ConfigFile, JSON.stringify(json, null, 2));
@@ -208,7 +210,7 @@ export class Config {
     //
     let json: any = {};
     //
-    if (process.argv[2]=="--inspect"){
+    if (process.argv[2] == "--inspect") {
       Config.appnaam = process.argv[4] || 'Tas';
     } else {
       Config.appnaam = process.argv[2] || 'Tas';
