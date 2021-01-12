@@ -1155,7 +1155,7 @@ and date <  DATE_SUB(SYSDATE(),INTERVAL ${savedays} DAY)`;
       }
       subject += ` is uitgevoerd`;
       //
-      let message = `http://${Config.server}:${Config.serverPort}/${req.body.filename}.pdf`;
+      let message = `http://${Config.server}:${Config.serverPort}/pdf/${req.body.filename}`;
       await this.mailer.send(req.body.to, subject, message);
       msg = `Email is verzonden naar ${req.body.to}`;
     }
