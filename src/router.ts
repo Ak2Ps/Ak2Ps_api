@@ -86,6 +86,7 @@ import { Bewerkingflow } from './providers/bewerkingflow';
 import { Bewerkingflowbewerk } from './providers/bewerkingflowbewerk';
 import { Bewerkingfloweindcontrole } from './providers/bewerkingfloweindcontrole';
 import { Bewerkingflowpick } from './providers/bewerkingflowpick';
+import { Bewerkingflowperformance } from './providers/bewerkingflowperformance';
 import { Bewerkingrap } from './providers/bewerkingrap';
 import { Bewerkingtijd } from './providers/bewerkingtijd';
 import { Bewerkinguitval } from './providers/bewerkinguitval';
@@ -171,6 +172,7 @@ export class Router {
   private bewerkingflowbewerk: Bewerkingflowbewerk;
   private bewerkingfloweindcontrole: Bewerkingfloweindcontrole;
   private bewerkingflowpick: Bewerkingflowpick;
+  private bewerkingflowperformance: Bewerkingflowperformance;
   private bewerkingrap: Bewerkingrap;
   private bewerkingtijd: Bewerkingtijd;
   private bewerkinguitval: Bewerkinguitval;
@@ -259,6 +261,7 @@ export class Router {
     this.bewerkingflowbewerk = new Bewerkingflowbewerk();
     this.bewerkingfloweindcontrole = new Bewerkingfloweindcontrole();
     this.bewerkingflowpick = new Bewerkingflowpick();
+    this.bewerkingflowperformance = new Bewerkingflowperformance();
     this.bewerkingrap = new Bewerkingrap();
     this.bewerkingtijd = new Bewerkingtijd();
     this.bewerkinguitval = new Bewerkinguitval();
@@ -393,6 +396,7 @@ export class Router {
     this.app.route('/bewerkingflowbewerk.php').all((req, res, next) => this.bewerkingflowbewerk.routes(req, res, next));
     this.app.route('/bewerkingfloweindcontrole.php').all((req, res, next) => this.bewerkingfloweindcontrole.routes(req, res, next));
     this.app.route('/bewerkingflowpick.php').all((req, res, next) => this.bewerkingflowpick.routes(req, res, next));
+    this.app.route('/bewerkingflowperformance.php').all((req, res, next) => this.bewerkingflowperformance.routes(req, res, next));
     this.app.route('/bewerkingrap.php').all((req, res, next) => this.bewerkingrap.routes(req, res, next));
     this.app.route('/bewerkingtijd.php').all((req, res, next) => this.bewerkingtijd.routes(req, res, next));
     this.app.route('/bewerkinguitval.php').all((req, res, next) => this.bewerkinguitval.routes(req, res, next));
@@ -404,8 +408,3 @@ export class Router {
     this.app.route('*').all(Util.unknownOperation);
   }
 }
-/*
-todo:
-mail
-ecm
-*/

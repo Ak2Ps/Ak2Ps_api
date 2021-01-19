@@ -97,7 +97,7 @@ where naam = 'PERFORMANCESTART'`;
                 norm = Number(row.GEMIDDELD) * faktor;
                 row.NORM = norm.toFixed(0);
             }
-            if (norm == 0){
+            if (norm == 0) {
                 norm = 1;
             }
             target = Number((Number(row.TODO) / norm * 60).toFixed(0));
@@ -127,6 +127,18 @@ where naam = 'PERFORMANCESTART'`;
         if (rows[0]) {
             let row = rows[0];
             req.query.performancestart = row.INHOUD;
+        }
+        //
+        //
+        //
+        sql = `
+select * 
+from bewerking 
+where bewerkingsnummer = '${bewerkingsnummer}'`;
+        rows = await db.waitQuery(res.crudConnection, sql);
+        if (rows[0]) {
+            let row = rows[0];
+            req.query.productnummer = rows[0].PRODUCTNUMMER;
         }
         //
         sql = this.createSql(req, res, next);
@@ -260,108 +272,243 @@ where naam = 'PERFORMANCESTART'`;
         return (result);
     }
 
+    protected async doExplain(req: Request, res: Response, next: NextFunction, options?: Dict) {
+        let result: any = {};
+        let sql = '';
+        let rows: any = [];
+        res.crudConnection = await db.waitConnection();
+        //
+        // performancestart
+        //
+        req.query.performancestart = "01-01-2016";
+        let bewerkingsnummer: any = db.fix(req.query.bewerkingsnummer || '');
+        let productnummer: any = '';
+        let performancestart: any = '';
+        sql = `
+select * 
+from PARAM 
+where naam = 'PERFORMANCESTART'`;
+        rows = await db.waitQuery(res.crudConnection, sql);
+        if (rows[0]) {
+            let row = rows[0];
+            req.query.performancestart = row.INHOUD;
+        }
+        result.PERFORMANCESTART = req.query.performancestart;
+        performancestart = req.query.performancestart;
+        //
+        // productie
+        //
+        result.PRODUCTIE = {};
+        sql = `
+select * 
+from bewerking 
+where bewerkingsnummer = '${bewerkingsnummer}'`;
+        rows = await db.waitQuery(res.crudConnection, sql);
+        if (rows[0]) {
+            let row = rows[0];
+            result.PRODUCTIE = rows[0];
+            productnummer = rows[0].PRODUCTNUMMER;
+        }
+        result.PRODUCTNUMMER = productnummer;
+        req.query.productnummer = productnummer;
+        //
+        // product
+        //
+        result.PRODUCT = {};
+        sql = `
+select * 
+from product
+where productnummer = '${productnummer}'`;
+        rows = await db.waitQuery(res.crudConnection, sql);
+        if (rows[0]) {
+            let row = rows[0];
+            result.PRODUCT = rows[0];
+        }
+        //
+        // gesloten producties van dit artikel in de periode
+        //
+        result.GESLOTENPRODUCTIES = [];
+        sql = `
+select
+(select sum(tijd) from bewerkingtijd 
+where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer)
+as tijd,
+bewerking.* 
+from bewerking
+where bewerking.productnummer ='${productnummer}'
+and bewerking.einddatumtijd is not null 
+and bewerking.startdatumtijd >= screendate2date('${performancestart}')
+order by bewerking.startdatumtijd`;
+        result.GESLOTENPRODUCTIES = await db.waitQuery(res.crudConnection, sql);
+        //
+        // bewerkingen van de gesloten producties van dit artikkel in de periode
+        //
+        result.GESLOTENBEWERKINGEN = [];
+        sql = `
+select 
+(select sum(tijd) from bewerkingtijd 
+where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer 
+and bewerkingtijd.bewerkingflowid = bewerkingflow.id) 
+as tijd,
+(select reparatie from bewerkingsoort
+where bewerkingsoort = bewerkingflow.bewerkingsoort)
+as reparatie,
+(select layout from bewerkingsoort
+where bewerkingsoort = bewerkingflow.bewerkingsoort)
+as layout,
+(select naam from bewerkingsoort
+where bewerkingsoort = bewerkingflow.bewerkingsoort)
+as bewerkingsoort_oms,
+bewerkingflow.*
+from bewerkingflow inner join bewerking on bewerkingflow.bewerkingsnummer = bewerking.bewerkingsnummer
+where bewerking.productnummer ='${productnummer}'
+and bewerking.einddatumtijd is not null 
+and bewerking.startdatumtijd >= screendate2date('${performancestart}')
+order by bewerkingflow.bewerkingsoort,bewerking.startdatumtijd,bewerking.bewerkingsnummer`;
+        result.GESLOTENBEWERKINGEN = await db.waitQuery(res.crudConnection, sql);
+        //
+        res.crudConnection.release();
+        res.status(200).send(result);
+        return;
+    }
+
+
     private static createSql(req: Request, res: Response, next: NextFunction): string {
         let performancestart = req.query.performancestart;
         let bewerkingsnummer = db.fix(req.query.bewerkingsnummer || '');
         let productnummer = db.fix(req.query.productnummer || '');
         let sql = `
-        select 
-        productnummer,
-        '' as norm,
-        bewerkingsoort,
-        naam,
-        (select sum(bewerkingaantal) from bewerkingflow 
-        where bewerkingflow.bewerkingsnummer = '${bewerkingsnummer}' 
-        and bewerkingflow.bewerkingsoort = BASE.bewerkingsoort) 
-        as todo,
-        (select ifnull(sum(tijd),0) from bewerkingflow, bewerkingtijd 
-        where bewerkingtijd.bewerkingflowid = bewerkingflow.id 
-        and bewerkingflow.bewerkingsnummer = '${bewerkingsnummer}' 
-        and bewerkingflow.bewerkingsoort = BASE.bewerkingsoort) 
-        as besteed,
-        sum(bewerkingaantal) as aantal,
-        sum(tijd) as minuten,
-        round(sum(bewerkingaantal)/sum(tijd)*60) as gemiddeld, 
-        concat(round(sum(bewerkingaantal)/sum(tijd)*60),' uit ',count(*)) 
-        as uurperformance 
-        from (
-        select 
-        bewerking.productnummer, 
-        bewerking.startdatumtijd as bwk_startdatumtijd,
-        bewerking.einddatumtijd as bwk_einddatumtijd,
-        bewerkingsoort.naam,
-        bewerkingsoort.layout,
-        bewerkingflow.bewerkingsnummer, 
-        bewerkingflow.volgnummer, 
-        bewerkingflow.bewerkingsoort, 
-        bewerkingflow.einddatumtijd , 
-        bewerkingflow.bewerkingaantal,
-        (select sum(tijd) from bewerkingtijd 
-        where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer 
-        and bewerkingtijd.bewerkingflowid = bewerkingflow.id) 
-        as tijd
-        from bewerkingflow,bewerking, bewerkingsoort
-        where BEWERKING.startdatumtijd >= screendate2date('${performancestart}')
-        and BEWERKING.einddatumtijd is not null
-        and bewerking.productnummer = '${productnummer}'
-        and bewerkingflow.bewerkingsnummer = bewerking.bewerkingsnummer
-        and bewerkingsoort.bewerkingsoort = bewerkingflow.bewerkingsoort
-        and bewerkingsoort.layout in ('rapBEWERKINGFLOWBEWERK.php','rapBEWERKINGFLOWEINDCONTROLE.php')
-        and bewerkingsoort.reparatie = 0 
-        ) BASE
-        group by productnummer,bewerkingsoort,naam
-        union 
-        select 
-        productnummer,
-        performance as norm,
-        bewerkingsoort,
-        naam,
-        todo,
-        besteed,
-        aantal,
-        tijd,
-        round(sum(startaantal) * 60 / sum(tijd)) as gemiddeld,
-        concat (round(sum(startaantal) * 60 / sum(tijd)), ' uit ', aantal_bewerkingen) as uurperformance
-        from (
-        select 
-        productnummer,
-        performance,
-        'Totaal' as bewerkingsoort,
-        'Totaal' as naam ,
-        (select startaantal from bewerking where bewerking.bewerkingsnummer = '${bewerkingsnummer}')  as todo,
-        (select sum(tijd) from bewerkingtijd where bewerkingtijd.bewerkingsnummer = '${bewerkingsnummer}') as besteed,
-        (select sum(bewerkingaantal) from bewerkingflow inner join
-        (select distinct bewerkingsnummer from bewerking 
-        where bewerking.productnummer = '${productnummer}' 
-        and bewerking.einddatumtijd is not null 
-        and bewerking.startdatumtijd >= screendate2date('${performancestart}')) a 
-        on bewerkingflow.bewerkingsnummer = a.bewerkingsnummer
-        where exists (select 1 from bewerkingsoort 
-        where bewerkingflow.bewerkingsoort = bewerkingsoort.bewerkingsoort
-        and bewerkingsoort.voortgang = 1)
-        and exists (select 1 from bewerkingtijd
-        where bewerkingflow.id = bewerkingtijd.bewerkingflowid)
-        ) as aantal,
-        (select sum(startaantal) from bewerking
-        where bewerking.productnummer = '${productnummer}' 
-        and bewerking.einddatumtijd is not null 
-        and bewerking.startdatumtijd >= screendate2date('${performancestart}'))
-        as startaantal,
-        (select sum(tijd) from bewerkingtijd  inner join
-        ( select distinct bewerkingsnummer from bewerking
-        where bewerking.productnummer = '${productnummer}'
-        and bewerking.einddatumtijd is not null 
-        and bewerking.startdatumtijd >= screendate2date('${performancestart}')) b
-        on bewerkingtijd.bewerkingsnummer = b.bewerkingsnummer
-        where exists (select 1 from bewerkingflow
-        where bewerkingflow.id = bewerkingtijd.bewerkingflowid)
-        ) as tijd,
-        (select count(*) from bewerking
-        where bewerking.productnummer ='${productnummer}'
-        and bewerking.einddatumtijd is not null 
-        and bewerking.startdatumtijd >= screendate2date('${performancestart}'))  as aantal_bewerkingen
-        from product where productnummer = '${productnummer}'
-        ) basetot`;
+select 
+productnummer,
+'' as norm,
+bewerkingsoort,
+naam,
+(select sum(bewerkingaantal) from bewerkingflow 
+where bewerkingflow.bewerkingsnummer = '${bewerkingsnummer}' 
+and bewerkingflow.bewerkingsoort = BASE.bewerkingsoort) 
+as todo,
+(select ifnull(sum(tijd),0) from bewerkingflow, bewerkingtijd 
+where bewerkingtijd.bewerkingflowid = bewerkingflow.id 
+and bewerkingflow.bewerkingsnummer = '${bewerkingsnummer}' 
+and bewerkingflow.bewerkingsoort = BASE.bewerkingsoort) 
+as besteed,
+sum(bewerkingaantal) as aantal,
+sum(tijd) as minuten,
+round(sum(bewerkingaantal)/sum(tijd)*60) as gemiddeld, 
+concat(round(sum(bewerkingaantal)/sum(tijd)*60),' uit ',count(*)) 
+as uurperformance 
+from (
+select 
+bewerking.productnummer, 
+bewerking.startdatumtijd as bwk_startdatumtijd,
+bewerking.einddatumtijd as bwk_einddatumtijd,
+bewerkingsoort.naam,
+bewerkingsoort.layout,
+bewerkingflow.bewerkingsnummer, 
+bewerkingflow.volgnummer, 
+bewerkingflow.bewerkingsoort, 
+bewerkingflow.einddatumtijd , 
+bewerkingflow.bewerkingaantal,
+(select sum(tijd) from bewerkingtijd 
+where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer 
+and bewerkingtijd.bewerkingflowid = bewerkingflow.id) 
+as tijd
+from bewerkingflow,bewerking, bewerkingsoort
+where BEWERKING.startdatumtijd >= screendate2date('${performancestart}')
+and BEWERKING.einddatumtijd is not null
+and bewerking.productnummer = '${productnummer}'
+and bewerkingflow.bewerkingsnummer = bewerking.bewerkingsnummer
+and bewerkingsoort.bewerkingsoort = bewerkingflow.bewerkingsoort
+and bewerkingsoort.layout in ('rapBEWERKINGFLOWBEWERK.php','rapBEWERKINGFLOWEINDCONTROLE.php')
+and bewerkingsoort.reparatie = 0 
+) BASE
+group by productnummer,bewerkingsoort,naam
+union 
+select 
+productnummer,
+performance as norm,
+bewerkingsoort,
+naam,
+todo,
+besteed,
+aantal,
+tijd,
+round(sum(startaantal) * 60 / sum(tijd)) as gemiddeld,
+concat (round(sum(startaantal) * 60 / sum(tijd)), ' uit ', aantal_bewerkingen) as uurperformance
+from (
+select 
+productnummer,
+performance,
+'Totaal' as bewerkingsoort,
+'Totaal' as naam ,
+(select startaantal from bewerking where bewerking.bewerkingsnummer = '${bewerkingsnummer}')  as todo,
+(select sum(tijd) from bewerkingtijd where bewerkingtijd.bewerkingsnummer = '${bewerkingsnummer}') as besteed,
+(select sum(bewerkingaantal) from bewerkingflow inner join
+(select distinct bewerkingsnummer from bewerking 
+where bewerking.productnummer = '${productnummer}' 
+and bewerking.einddatumtijd is not null 
+and bewerking.startdatumtijd >= screendate2date('${performancestart}')) a 
+on bewerkingflow.bewerkingsnummer = a.bewerkingsnummer
+where exists (select 1 from bewerkingsoort 
+where bewerkingflow.bewerkingsoort = bewerkingsoort.bewerkingsoort
+and bewerkingsoort.voortgang = 1)
+and exists (select 1 from bewerkingtijd
+where bewerkingflow.id = bewerkingtijd.bewerkingflowid)
+) as aantal,
+(select sum(startaantal) from bewerking
+where bewerking.productnummer = '${productnummer}' 
+and bewerking.einddatumtijd is not null 
+and bewerking.startdatumtijd >= screendate2date('${performancestart}'))
+as startaantal,
+(select sum(tijd) from bewerkingtijd  inner join
+( select distinct bewerkingsnummer from bewerking
+where bewerking.productnummer = '${productnummer}'
+and bewerking.einddatumtijd is not null 
+and bewerking.startdatumtijd >= screendate2date('${performancestart}')) b
+on bewerkingtijd.bewerkingsnummer = b.bewerkingsnummer
+where exists (select 1 from bewerkingflow
+where bewerkingflow.id = bewerkingtijd.bewerkingflowid)
+) as tijd,
+(select count(*) from bewerking
+where bewerking.productnummer ='${productnummer}'
+and bewerking.einddatumtijd is not null 
+and bewerking.startdatumtijd >= screendate2date('${performancestart}'))  as aantal_bewerkingen
+from product where productnummer = '${productnummer}'
+) basetot`;
         return sql;
     }
+
+
+    public async routes(req: Request, res: Response, next: NextFunction) {
+        //
+        let method = req.method;
+        let action = db.fix(req.query.action || '');
+        //
+        Logger.request(req);
+        //
+        if (action == "select") {
+            this.doSelect(req, res, next, this.dict);
+        } else if (action == "explain") {
+            this.doExplain(req, res, next, this.dict);
+        } else if (action == "getHtml") {
+            let bewerkingsnummer: any = db.fix(req.query.bewerkingsnummer || '');
+            let productnummer: any = '';
+            res.crudConnection = await db.waitConnection();
+            let result = await Bewerkingflowperformance.print(req, res, next,bewerkingsnummer,productnummer);
+            res.crudConnection.release();
+            res.status(200).send(result);
+        } else if (method == "GET") {
+            this.doQuery(req, res, next, this.dict);
+        } else if (method == "PUT") {
+            this.doUpdate(req, res, next, this.dict);
+        } else if (method == "POST") {
+            this.doInsert(req, res, next, this.dict);
+        } else if (method == "DELETE") {
+            this.doDelete(req, res, next, this.dict);
+        } else {
+            Util.unknownOperation(req, res, next);
+        }
+    }
+
+
 }

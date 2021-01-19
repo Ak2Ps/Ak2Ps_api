@@ -358,6 +358,13 @@ where NAAM in (
             sql = `
 update param set opmerking = '' where opmerking is null`
             await db.waitDDL(res.crudConnection, sql);
+            //
+            thisVersion = await this.setVersion(req, res, next, '2021.1');
+        }
+        // 2021.1
+        if (thisVersion == '2021.1') {
+            Logger.info("DoAlter 2021.1 ...");
+            //thisVersion = await this.setVersion(req, res, next, '2022.1');
         }
         //
         res.crudResult.messages.push({ field: "Patch", message: `database upgraded to version ${thisVersion} ...` });
@@ -429,7 +436,7 @@ update param set opmerking = '' where opmerking is null`
         await this.addOption(req, res, next, 'Admin', 2, 'Beheer', 'SubBeheer', '');
         await this.addOption(req, res, next, 'Admin', 3, 'Klok', 'SubKlok', '');
         await this.addOption(req, res, next, 'Admin', 4, 'Importeren', 'SubImport', '');
-        await this.addOption(req, res, next, 'Admin', 5, 'Overzichten', 'SubLijst', '');
+        await this.addOption(req, res, next, 'Admin', 5, 'Overzichten', 'SubSuperLijst', '');
         await this.addOption(req, res, next, 'Admin', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '');
         await this.addOption(req, res, next, 'Admin', 7, 'Productie', 'SubProductie', '');
         await this.addOption(req, res, next, 'Admin', 8, 'Inkoop', 'SubInkoop', '');
@@ -441,7 +448,7 @@ update param set opmerking = '' where opmerking is null`
         await this.addOption(req, res, next, 'Super', 2, 'Beheer', 'SubSuperBeheer', '');
         await this.addOption(req, res, next, 'Super', 3, 'Klok', 'SubKlok', '');
         await this.addOption(req, res, next, 'Super', 4, 'Importeren', 'SubImport', '');
-        await this.addOption(req, res, next, 'Super', 5, 'Overzichten', 'SubLijst', '');
+        await this.addOption(req, res, next, 'Super', 5, 'Overzichten', 'SubSuperLijst', '');
         await this.addOption(req, res, next, 'Super', 6, 'Werkvoorbereiding', 'SubWerkvoorbereiding', '');
         await this.addOption(req, res, next, 'Super', 7, 'Productie', 'SubProductie', '');
         await this.addOption(req, res, next, 'Super', 8, 'Inkoop', 'SubInkoop', '');
@@ -596,6 +603,16 @@ update param set opmerking = '' where opmerking is null`
         await this.addOption(req, res, next, 'SubImport', 17, 'Logging', '', 'showBb("Log")');
         //
         // Lijst
+        //
+        await this.addOption(req, res, next, 'SubSuperLijst', 1, 'Leveranciers', '', 'showPage("leverancier.html")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 2, 'Klanten', '', 'showPage("klant.html")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 3, 'Producten/startvoorraad', '', 'showPage("product.html")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 4, 'Stuklijst', '', 'showPage("onderdeel.html")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 5, 'Bestellingen', '', 'showPage("bestelling.html")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 6, 'Orders', '', 'showPage("productvraag.html?sel44=Alle")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 7, 'Productie', '', 'showPage("bewerking.html?showNorm=Ja")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 8, 'Voorraad', '', 'showPage("productvoorraad.html")');
+        await this.addOption(req, res, next, 'SubSuperLijst', 9, 'Vrijgegeven dagen', '', 'showPage("mnl.html")');
         //
         await this.addOption(req, res, next, 'SubLijst', 1, 'Leveranciers', '', 'showPage("leverancier.html")');
         await this.addOption(req, res, next, 'SubLijst', 2, 'Klanten', '', 'showPage("klant.html")');
