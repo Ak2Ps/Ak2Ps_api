@@ -300,7 +300,7 @@ where naam = 'PERFORMANCESTART'`;
         //
         result.PRODUCTIE = {};
         sql = `
-select * 
+select *
 from bewerking 
 where bewerkingsnummer = '${bewerkingsnummer}'`;
         rows = await db.waitQuery(res.crudConnection, sql);
@@ -333,6 +333,8 @@ select
 (select sum(tijd) from bewerkingtijd 
 where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer)
 as tijd,
+date2screendate(bewerking.startdatumtijd) as START,
+date2screendate(bewerking.einddatumtijd) as EIND,
 bewerking.* 
 from bewerking
 where bewerking.productnummer ='${productnummer}'
@@ -359,6 +361,8 @@ as layout,
 (select naam from bewerkingsoort
 where bewerkingsoort = bewerkingflow.bewerkingsoort)
 as bewerkingsoort_oms,
+date2screendate(bewerkingflow.startdatumtijd) as START,
+date2screendate(bewerkingflow.einddatumtijd) as EIND,
 bewerkingflow.*
 from bewerkingflow inner join bewerking on bewerkingflow.bewerkingsnummer = bewerking.bewerkingsnummer
 where bewerking.productnummer ='${productnummer}'
