@@ -330,8 +330,9 @@ where productnummer = '${productnummer}'`;
         result.GESLOTENPRODUCTIES = [];
         sql = `
 select
-(select sum(tijd) from bewerkingtijd 
-where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer)
+(select sum(tijd) from bewerkingtijd,bewerkingflow
+where bewerkingtijd.bewerkingflowid = bewerkingflow.id
+and bewerkingflow.bewerkingsnummer = bewerking.bewerkingsnummer)
 as tijd,
 date2screendate(bewerking.startdatumtijd) as START,
 date2screendate(bewerking.einddatumtijd) as EIND,
@@ -348,9 +349,8 @@ order by bewerking.startdatumtijd`;
         result.GESLOTENBEWERKINGEN = [];
         sql = `
 select 
-(select sum(tijd) from bewerkingtijd 
-where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer 
-and bewerkingtijd.bewerkingflowid = bewerkingflow.id) 
+(select sum(tijd) from bewerkingtijd
+where bewerkingtijd.bewerkingflowid = bewerkingflow.id) 
 as tijd,
 (select reparatie from bewerkingsoort
 where bewerkingsoort = bewerkingflow.bewerkingsoort)
@@ -414,8 +414,7 @@ bewerkingflow.bewerkingsoort,
 bewerkingflow.einddatumtijd , 
 bewerkingflow.bewerkingaantal,
 (select sum(tijd) from bewerkingtijd 
-where bewerkingtijd.bewerkingsnummer = bewerking.bewerkingsnummer 
-and bewerkingtijd.bewerkingflowid = bewerkingflow.id) 
+where bewerkingtijd.bewerkingflowid = bewerkingflow.id) 
 as tijd
 from bewerkingflow,bewerking, bewerkingsoort
 where BEWERKING.startdatumtijd >= screendate2date('${performancestart}')
@@ -446,7 +445,7 @@ performance,
 'Totaal' as bewerkingsoort,
 'Totaal' as naam ,
 (select startaantal from bewerking where bewerking.bewerkingsnummer = '${bewerkingsnummer}')  as todo,
-(select sum(tijd) from bewerkingtijd where bewerkingtijd.bewerkingsnummer = '${bewerkingsnummer}') as besteed,
+(select sum(tijd) from bewerkingtijd,bewerkingflow where bewerkingtijd.bewerkingflowid = bewerkingflow.id and bewerkingflow.bewerkingsnummer = '${bewerkingsnummer}') as besteed,
 (select sum(bewerkingaantal) from bewerkingflow inner join
 (select distinct bewerkingsnummer from bewerking 
 where bewerking.productnummer = '${productnummer}' 
