@@ -43,6 +43,7 @@ export class Logistiek extends Crud {
         //
         let productnummer = db.fix(req.query.productnummer || '');
         let lijn = db.fix(req.query.lijn || '');
+        let productlijn = db.fix(req.query.productlijn || '');
         let datum = db.fix(req.query.datum || '');
         if (datum == '') {
             datum = '01-01-1880';
@@ -74,6 +75,8 @@ if ((select max(lijn) from BEWERKINGFLOW lijnbwf where lijnbwf.bewerkingsnummer 
         )
     )
 ) as lijn,
+(select max(lijn) from PRODUCT productlijnprd 
+where productlijnprd.productnummer = BEWERKING.productnummer) as productlijn,
 (select min(naam) from BEWERKINGSOORT 
 where BEWERKINGSOORT.bewerkingsoort = BEWERKINGFLOW.bewerkingsoort) 
 as bewerkingsoort,
@@ -125,6 +128,14 @@ where layout = 'rapBEWERKINGFLOWPICK.php'`;
                 where += '\nand ';
             }
             where += `lijn = '${lijn}'`;
+        }
+        if (productlijn != '') {
+            if (where == '') {
+                where += '\nwhere ';
+            } else {
+                where += '\nand ';
+            }
+            where += `productlijn = '${productlijn}'`;
         }
         sql += `
 ${where}
