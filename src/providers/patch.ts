@@ -663,12 +663,12 @@ update param set opmerking = '' where opmerking is null`
         await this.addOption(req, res, next, 'SubInkoop', 6, 'Bestellingen', '', 'showPage("bestellingkop.html")');
         await this.addOption(req, res, next, 'SubInkoop', 7, 'Open bestellingen', '', 'showPage("bestelling.html?inkoop=Ja")');
         await this.addOption(req, res, next, 'SubInkoop', 8, 'Bestellingen die te laat zijn', '', 'showPage("bestellingtelaat.html")');
-        await this.addOption(req, res, next, 'SubInkoop', 9, '44 Orders', '', 'showPage("productvraag.html?sel44=Ja")');
+        await this.addOption(req, res, next, 'SubInkoop', 9, '44Plus Orders', '', 'showPage("productvraag.html?sel44=Ja")');
         await this.addOption(req, res, next, 'SubInkoop', 10, 'Uitleverlijst', '', 'showPage("uitlever.html")');
         //
         // Order
         //
-        await this.addOption(req, res, next, 'SubOrder', 1, '44 Orders', '', 'showPage("productvraag.html?selRo=Ja&sel44=Ja&1=1")');
+        await this.addOption(req, res, next, 'SubOrder', 1, '44Plus Orders', '', 'showPage("productvraag.html?selRo=Ja&sel44=Ja&1=1")');
         await this.addOption(req, res, next, 'SubOrder', 2, 'Uitleverlijst', '', 'showPage("uitlever.html")');
         //
         // Retouren

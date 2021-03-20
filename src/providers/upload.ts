@@ -59,14 +59,14 @@ export class Upload extends Crud {
         return db.fix(result);
     }
 
-    protected get44Vraagdatum(datum: string): string {
+    protected get44PlusVraagdatum(datum: string): string {
         let vraagdatum = datum;
         //
         let dag = datum.substr(0, 2);
         let maand = datum.substr(3, 2);
         let jaar = datum.substr(6, 4);
         //
-        if (Number(jaar) == 2044) {
+        if (Number(jaar) >= 2044) {
             let vraagdag = vraagdatum.substr(0, 2);
             let vraagmaand = vraagdatum.substr(3, 2);
             let vraagjaar = vraagdatum.substr(6, 4);
@@ -806,9 +806,9 @@ and einddatumtijd is not null`;
                                 swfound = 1;
                             }
                             //
-                            // 44 vraagdatum eventueel aanpassen
+                            // 44Plus vraagdatum eventueel aanpassen
                             //
-                            let vraagdatum = this.get44Vraagdatum(datum);
+                            let vraagdatum = this.get44PlusVraagdatum(datum);
                             if (swfound == 0) {
                                 sql = `
 insert into PRODUCTVRAAG (

@@ -196,6 +196,7 @@ class Db {
       if (value == null) {
         value = "";
       }
+      value = value.replace(/%20/gi, " ");
       value = this.fix(value);
       query[key] = value;
     }
