@@ -112,6 +112,21 @@ when '?' = 'Nee' then
 initvraagdatumtijd < screendate2date('01-01-2044')
 or initvraagdatumtijd > screendate2date('31-12-2044')
 else true end)`,
+            },
+            {
+                query: "sel44plus",
+                sql: `(
+case 
+when '?' = 'Nee' then
+initvraagdatumtijd < screendate2date('01-01-2044')
+when '?' = 'Ja' then
+initvraagdatumtijd >= screendate2date('01-01-2044')
+when '?' = 'Alle' then
+true
+else 
+initvraagdatumtijd >= screendate2date('01-01-20?')
+and initvraagdatumtijd <= screendate2date('31-12-20?')
+end)`,
             }
         ],
         fields: [

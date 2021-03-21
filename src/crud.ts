@@ -42,7 +42,7 @@ export class Crud {
         } else {
           result += "\nand ";
         }
-        result += (element.sql as string).replace("?", `${thisString}`);
+        result += (element.sql as string).replace(/\?/g, `${thisString}`);
       }
     });
     return result;
