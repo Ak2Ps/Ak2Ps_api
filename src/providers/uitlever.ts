@@ -165,23 +165,35 @@ select *,
 getOpenAantal(productnummer) as openaantal,
 case when 
 initvraagdatumtijd >= screendate2date('01-01-2044')
-and initvraagdatumtijd <= screendate2date('31-12-2044')
-then concat('(44) ', ORDERREFERENTIE) 
+then concat('(',substr(date2screendate(initvraagdatumtijd),9),') ', ORDERREFERENTIE) 
 else ORDERREFERENTIE end 
 as ORDERREFERENTIE
 from TABLE_UITLEVER`;
         where = '';
         where += Util.addAnd(where);
         where += `vraag != 0`;
-        if (query.sel44 == 'Nee') {
-            where += Util.addAnd(where);
-            where += `(initvraagdatumtijd < screendate2date('01-01-2044')
-or initvraagdatumtijd > screendate2date('31-12-2044'))`;
-        } else if (query.sel44 == "Ja") {
-            where += Util.addAnd(where);
-            where += `initvraagdatumtijd >= screendate2date('01-01-2044')
-and initvraagdatumtijd <= screendate2date('31-12-2044')`;
+        //
+        //
+        //
+        if (query.sel44plus) {
+            if (query.sel44plus == 'Nee') {
+                where += Util.addAnd(where);
+                where += ` (initvraagdatumtijd < screendate2date('01-01-2044'))`;
+            } else if (query.sel44plus == "Ja") {
+                where += Util.addAnd(where);
+                where += ` (initvraagdatumtijd >= screendate2date('01-01-2044'))`;
+            } else if (query.sel44plus == "Alle") {
+            } else {
+                where += Util.addAnd(where);
+                where += `
+(initvraagdatumtijd >= screendate2date('01-01-20${query.sel44plus}')
+and
+initvraagdatumtijd < screendate2date('31-12-20${query.sel44plus}'))`;
+            }
         }
+        //
+        //
+        //
         if (query.klant != '') {
             where += Util.addAnd(where);
             where += `klantnummer = '${query.klant}'`;

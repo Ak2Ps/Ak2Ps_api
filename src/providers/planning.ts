@@ -226,7 +226,7 @@ alter table berekening add index berekening_i1(productnummer)`;
         //
         if (query.assets == "") {
             query.assets = "images/";
-        } else if (query.assets == "2"){
+        } else if (query.assets == "2") {
             query.assets = "";
         } else {
             query.assets = "assets/image/";
@@ -534,12 +534,9 @@ inner join PRODUCT on (PRODUCTVOORRAAD.productnummer = PRODUCT.productnummer)`;
                     where += `ucase(PRODUCTVOORRAAD.productnummer) like ucase('${query.productnummer}%')`;
                 }
             }
-            if (query.sel44 == 'Nee') {
-                where += Util.addAnd(where);
-                where += `
-(PRODUCTVOORRAAD.voorraaddatumtijd < screendate2date('01-01-2044')
-or PRODUCTVOORRAAD.voorraaddatumtijd > screendate2date('31-12-2044'))`;
-            }
+            //
+            //
+            //
             if (query.seltm != '') {
                 where += Util.addAnd(where);
                 where += `
@@ -757,7 +754,7 @@ where id = '${id}'`;
                 // test
                 //
                 if (Number(body.PRODUCTIEAANTAL) == 0) {
-                    Logger.test(req,sql);
+                    Logger.test(req, sql);
                 }
                 //
                 await db.waitQuery(res.crudConnection, sql);

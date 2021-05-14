@@ -36,7 +36,7 @@ const dict: Dict = {
         ],
     },
     query: {
-        orderby: "PRODUCTNUMMER,ORDERNUMMER,REGELNUMMER",
+        orderby: "VRAAGDATUMTIJD,PRODUCTNUMMER,ORDERNUMMER,REGELNUMMER",
         where: [
             {
                 query: "id",
