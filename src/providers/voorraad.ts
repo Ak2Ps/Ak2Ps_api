@@ -579,6 +579,7 @@ where id = trim('${row.ID}')`;
   protected async doQuery(req: Request, res: Response, next: NextFunction, options?: Dict) {
     //
     let productnummer = req.query.productnummer || "";
+    productnummer = String(productnummer).replace(/%20/gi,' ');
     let soort = req.query.soort || "";
     let lijn = req.query.lijn || "";
     let klant = req.query.klant || "";
