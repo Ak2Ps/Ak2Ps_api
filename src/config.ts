@@ -130,6 +130,7 @@ export class Config {
   public static retourendir: string;
   //
   public static dbhost: string;
+  public static dbport: number;
   public static dbuser: string;
   public static dbpassword: string;
   public static dbschema: string;
@@ -183,6 +184,7 @@ export class Config {
       retourendir: Config.retourendir,
       //
       dbhost: Config.dbhost,
+      dbport: Config.dbport,
       dbuser: Config.dbuser,
       dbpassword: Config.dbpassword,
       dbschema: Config.dbschema,
@@ -251,6 +253,7 @@ export class Config {
       Config.appDir = "C:/Ak2Ps/Ak2Ps_server/CONTROLS";
       //
       Config.dbhost = "localhost";
+      Config.dbport = 3306;
       Config.dbuser = "controlsdata";
       Config.dbpassword = "antoon_ak2";
       Config.dbschema = "controlsdata";
@@ -296,6 +299,7 @@ export class Config {
       Config.appDir = "C:/Ak2Ps/Ak2Ps_server/TAS";
       //
       Config.dbhost = "localhost";
+      Config.dbport = 3306;
       Config.dbuser = "ak2";
       Config.dbpassword = "antoon_ak2";
       Config.dbschema = "ak2";
@@ -335,6 +339,11 @@ export class Config {
     Config.retourendir = json.retourendir || Config.retourendir;
     //
     Config.dbhost = json.dbhost || Config.dbhost;
+    if (json.dbport) {
+      Config.dbport = Number(json.dbport);
+    } else {
+      Config.dbport = Config.dbport;
+    }
     Config.dbuser = json.dbuser || Config.dbuser;
     Config.dbpassword = json.dbpassword || Config.dbpassword;
     Config.dbschema = json.dbschema || Config.dbschema;

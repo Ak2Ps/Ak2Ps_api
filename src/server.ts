@@ -8,7 +8,7 @@ import db from "./db";
 import { Logger } from "./logger";
 import { Frontware } from './frontware';
 
-import fileUpload from 'express-fileUpload';
+import fileUpload from 'express-fileupload';
 
 class App {
     public app: Application;

@@ -85,7 +85,7 @@ export class Schedule extends Action {
         //
         this.isRunning = true;
         //
-        let cmd = `mysqldump --databases ${Config.dbschema} --user=${Config.dbuser} --password=${Config.dbpassword} >${thisDbBackup}`;
+        let cmd = `mysqldump --databases ${Config.dbschema} --user=${Config.dbuser} --port=${Config.dbport} --password=${Config.dbpassword} >${thisDbBackup}`;
         try {
             let shellresult = child.execSync(cmd,
                 {
