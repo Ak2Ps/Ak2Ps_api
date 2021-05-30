@@ -196,7 +196,13 @@ class Db {
       if (value == null) {
         value = "";
       }
-      value = value.replace(/%20/gi, " ");
+      try{
+        value = value.replace(/%20/gi, " ");
+      } catch (error){
+        Logger.error(<Request><unknown>undefined, "fixQuery error: " + JSON.stringify(error, null, 2));
+        Logger.error(<Request><unknown>undefined, 'value: ' + JSON.stringify(value, null, 2));
+        value = "";
+      }
       value = this.fix(value);
       query[key] = value;
     }
