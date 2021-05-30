@@ -14,6 +14,7 @@ class Db {
   public start() {
     this.pool = mysql.createPool({
       host: Config.dbhost,
+      port: Config.dbport,
       user: Config.dbuser,
       password: Config.dbpassword,
       database: Config.dbschema,
